@@ -8781,8 +8781,10 @@ window.U404Choc = cover;   /* the same chocolate cover, shared with the LP page 
 --------------------------------------------------------------- */
 .vny .s2{
   --s2-gap: clamp(10px, calc(var(--w) * .014), 22px);
-  --s2-fit: cover;        /* 칸을 꽉 채우고 넘치면 자른다. contain 으로 바꾸면 안 잘리고 여백이 생긴다 */
+  --s2-fit: cover;        /* 칸이 그림 비율을 따르므로 보통은 잘리지 않는다 (그림이 열리기 전에만 쓰인다) */
   --s2-max: 860px;        /* 넓은 화면에서 배너판이 벌어지는 한계. 키우면 다시 넓어진다 */
+  --s2-ar: 5;             /* 빈 칸 · 그림이 아직 안 열린 칸의 가로 ÷ 세로. 그림이 열리면 그 그림의 비율로 바뀐다 */
+  --s2-hero-max: calc(var(--h) * .3);   /* 위 큰 배너가 이보다 높아지면 높이를 묶고 너비를 줄인다 (비율은 그대로) */
   --s2-padx: clamp(18px, calc(var(--w) * .085), 150px);   /* 좌우 여백 */
   position:absolute;inset:0;z-index:60;background:#0e1013;
   display:flex;flex-direction:column;align-items:center;
@@ -8802,17 +8804,22 @@ window.U404Choc = cover;   /* the same chocolate cover, shared with the LP page 
   height:clamp(52px, calc(var(--h) * .125), 112px);
   overflow:hidden;position:relative;
 }
+/* 그림이 열리면 칸이 그 그림의 가로세로 비율이 된다 — 잘리지도, 위아래 여백이 생기지도 않는다 */
+.vny .s2-hero.is-sized{height:auto;min-height:0;aspect-ratio:var(--s2-ar);
+  width:min(100%, calc(var(--s2-hero-max) * var(--s2-ar)))}
 .vny .s2-grid{
   flex:1 1 auto;min-height:0;width:100%;max-width:var(--s2-max);
   overflow-y:auto;overscroll-behavior:contain;
   margin-top:clamp(16px, calc(var(--h) * .055), 48px);
   display:grid;grid-template-columns:1fr 1fr;gap:var(--s2-gap);
-  grid-auto-rows:calc((100% - 3 * var(--s2-gap)) / 4);   /* 한 화면에 2열 × 4줄 = 8개 */
+  grid-auto-rows:max-content;align-content:start;   /* 줄 높이는 그 줄 배너의 비율이 정한다 (판 높이에 눌리지 않게) */
   padding-right:4px;
 }
 .vny .s2-grid::-webkit-scrollbar{width:6px}
 .vny .s2-grid::-webkit-scrollbar-thumb{background:rgba(231,227,214,.22);border-radius:3px}
-.vny .s2-tile{display:block;position:relative;overflow:hidden;min-height:54px}
+.vny .s2-tile{display:block;position:relative;overflow:hidden;min-height:0;aspect-ratio:var(--s2-ar)}
+.vny .s2-tile.empty{align-self:stretch;justify-self:stretch}   /* 빈 칸은 칸 너비 그대로, 높이는 옆 배너에 맞춘다 */
+.vny.is-banner .s2-grid{overflow:hidden}   /* 배너 모드는 스크롤 없이 한 화면 (fitS2) */
 .vny .s2-hero img,.vny .s2-tile img{width:100%;height:100%;object-fit:var(--s2-fit,cover);display:block}
 .vny .s2-hero:not(.empty) > span,.vny .s2-tile:not(.empty) > span{display:none}
 .vny .s2-why{display:block;margin-top:6px;font-size:8px;line-height:1.5;letter-spacing:0;
@@ -9814,6 +9821,7 @@ function measure(){
   sizeFlaps();                                          /* (라벨은 layout 이 fitLabels 로 잰다) */
   fitGhost(ghostA); fitGhost(ghostB);
   if (onDeck){ calibrate(); syncSpinGroove(); }
+  fitS2();                                              /* 배너 판 — 바뀐 --w · --h 로 다시 맞춘다 */
 }
 
 function layout(animate){
@@ -11084,6 +11092,16 @@ function wireBanners(scope){
   for (var i = 0; i < imgs.length; i++){
     (function(img){
       var retried = false;
+      /* 그림이 열리면 칸을 그 그림의 가로세로 비율로 */
+      function sized(){
+        var host = img.parentNode;
+        if (!host || !img.naturalWidth || !img.naturalHeight) return;
+        host.style.setProperty('--s2-ar', (img.naturalWidth / img.naturalHeight).toFixed(4));
+        host.classList.add('is-sized');
+        fitS2();
+      }
+      img.addEventListener('load', sized);
+      if (img.complete) sized();
       img.addEventListener('error', function(){
         var now = img.getAttribute('src') || '';
         if (!retried && /mshots/.test(now)){
@@ -11105,6 +11123,9 @@ function wireBanners(scope){
         var host = img.parentNode;
         if (!host) return;
         host.classList.add('empty');
+        host.classList.remove('is-sized');
+        host.style.removeProperty('--s2-ar');
+        fitS2();
         var list = img.getAttribute('data-tried') || '';
         host.setAttribute('title', '배너 그림을 못 찾았습니다. 시도한 주소:\n'
           + list.split(' ').join('\n'));
@@ -11132,6 +11153,29 @@ function buildS2(){
   }
   s2Grid.innerHTML = out;
   wireBanners(s2View);
+  fitS2();
+}
+/* 배너 모드는 스크롤 없이 한 화면에 — 칸이 그림 비율대로 커져서 넘치면
+   판(위 배너 + 칸들) 너비를 줄여 비율은 그대로 둔 채 다 들어오게 한다 */
+var S2_FIT_MIN = .35;   /* 판을 원래 너비의 이 비율보다 좁히지는 않는다. 그래도 넘치면 그때만 스크롤 */
+function s2Fits(){ return s2Grid.scrollHeight <= s2Grid.clientHeight; }
+function s2SetWidth(w){ s2View.style.setProperty('--s2-max', w + 'px'); }
+function fitS2(){
+  if (MODE !== 'banner' || !s2View) return;
+  s2View.style.removeProperty('--s2-max');
+  s2Grid.style.overflowY = '';
+  var full = s2Grid.clientWidth;
+  if (!full || !s2Grid.clientHeight || s2Fits()) return;   /* 아직 화면에 없거나 이미 들어간다 */
+  var lo = Math.floor(full * S2_FIT_MIN), hi = full;
+  s2SetWidth(lo);
+  if (!s2Fits()){ s2Grid.style.overflowY = 'auto'; return; }
+  /* 들어가는 가장 넓은 너비를 반씩 좁혀 가며 찾는다 (lo 는 들어가고 hi 는 넘친다) */
+  while (hi - lo > 2){
+    var mid = (lo + hi) >> 1;
+    s2SetWidth(mid);
+    if (s2Fits()) lo = mid; else hi = mid;
+  }
+  s2SetWidth(lo);
 }
 
 /* MAIN 버튼 — 주소가 있으면 새 창으로, 없으면 흐리게 두고 눌리지 않는다 */
@@ -11172,6 +11216,7 @@ function openBanner(){                       /* 배너 모드 — 커버를 거�
   root.classList.add('is-s2');
   s2View.setAttribute('aria-hidden', 'false');
   s2Grid.scrollTop = 0;
+  fitS2();
 }
 root.addEventListener('vny:reveal', function(){ if (MODE === 'banner') openBanner(); });
 function closeS2(){
@@ -12458,13 +12503,7 @@ function show(k){
       banV = mount(secs.banner, 'banner');
       var sb2 = banV && banV.querySelector('.s2-back');
       if (sb2) sb2.textContent = '← 404호로';
-      /* 배너 칸을 스크롤 없이 한 화면에 — 칸 수에 맞춰 줄 높이를 나눈다 */
-      var grid = banV && banV.querySelector('.s2-grid');
-      if (grid){
-        var rows = Math.max(1, Math.ceil(grid.children.length / 2));
-        grid.style.overflow = 'hidden';
-        grid.style.gridAutoRows = 'calc((100% - ' + (rows - 1) + ' * var(--s2-gap)) / ' + rows + ')';
-      }
+      /* 배너 칸은 그림 비율대로 — 한 화면에 다 들어오게 맞추는 것은 LP 블록의 fitS2 가 한다 */
     }
     else if (banV.vnyIntro) banV.vnyIntro();
   }
