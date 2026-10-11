@@ -1,0 +1,136 @@
+/* HOME 탭: 그대로 둠 */
+#catbar a[data-c="home"]{
+  font-family: -apple-system, "Helvetica Neue", sans-serif;
+  font-size:14px;
+  font-weight:600;
+  letter-spacing:.12em;
+}
+
+/* +N 탭 → "Life" (시계바늘 아이콘 + ife) */
+#catbar a[data-c="+N"]{
+  font-size:0;
+  display:inline-flex;
+  align-items:center;
+  height:44px;
+}
+#catbar a[data-c="+N"]::before{
+  content:"";
+  display:inline-block;
+  width:34px;
+  height:52px;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 90'><line x1='20' y1='2' x2='20' y2='60' stroke='%23000' stroke-width='6' stroke-linecap='square'/><line x1='2' y1='60' x2='56' y2='60' stroke='%23000' stroke-width='6' stroke-linecap='square'/><line x1='20' y1='60' x2='47' y2='87' stroke='%23000' stroke-width='4' stroke-linecap='round'/><circle cx='20' cy='60' r='4.5' fill='white' stroke='%23000' stroke-width='2'/></svg>");
+  background-repeat:no-repeat;
+  background-size:contain;
+  background-position:left center;
+}
+#catbar a[data-c="+N"]::after{
+  content:"ife";
+  font-size:34px;
+  font-family: Georgia, serif;
+  margin-left:-6px;
+  line-height:1;
+}
+
+/* Route 탭 → "is short." */
+#catbar a[data-c="Route"]{ font-size:0; }
+#catbar a[data-c="Route"]::before{
+  content:"is short.";
+  font-size:17px;
+  color:#555;
+  font-family: Georgia, serif;
+}
+
+/* __gal 탭 → "LIVE IT" */
+#catbar a[data-c="__gal"]{ font-size:0; }
+#catbar a[data-c="__gal"]::before{
+  content:"LIVE IT";
+  font-size:19px;
+  font-weight:700;
+  font-style:italic;
+  letter-spacing:.03em;
+  font-family: Georgia, serif;
+}
+
+/* DSEG14 Classic 폰트 로드 (세그먼트 디지털시계 폰트, "P","M" 같은 문자도 지원) */
+@font-face{
+  font-family:'DSEG14 Classic';
+  src:url('https://cdn.jsdelivr.net/npm/@fontsource/dseg14-classic/files/dseg14-classic-latin-700-normal.woff2') format('woff2');
+  font-weight:700;
+  font-style:normal;
+  font-display:swap;
+}
+
+/* HOME 탭 → "PM 08:13" */
+#catbar a[data-c="home"]{
+  position:relative;
+  display:inline-block;
+  width:96px;            /* 글자 길이에 맞게 조절 */
+  height:18px;
+  font-size:0;
+}
+#catbar a[data-c="home"]::before,
+#catbar a[data-c="home"]::after{
+  position:absolute;
+  left:0; top:0;
+  font:14px/18px 'DSEG14 Classic','Courier New',monospace;
+  letter-spacing:2px;
+}
+/* 꺼진 세그먼트 */
+#catbar a[data-c="home"]::before{
+  content:"PM 88:88";
+  color:rgba(128,128,128,.18);
+}
+/* 켜진 세그먼트 */
+#catbar a[data-c="home"]::after{
+  content:"PM 08:13";
+  color:#000;
+}
+
+/* ── 메뉴 뒤로 지나가는 오로라 ── */
+#catbar{
+  position:relative;   /* 오로라 자리 기준 */
+  isolation:isolate;   /* 오로라를 글자 뒤에 깔기 */
+}
+#catbar::before{
+  content:"";
+  position:absolute;
+  inset:-12px 0;
+  z-index:-1;
+  pointer-events:none;
+  /* 오로라 빛 세 겹: 초록(아래) · 하늘(가운데) · 보라(위) */
+  background:
+    radial-gradient(150px 60% at 50% 72%, rgba(54,240,176,.7), rgba(54,240,176,0)) 0 0/560px 100%,
+    radial-gradient(110px 50% at 50% 60%, rgba(70,200,255,.5), rgba(70,200,255,0)) 0 0/420px 100%,
+    radial-gradient(140px 45% at 50% 32%, rgba(175,125,255,.45), rgba(175,125,255,0)) 0 0/700px 100%;
+  /* 양 끝·위아래는 스르르 사라지고, 세로 커튼 결 */
+  -webkit-mask:
+    linear-gradient(90deg,#0000,#000 18%,#000 82%,#0000),
+    linear-gradient(#0000,#000 35%,#000 78%,#0000),
+    repeating-linear-gradient(90deg,#000 0 2px,#0007 2px 5px,#000c 5px 6px,#0005 6px 9px);
+  -webkit-mask-composite:source-in;
+  mask:
+    linear-gradient(90deg,#0000,#000 18%,#000 82%,#0000),
+    linear-gradient(#0000,#000 35%,#000 78%,#0000),
+    repeating-linear-gradient(90deg,#000 0 2px,#0007 2px 5px,#000c 5px 6px,#0005 6px 9px);
+  mask-composite:intersect;
+  animation:
+    catAurora 30s linear infinite,
+    catAuroraRay 2.4s linear infinite,
+    catAuroraGlow 5s ease-in-out infinite alternate;
+}
+/* 빛이 왼쪽 → 오른쪽으로 흘러감 */
+@keyframes catAurora{
+  to{ background-position:560px 0, 840px 0, 700px 0; }
+}
+/* 커튼 결이 살랑거림 */
+@keyframes catAuroraRay{
+  to{ -webkit-mask-position:0 0, 0 0, 9px 0; mask-position:0 0, 0 0, 9px 0; }
+}
+/* 밝아졌다 어두워졌다 */
+@keyframes catAuroraGlow{
+  from{ opacity:.55; }
+  to{ opacity:1; }
+}
+@media (prefers-reduced-motion:reduce){
+  #catbar::before{ animation:none; }
+}
