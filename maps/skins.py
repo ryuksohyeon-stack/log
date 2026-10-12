@@ -428,34 +428,35 @@ SKINS['sage'] = dict(
 
 # ---- fifth batch ---------------------------------------------------------
 # 16. Kremlin red: white walkways ruled in deep red on rose blocks. Taller
-#     3:2 frame (the map fills it and pans sideways), Star Rail navigation
+#     3:2 frame (the whole map shows at first, zooming fills it), Star Rail navigation
 #     title and treasure pill. Zoom with a strip slid up and down by finger
 #     or wheel; drag the map to pan. Both run on scroll-driven animations;
 #     browsers without them get plain drag-to-scroll and no zoom.
 SKINS['kremlin'] = dict(
     zoom=False,
     strip=True,
-    base_sub=[('aspect-ratio:16/9', 'aspect-ratio:3/2'), ('width:72%;aspect-ratio:1.28;', 'width:77%;height:100%;'), ('width:25.5%', 'width:20%'), ('padding:.5em 1.1em;', 'padding:.5em .9em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'),
-              ('width:calc(var(--zm)*100%)', 'width:85.33cqi')],
+    base_sub=[('aspect-ratio:16/9', 'aspect-ratio:3/2'), ('overflow:auto;scrollbar-width:none;animation:k1 .6s}', 'overflow:hidden}'),
+              ('.mb::-webkit-scrollbar{display:none}\n', ''), ('.mi:after{content:"";position:absolute;left:50%;top:50%;width:1px;height:1px;scroll-snap-align:center}\n', ''), ('width:72%;aspect-ratio:1.28;', 'width:77%;height:100%;'), ('width:25.5%', 'width:20%'), ('padding:.5em 1.1em;', 'padding:.5em .9em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'),
+              ('width:calc(var(--zm)*100%)', 'width:var(--w0);top:calc(var(--vh)/2 - var(--w0)/2.56)')],
     css=HSR_FS + '''
 .hw{background:#efe5e5;color:#2a1416;font-family:Pretendard,sans-serif}
-.mb{background:#dcc7c8}
+.mb,.mi{background:#dcc7c8}
+.hm:has(#q1:checked,#q2:checked):has(#n1:checked) .mb{background:linear-gradient(#dcc7c8 50%,#bccad8 0)}.hm:has(#q4:checked):has(#s3:checked) .mb{background:#bccad8}
 .hd{position:absolute;left:2.5%;top:3.5%;z-index:4;padding-left:1.5em;background:radial-gradient(circle at .5em .6em,#0000 .13em,#222 .15em .4em,#0000 .42em),conic-gradient(from -30deg at 50% 100%,#222 60deg,#0000 0) .1em .8em/.8em .6em no-repeat;color:#555;font-size:1.15em;font-weight:500}
 .hd:before{content:"Навигация";display:block;color:#222;font-size:.62em;font-weight:700}
 .tr{position:absolute;left:2.5%;top:calc(3.5% + 3.3em);z-index:4;display:flex;align-items:center;gap:.6em;padding:.35em .8em .35em 1em;border-radius:2em;background:#2b2b2bd9;color:#eee}
 .tr i{width:1.4em;height:1.1em;border-radius:.4em .4em .1em .1em;background:linear-gradient(90deg,#0000 40%,#fbe3a0 0 60%,#0000 0) 0 40%/100% 30% no-repeat,linear-gradient(#0000 42%,#6b3f14 0 54%,#0000 0),#e3b04f}
 .tr:after{content:"▾";margin-left:1.6em}
-.hw{--v:77cqi;--vh:66.67cqi;--w0:85.33cqi}
+.hw{--v:77cqi;--vh:66.67cqi;--w0:77cqi}
 .pn,.zc{display:none}
 @supports (timeline-scope:none){
 .hw{timeline-scope:--tx,--ty,--zt}
-.mb{overflow:hidden}
 .pn,.zg{position:absolute;inset:0;overflow:scroll;scrollbar-width:none;overscroll-behavior:contain;animation:k1 .6s}
 .pn::-webkit-scrollbar,.zg::-webkit-scrollbar{display:none}
 .pn{display:block;touch-action:pan-x pan-y;scroll-timeline:--tx x,--ty y}
 .pn:before{content:"";display:block;width:200%;height:200%}
 .pn:after{content:"";position:absolute;left:100%;top:100%;width:1px;height:1px;scroll-snap-align:center}
-.mi{pointer-events:none;animation:zw linear both,tx linear both,ty linear both;animation-timeline:--zt,--tx,--ty}
+.mi{top:0;pointer-events:none;animation:zw linear both,tx linear both,ty linear both;animation-timeline:--zt,--tx,--ty}
 .z{pointer-events:none!important}
 .zc{display:block;position:absolute;right:1.5%;bottom:4%;z-index:4;width:2.2em;height:9em;border:1px solid #8c1724;background:linear-gradient(#8c1724 0 0) 50% .6em/.7em .14em,linear-gradient(#8c1724 0 0) 50% .32em/.14em .7em,linear-gradient(#8c1724 0 0) 50% calc(100% - .6em)/.7em .14em,linear-gradient(#d9b3b7 0 0) 50%/1px calc(100% - 3.6em) #fff;background-repeat:no-repeat}
 .zg{touch-action:pan-y;scroll-timeline:--zt y}
@@ -463,11 +464,11 @@ SKINS['kremlin'] = dict(
 .zc:after{content:"";position:absolute;left:50%;top:calc(100% - 2.1em);width:.6em;height:.6em;margin:-.3em;rotate:45deg;background:#8c1724;pointer-events:none;animation:zk linear both;animation-timeline:--zt}
 }
 @keyframes zw{to{width:calc(var(--w0)*3)}}
-@keyframes tx{to{translate:calc(var(--v) - 100%)}}
-@keyframes ty{to{transform:translateY(calc(var(--vh) - 100%))}}
+@keyframes tx{from{translate:max(0px,calc(var(--v)/2 - 50%))}to{translate:min(calc(var(--v) - 100%),calc(var(--v)/2 - 50%))}}
+@keyframes ty{from{transform:translateY(max(0px,calc(var(--vh)/2 - 50%)))}to{transform:translateY(min(calc(var(--vh) - 100%),calc(var(--vh)/2 - 50%)))}}
 @keyframes zk{to{top:2.1em}}
 ''',
-    narrow='.mi{width:100%}.hw{--v:100cqi;--vh:78.13cqi;--w0:100cqi}.zc{right:3%;width:34px;height:130px}')
+    narrow='.hw{--v:100cqi;--vh:78.13cqi;--w0:100cqi}.zc{right:3%;width:34px;height:130px}')
 
 # 17. Taiga: deep forest map with pale birch walkways, floors up in the
 #     map's corner, zoom low on the left, leaf-shaped accents.
