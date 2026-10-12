@@ -63,9 +63,9 @@ PALETTES = {
                 r='#d6ded9', rk='#e5ebe7', rks='#ccd6cf', w='#ffffff', ws='#a9bfb3', wsw=2.4, w2='#e8eeea', curb='#ffffff', t='#e4eae6',
                 s='#b9cbc0', d='#5f9a86', o='#eef2ef', os='#a9bfb3', blur=.5, shadow='#56706330'),
     # fifth batch: Kremlin red, taiga, neon night, candy
-    'kremlin': dict(f='#ece4e4', fs='#f1eaea', fr='#e4dada', v='#d6e1ea', vw='#c5d3df', b='#e8d6d7', b2='#dfcacb', rim='#f2e6e7',
-                r='#d9c3c5', rk='#e4d2d3', rks='#d1babc', w='#ffffff', ws='#a8202b', wsw=1.6, w2='#f3e9ea', curb='#ffffff', t='#efe1e2',
-                s='#c79a9f', d='#a8202b', o='#e8d6d7', os='#c9a9ac', blur=.4, shadow='#7a2a3025'),
+    'kremlin': dict(f='#dcc7c8', fs='#e2cfd0', fr='#d2bbbd', v='#bccad8', vw='#a9bacb', b='#c99fa3', b2='#bd9196', rim='#d9b6b9',
+                r='#ad7f85', rk='#cfa8ac', rks='#9e6e74', w='#ffffff', ws='#8c1724', wsw=2.6, w2='#eddcde', curb='#e6cfd2', t='#ead6d8',
+                s='#8c1724', d='#8c1724', o='#c99fa3', os='#9e6e74', blur=.4, shadow='#5a101a40'),
     'taiga': dict(f='#182b21', fs='#1c3127', fr='#15261d', v='#16313a', vw='#1c3d48', b='#21392c', b2='#1c3226', rim='#2a4537',
                 r='#203629', rk='#29433a', rks='#1d3428', w='#cfe3d4', ws='#e9f4ec', wsw=1.2, w2='#9dbba6', curb='#c2d9c8', t='#b9d1bf',
                 s='#7fa58b', d='#a8d5b5', o='#21392c', os='#9dbba6', blur=.4, shadow=None),

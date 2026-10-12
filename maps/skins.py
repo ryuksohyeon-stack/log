@@ -16,11 +16,11 @@ BASE = '''
 .hm{container-type:inline-size;word-break:keep-all}
 .hm *{margin:0;box-sizing:border-box}
 .hm input{display:none}
-.hw{counter-reset:st sn sm ss;--k:sn;--zm:1;--zi:0;position:relative;overflow:hidden;font-size:clamp(9px,1.2cqi,14px)}
+.hw{counter-reset:pt px;--zm:1;--zi:0;position:relative;overflow:hidden;font-size:clamp(9px,1.2cqi,14px)}
 .hm:has(#q1:checked) .hw{--nm:"노릴스크 · 극야"}
 .hm:has(#q2:checked) .hw{--nm:"노릴스크 · 백야"}
-.hm:has(#q3:checked) .hw{--nm:"모스크바의 거리";--k:sm}
-.hm:has(#q4:checked) .hw{--nm:"소중한 이들과 만남";--k:ss}
+.hm:has(#q3:checked) .hw{--nm:"모스크바의 거리"}
+.hm:has(#q4:checked) .hw{--nm:"소중한 이들과 만남"}
 .hw:has(#z2:checked){--zm:1.5;--zi:1}.hw:has(#z3:checked){--zm:2;--zi:2}.hw:has(#z4:checked){--zm:3;--zi:3}
 .hv{position:relative;aspect-ratio:16/9}
 .mb{position:absolute;left:0;top:0;width:72%;aspect-ratio:1.28;overflow:auto;scrollbar-width:none;scroll-snap-type:both proximity}
@@ -28,15 +28,15 @@ BASE = '''
 .mi{position:relative;width:calc(var(--zm)*100%);aspect-ratio:1.28;transition:width .35s}
 .mi:after{content:"";position:absolute;left:50%;top:50%;width:1px;height:1px;scroll-snap-align:center}
 .mi>div,.fs p{position:absolute;inset:0;visibility:hidden}
-.hm:has(#q1:checked,#q2:checked) :is(.mn,.fn),.hm:has(#q3:checked) :is(.mm,.fm),.hm:has(#q4:checked) :is(.ms,.fx){visibility:visible}
+.hm:has(#q1:checked,#q2:checked) :is(.mn,.fn),.hm:has(#q3:checked) :is(.mm,.fm),.hm:has(#q4:checked) :is(.ms,.fx){visibility:visible;--c:pt;--e:pt px}
 .z{position:absolute;inset:0;--o:0;pointer-events:none}
-.hw:has(#n1:checked) .mn>:nth-child(1),.hw:has(#n2:checked) .mn>:nth-child(2),.hw:has(#m1:checked) .mm>:nth-child(1),.hw:has(#m2:checked) .mm>:nth-child(2),.hw:has(#s1:checked) .ms>:nth-child(1),.hw:has(#s2:checked) .ms>:nth-child(2),.hw:has(#s3:checked) .ms>:nth-child(3){--o:1;pointer-events:auto}
+.hw:has(#n1:checked) .mn>:nth-child(1),.hw:has(#n2:checked) .mn>:nth-child(2),.hw:has(#m1:checked) .mm>:nth-child(1),.hw:has(#m2:checked) .mm>:nth-child(2),.hw:has(#s1:checked) .ms>:nth-child(1),.hw:has(#s2:checked) .ms>:nth-child(2),.hw:has(#s3:checked) .ms>:nth-child(3){--o:1;pointer-events:auto;--a:var(--c);--b:var(--e)}
 .z img{position:absolute;z-index:var(--o);width:100%;height:100%;opacity:max(.13,var(--o));transition:opacity .4s}
 .z i{position:absolute;z-index:2;left:calc(var(--x)*1%);top:calc(var(--y)*1%);translate:-50% -50%;font:normal 1.55em/1 sans-serif;color:#0000;text-shadow:0 0 0 #f1cd84;opacity:var(--o);--g:drop-shadow(0 0 .06em #1a1a1a) drop-shadow(0 0 .06em #1a1a1a) drop-shadow(0 .08em .1em #0008);filter:var(--g)}
 .hm:has(#q1:checked) .w,.hm:has(#q2:checked) .n{filter:grayscale(1) brightness(.75) var(--g)}
-.mn{--n:sn}.mm{--n:sm}.ms{--n:ss}.p{counter-increment:st var(--n)}
+.p{counter-increment:var(--a)}.p.x{counter-increment:var(--b)}
 .hd:after{content:var(--nm)}
-.tr b:after{content:counter(var(--k)) " / " counter(st)}
+.tr b:after{content:counter(px) " / " counter(pt)}
 .zm,.zp{display:grid;place-items:center;font-weight:700}.zm:before{content:"−"}.zp:before{content:"+"}.zm:before,.zp:before,.zm label,.zp label{grid-area:1/1}.zm label,.zp label{display:none;place-items:center;width:100%;height:100%}
 .hw:has(#z2:checked) .zm [for=z1],.hw:has(#z3:checked) .zm [for=z2],.hw:has(#z4:checked) .zm [for=z3],.hw:has(#z1:checked) .zp [for=z2],.hw:has(#z2:checked) .zp [for=z3],.hw:has(#z3:checked) .zp [for=z4]{display:grid}
 .zc b{position:relative;display:flex;justify-content:space-between}
@@ -50,6 +50,16 @@ BASE = '''
 .hl :checked+label:after{content:"▼";float:right;color:#36d2e6;font-size:.75em}
 '''
 NARROW = '@container (max-width:560px){.hv{aspect-ratio:auto;height:calc(100cqi/1.28)}.mb{left:0;top:0;width:100%;translate:none}.hl{position:static;width:auto;padding:.6em}{SK}}'
+
+# Star Rail floor buttons, stacked low on the left with the upper floor on top.
+HSR_FS = '''
+.fs{position:absolute;left:2.5%;bottom:5%;z-index:4;width:4.2em;height:12em}
+.fs p{top:auto;display:flex;flex-direction:column;gap:.55em}
+.fs label{position:relative;padding:.3em;border-radius:1.4em;background:#fffa;box-shadow:0 0 0 1px #0001;color:#444;font-size:.9em;line-height:1.2;text-align:center}
+.fs label:before{content:"Этаж";display:block;font-size:.7em}
+.fs :checked+label{background:#fafafa;color:#222;box-shadow:0 .1em .4em #0003}
+.fs :checked+label:after{content:"";position:absolute;left:50%;top:-.5em;margin-left:-.3em;border:.3em solid #0000;border-top:.4em solid #3cc8e0;border-bottom:0}
+'''
 
 # ---------------------------------------------------------------- skins --
 SKINS = {}
@@ -200,7 +210,7 @@ SKINS['nord'] = dict(
 #    numbered places, a single red accent.
 SKINS['line'] = dict(
     css='''
-.hw{background:#fff;color:#1d2433;font-family:Pretendard,sans-serif;counter-reset:st sn sm ss li}
+.hw{background:#fff;color:#1d2433;font-family:Pretendard,sans-serif;counter-reset:pt px li}
 .mb{left:2%;top:50%;width:68%;translate:0 -50%;background:#f1f3f6;outline:1px solid #1d2433;outline-offset:.35em}
 .hd{position:absolute;left:4%;top:6%;z-index:4;padding:.4em .7em;background:#fff;font-size:1.3em;font-weight:800;letter-spacing:-.02em}
 .tr{position:absolute;left:4%;top:calc(6% + 5em);z-index:4;display:flex;align-items:center;gap:.45em;padding:.25em .7em;background:#fff;border:1px solid #1d2433;font-size:.85em;font-weight:700}
@@ -410,23 +420,19 @@ SKINS['sage'] = dict(
 # 16. Kremlin red: white walkways ruled in deep red, red title band, square
 #     outlined controls.
 SKINS['kremlin'] = dict(
-    css='''
-.hw{background:#f7f2f2;color:#2a1416;font-family:Pretendard,sans-serif}
-.mb{background:#ece4e4}
-.hd{position:absolute;left:2.5%;top:3.5%;z-index:4;padding:.5em 1em;background:#a8202b;color:#fff;font-size:1.1em;font-weight:800}
-.tr,.fs p,.zc{background:#fff;border:1px solid #a8202b}
-.tr{position:absolute;left:2.5%;top:calc(3.5% + 3.2em);z-index:4;display:flex;align-items:center;gap:.45em;padding:.3em .9em;color:#a8202b;font-weight:800}
-.tr i{width:.55em;height:.55em;rotate:45deg;background:#a8202b}
-.fs{position:absolute;left:2.5%;bottom:5%;z-index:4;width:20em;height:2.3em}
-.fs p{inset:auto auto 0 0;display:flex}
-.fs label{padding:.35em .9em;font-size:.85em;font-weight:700;color:#a8202b}
-.fs :checked+label{background:#a8202b;color:#fff}
+    css=HSR_FS + '''
+.hw{background:#efe5e5;color:#2a1416;font-family:Pretendard,sans-serif}
+.mb{background:#dcc7c8}
+.hd{position:absolute;left:2.5%;top:3.5%;z-index:4;padding:.5em 1em;background:#8c1724;color:#fff;font-size:1.1em;font-weight:800}
+.tr,.zc{background:#fff;border:1px solid #8c1724}
+.tr{position:absolute;left:2.5%;top:calc(3.5% + 3.2em);z-index:4;display:flex;align-items:center;gap:.45em;padding:.3em .9em;color:#8c1724;font-weight:800}
+.tr i{width:.55em;height:.55em;rotate:45deg;background:#8c1724}
 .zc{position:absolute;left:70%;bottom:5%;translate:-100%;z-index:4;display:flex;align-items:center;gap:.4em;padding:.3em .4em}
-.zm,.zp{width:1.5em;height:1.5em;color:#e2c6c8}
-.zm label,.zp label{background:#a8202b;color:#fff}
-.zc b{width:5em;height:1em;align-items:center;background:linear-gradient(#a8202b 0 0) 50%/100% 1px no-repeat}
-.zc b label{width:.35em;height:.35em;background:#e2c6c8}
-.zc b:after{top:50%;left:calc(var(--zi)/3*(100% - .6em));width:.6em;height:.6em;margin-top:-.3em;rotate:45deg;background:#a8202b}
+.zm,.zp{width:1.5em;height:1.5em;color:#d9b3b7}
+.zm label,.zp label{background:#8c1724;color:#fff}
+.zc b{width:5em;height:1em;align-items:center;background:linear-gradient(#8c1724 0 0) 50%/100% 1px no-repeat}
+.zc b label{width:.35em;height:.35em;background:#d9b3b7}
+.zc b:after{top:50%;left:calc(var(--zi)/3*(100% - .6em));width:.6em;height:.6em;margin-top:-.3em;rotate:45deg;background:#8c1724}
 ''',
     narrow='.zc{left:auto;right:3%;translate:none}')
 
@@ -526,18 +532,14 @@ SKINS['gzhel'] = dict(
 # 21. Mono: charcoal walkways on pale grey, black controls and a single
 #     signal-orange accent, like a hardware display.
 SKINS['mono'] = dict(
-    css='''
+    css=HSR_FS + '''
 .hw{background:#f7f7f7;color:#111;font-family:Pretendard,sans-serif}
 .mb{background:#efefef}
-.hd,.tr,.fs p,.zc{background:#111;color:#fff;border-radius:.25em}
+.hd,.tr,.zc{background:#111;color:#fff;border-radius:.25em}
 .hd{position:absolute;left:2.5%;top:3.5%;z-index:4;display:flex;align-items:center;gap:.6em;padding:.5em .9em;font-size:1.05em;font-weight:700}
 .hd:before{content:"";width:.5em;height:.5em;border-radius:50%;background:#ff5a1f}
 .tr{position:absolute;right:30.5%;top:3.5%;z-index:4;display:flex;align-items:center;gap:.5em;padding:.4em .8em;font:700 .9em ui-monospace,monospace}
 .tr i{width:.55em;height:.55em;background:#ff5a1f}
-.fs{position:absolute;left:2.5%;bottom:5%;z-index:4;width:4.6em;height:9em}
-.fs p{top:auto;display:flex;flex-direction:column;gap:.15em;padding:.2em}
-.fs label{padding:.4em 0;border-radius:.15em;font-size:.85em;font-weight:700;text-align:center;color:#8a8a8a}
-.fs :checked+label{background:#fff;color:#111}
 .zc{position:absolute;left:70%;bottom:5%;translate:-100%;z-index:4;display:flex;align-items:center;gap:.5em;padding:.25em .3em}
 .zm,.zp{width:1.5em;height:1.5em;color:#444}
 .zm label,.zp label{border-radius:.15em;background:#ff5a1f;color:#fff}
@@ -646,7 +648,7 @@ def markup(skin, base):
     def floors(name, layers):
         o = ''
         for fid, key in layers:
-            mk = ''.join('<i%s style=--x:%d;--y:%d>%s</i>' % (' class=' + m[3] if len(m) > 3 else '', round(m[1] / 12.8), round(m[2] / 10), m[0]) for m in MARKERS[key])
+            mk = ''.join('<i%s style=--x:%d;--y:%d>%s</i>' % ((' class="%s"' if ' ' in m[3] else ' class=%s') % m[3] if len(m) > 3 else '', round(m[1] / 12.8), round(m[2] / 10), m[0]) for m in MARKERS[key])
             o += '<div class=z><img src=%s%s.svg>%s</div>' % (base, key, mk)
         return o
     def fsel(cls, name, items):
