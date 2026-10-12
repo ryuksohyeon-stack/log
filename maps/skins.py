@@ -429,9 +429,12 @@ SKINS['sage'] = dict(
 # ---- fifth batch ---------------------------------------------------------
 # 16. Kremlin red: white walkways ruled in deep red on rose blocks. Taller
 #     3:2 frame (the map fills it and pans sideways), Star Rail navigation
-#     title and treasure pill, zoom under the place list.
+#     title and treasure pill. Zoom with a strip slid up and down by finger
+#     or wheel; drag the map to pan. Both run on scroll-driven animations;
+#     browsers without them get plain drag-to-scroll and no zoom.
 SKINS['kremlin'] = dict(
     zoom=False,
+    strip=True,
     base_sub=[('aspect-ratio:16/9', 'aspect-ratio:3/2'), ('width:72%;aspect-ratio:1.28;', 'width:77%;height:100%;'), ('width:25.5%', 'width:20%'), ('padding:.5em 1.1em;', 'padding:.5em .9em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'),
               ('width:calc(var(--zm)*100%)', 'width:85.33cqi')],
     css=HSR_FS + '''
@@ -442,8 +445,29 @@ SKINS['kremlin'] = dict(
 .tr{position:absolute;left:2.5%;top:calc(3.5% + 3.3em);z-index:4;display:flex;align-items:center;gap:.6em;padding:.35em .8em .35em 1em;border-radius:2em;background:#2b2b2bd9;color:#eee}
 .tr i{width:1.4em;height:1.1em;border-radius:.4em .4em .1em .1em;background:linear-gradient(90deg,#0000 40%,#fbe3a0 0 60%,#0000 0) 0 40%/100% 30% no-repeat,linear-gradient(#0000 42%,#6b3f14 0 54%,#0000 0),#e3b04f}
 .tr:after{content:"▾";margin-left:1.6em}
+.hw{--v:77cqi;--vh:66.67cqi;--w0:85.33cqi}
+.pn,.zc{display:none}
+@supports (timeline-scope:none){
+.hw{timeline-scope:--tx,--ty,--zt}
+.mb{overflow:hidden}
+.pn,.zg{position:absolute;inset:0;overflow:scroll;scrollbar-width:none;overscroll-behavior:contain;animation:k1 .6s}
+.pn::-webkit-scrollbar,.zg::-webkit-scrollbar{display:none}
+.pn{display:block;touch-action:pan-x pan-y;scroll-timeline:--tx x,--ty y}
+.pn:before{content:"";display:block;width:200%;height:200%}
+.pn:after{content:"";position:absolute;left:100%;top:100%;width:1px;height:1px;scroll-snap-align:center}
+.mi{pointer-events:none;animation:zw linear both,tx linear both,ty linear both;animation-timeline:--zt,--tx,--ty}
+.z{pointer-events:none!important}
+.zc{display:block;position:absolute;right:1.5%;bottom:4%;z-index:4;width:2.2em;height:9em;border:1px solid #8c1724;background:linear-gradient(#8c1724 0 0) 50% .6em/.7em .14em,linear-gradient(#8c1724 0 0) 50% .32em/.14em .7em,linear-gradient(#8c1724 0 0) 50% calc(100% - .6em)/.7em .14em,linear-gradient(#d9b3b7 0 0) 50%/1px calc(100% - 3.6em) #fff;background-repeat:no-repeat}
+.zg{touch-action:pan-y;scroll-timeline:--zt y}
+.zg i{display:block;height:400%}
+.zc:after{content:"";position:absolute;left:50%;top:calc(100% - 2.1em);width:.6em;height:.6em;margin:-.3em;rotate:45deg;background:#8c1724;pointer-events:none;animation:zk linear both;animation-timeline:--zt}
+}
+@keyframes zw{to{width:calc(var(--w0)*3)}}
+@keyframes tx{to{translate:calc(var(--v) - 100%)}}
+@keyframes ty{to{transform:translateY(calc(var(--vh) - 100%))}}
+@keyframes zk{to{top:2.1em}}
 ''',
-    narrow='.mi{width:100%}')
+    narrow='.mi{width:100%}.hw{--v:100cqi;--vh:78.13cqi;--w0:100cqi}.zc{right:3%;width:34px;height:130px}')
 
 # 17. Taiga: deep forest map with pale birch walkways, floors up in the
 #     map's corner, zoom low on the left, leaf-shaped accents.
@@ -665,14 +689,15 @@ def markup(skin, base):
     zl = lambda ks, t: ''.join('<label for=z%d>%s</label>' % (k, t) for k in ks)
     zoom = SKINS[skin].get('zoom', True)
     return ('<div class=hw>' + (''.join('<input type=radio name=zz id=z%d%s>' % (k, ' checked' if k == 1 else '') for k in range(1, 5)) if zoom else '') +
-        '<div class=hv><div class=mb><div class=mi>'
+        '<div class=hv>' + ('<div class=zc><b class=zg><i></i></b></div><div class=mb><b class=pn></b>' if SKINS[skin].get('strip') else '<div class=mb>') + '<div class=mi>'
         '<div class=mn>' + floors('n', [('n1', 'n1'), ('n2', 'n2')]) + '</div>'
         '<div class=mm>' + floors('m', [('m1', 'm1'), ('m2', 'm2')]) + '</div>'
         '<div class=ms>' + floors('s', [('s1', 's1'), ('s2', 's2'), ('s3', 's3')]) + '</div>'
         '</div></div><h4 class=hd></h4><div class=tr>' + SKINS[skin].get('deco', '') + '<i></i><b></b></div>'
         '<div class=fs>' + fsel('fn', 'n', [('n1', '1'), ('n2', 'B1')]) + fsel('fm', 'm', [('m1', '1'), ('m2', 'B1')]) +
         fsel('fx', 's', [('s1', '센가물'), ('s2', '현대물'), ('s3', '바다')]) + '</div>'
-        + ('<div class=zc><span class=zm>' + zl((1, 2, 3), '−') + '</span><b>' + zl((1, 2, 3, 4), '') + '</b><span class=zp>' + zl((2, 3, 4), '+') + '</span></div>' if zoom else '') + '</div>'
+        + ('<div class=zc><span class=zm>' + zl((1, 2, 3), '−') + '</span><b>' + zl((1, 2, 3, 4), '') + '</b><span class=zp>' + zl((2, 3, 4), '+') + '</span></div>' if zoom else '')
+        + '</div>'
         '<div class=hl><b>✦ Карта звёздного пути ›</b><p>◈ 러시아</p>'
         '<input type=radio name=q id=q1 checked><label for=q1>노릴스크의 극야</label>'
         '<input type=radio name=q id=q2><label for=q2>노릴스크의 백야</label>'
