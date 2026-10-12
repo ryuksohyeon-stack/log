@@ -62,6 +62,19 @@ PALETTES = {
     'sage': dict(f='#e1e7e3', fs='#e8ede9', fr='#d8dfda', v='#cfe1e6', vw='#bdd4db', b='#eef2ef', b2='#e5ebe7', rim='#f7f9f8', bs='#c4d0c8', bsw=1.2,
                 r='#d6ded9', rk='#e5ebe7', rks='#ccd6cf', w='#ffffff', ws='#a9bfb3', wsw=2.4, w2='#e8eeea', curb='#ffffff', t='#e4eae6',
                 s='#b9cbc0', d='#5f9a86', o='#eef2ef', os='#a9bfb3', blur=.5, shadow='#56706330'),
+    # fifth batch: Kremlin red, taiga, neon night, candy
+    'kremlin': dict(f='#ece4e4', fs='#f1eaea', fr='#e4dada', v='#d6e1ea', vw='#c5d3df', b='#e8d6d7', b2='#dfcacb', rim='#f2e6e7',
+                r='#d9c3c5', rk='#e4d2d3', rks='#d1babc', w='#ffffff', ws='#a8202b', wsw=1.6, w2='#f3e9ea', curb='#ffffff', t='#efe1e2',
+                s='#c79a9f', d='#a8202b', o='#e8d6d7', os='#c9a9ac', blur=.4, shadow='#7a2a3025'),
+    'taiga': dict(f='#182b21', fs='#1c3127', fr='#15261d', v='#16313a', vw='#1c3d48', b='#21392c', b2='#1c3226', rim='#2a4537',
+                r='#203629', rk='#29433a', rks='#1d3428', w='#cfe3d4', ws='#e9f4ec', wsw=1.2, w2='#9dbba6', curb='#c2d9c8', t='#b9d1bf',
+                s='#7fa58b', d='#a8d5b5', o='#21392c', os='#9dbba6', blur=.4, shadow=None),
+    'neon': dict(f='#14141f', fs='#191926', fr='#11111b', v='#121a2e', vw='#18223b', b='#1c1c2b', b2='#181826', rim='#24243a',
+                r='#1f1f30', rk='#26263a', rks='#1c1c2c', w='#232338', ws='#ff4fd8', wsw=2, w2='#1d1d30', curb='#2b2b45', t='#2f2f4a',
+                s='#59e0ff', d='#59e0ff', o='#24243a', os='#ff4fd8', blur=0, shadow=None),
+    'candy': dict(f='#fbe9f1', fs='#fdf0f6', fr='#f6dfe9', v='#d9d6f6', vw='#c9c5f0', b='#ffd6e7', b2='#ffcbe0', rim='#ffe6f0', bs='#f2a7c6', bsw=2,
+                r='#f8c4d9', rk='#ffdbe9', rks='#f2b5cd', w='#c4f1e2', ws='#7fd8bc', wsw=3, w2='#ddf7ee', curb='#d4f6ea', t='#aee6d3',
+                s='#ffffff', d='#b48cf0', o='#ffe6f0', os='#f2a7c6', blur=0, shadow='#e48fb233'),
 }
 
 def style(p):
