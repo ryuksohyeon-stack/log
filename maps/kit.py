@@ -36,6 +36,19 @@ PALETTES = {
     'line': dict(f='#f1f3f6', fs='#e7eaef', fr='#e5e8ed', v='#dbe8f3', vw='#c7d9ea', b='#ffffff', b2='#f6f7f9', rim='#ffffff', bs='#9aa5b6', bsw=1.6,
                 r='#dde1e7', rk='#f0f2f5', rks='#d4d9e0', w='#e9eef4', ws='#1d2433', wsw=2.2, w2='#d9e0e9', curb='#e9eef4', t='#c9d1db',
                 s='#1d2433', d='#d94141', o='#ffffff', os='#1d2433', blur=0, shadow=None),
+    # second batch: blueprint, constructivist poster, white-night duotone, aurora
+    'blueprint': dict(f='#1b3157', fs='#213962', fr='#25406b', v='#12284a', vw='#1a3358', b='#21396a', b2='#1d3562', rim='#365689', bs='#5b7fbd', bsw=1.4,
+                r='#33538a', rk='#29467a', rks='#3c5d96', w='#dce8f8', ws='#ffffff', wsw=1.5, w2='#a9c1e3', curb='#c9daf1', t='#bccfeb',
+                s='#7f9cc9', d='#ffb38a', o='#21396a', os='#9fb8de', blur=0, shadow=None),
+    'poster': dict(f='#ececec', fs='#e4e4e4', fr='#e1e1e1', v='#d8e2ea', vw='#c7d4df', b='#f7f7f7', b2='#eeeeee', rim='#ffffff', bs='#1c1c1c', bsw=1.4,
+                r='#dadada', rk='#ececec', rks='#cdcdcd', w='#ffffff', ws='#1c1c1c', wsw=2.4, w2='#e2e2e2', curb='#ffffff', t='#e3e3e3',
+                s='#1c1c1c', d='#d7261e', o='#f7f7f7', os='#1c1c1c', blur=0, shadow=None),
+    'duotone': dict(f='#e3ebf5', fs='#eaf0f7', fr='#dae3ee', v='#c2d8ee', vw='#b0cce7', b='#dce7f3', b2='#d2dfee', rim='#eaf1f8',
+                r='#cad8e9', rk='#d5e1ef', rks='#c5d3e5', w='#f6d3da', ws='#ebbbc5', wsw=2, w2='#f9e4e8', curb='#f9dde3', t='#efc6cf',
+                s='#e6b1bd', d='#e2768c', o='#dce7f3', os='#c5d3e5', blur=.5, shadow='#7a8cb030'),
+    'aurora': dict(f='#13262f', fs='#172f38', fr='#11222a', v='#0e2939', vw='#143549', b='#1a3540', b2='#16303a', rim='#21414d',
+                r='#1d3a45', rk='#22434f', rks='#183540', w='#2f5a63', ws='#3e6f79', wsw=2, w2='#244a52', curb='#36676f', t='#3b6b75',
+                s='#4f8590', d='#7de3b8', o='#21414d', os='#3e6f79', blur=.4, shadow=None),
 }
 
 def style(p):

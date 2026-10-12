@@ -284,6 +284,133 @@ SKINS['line'] = dict(
 ''',
     narrow='.mb{left:3%;top:3%;width:94%}.zc{left:auto;right:6%;translate:none}.hl{margin:1.2em .8em;translate:none}')
 
+# ---- third batch: same clean approach, different layouts -----------------
+# 8. Blueprint: list on the left, map on the right on a faint drafting grid,
+#    hairline panels, one peach accent.
+SKINS['blueprint'] = dict(
+    head='ПЛАН ГОРОДА · 도면',
+    css='''
+.hw{background:#13244a;color:#e8f0fb;font-family:Pretendard,sans-serif}
+.mb{left:28%;background:#182e57}
+.hv:after{content:"";position:absolute;left:28%;top:0;width:72%;aspect-ratio:1.28;z-index:3;pointer-events:none;background:repeating-linear-gradient(#ffffff0c 0 1px,#0000 0 2.4em),repeating-linear-gradient(90deg,#ffffff0c 0 1px,#0000 0 2.4em)}
+.hd,.tr,.fs p,.zc{background:#13244ae6;border:1px solid #9fb8de55}
+.hd{position:absolute;left:30%;top:3.5%;z-index:4;padding:.55em .95em;font-size:1.1em;font-weight:700}
+.hd:before{content:var(--co);display:block;font:500 .58em ui-monospace,Menlo,monospace;color:#ffb38a}
+.tr{position:absolute;left:30%;top:calc(3.5% + 4.4em);z-index:4;display:flex;align-items:center;gap:.45em;padding:.3em .8em;font:700 .9em ui-monospace,Menlo,monospace}
+.tr i{width:.6em;height:.6em;border:1px solid #ffb38a;rotate:45deg}
+.fs{position:absolute;left:30%;bottom:5%;z-index:4;width:20em;height:2.3em}
+.fs p{inset:auto auto 0 0;display:flex;align-items:center;gap:.15em;padding:.2em}
+.fs p:before{content:"ЭТАЖ";padding:0 .5em;font:.6em ui-monospace,Menlo,monospace;color:#9fb8de}
+.fs label{padding:.3em .75em;font-size:.85em;font-weight:600;color:#9fb8de}
+.fs :checked+label{background:#ffb38a;color:#13244a}
+.zc{position:absolute;right:2%;bottom:5%;z-index:4;display:flex;flex-direction:column-reverse;align-items:center;gap:.3em;padding:.3em}
+.zm,.zp{display:grid;place-items:center;width:1.7em;height:1.7em;color:#3c5d96;font-weight:700}
+.zm:before{content:"−"}.zp:before{content:"+"}.zm:before,.zp:before{grid-area:1/1}
+.zm label,.zp label{grid-area:1/1;place-items:center;width:1.7em;height:1.7em;border:1px solid #9fb8de;color:#e8f0fb}
+.zc b{flex-direction:column-reverse;align-items:center;height:4.6em;width:1px;background:#9fb8de66;margin:.2em auto}
+.zc b label{width:.5em;height:1px;background:#9fb8de}
+.zc b:after{left:50%;bottom:calc(var(--zi)/3*(100% - .6em));width:.6em;height:.6em;margin-left:-.3em;background:#ffb38a;rotate:45deg}
+.hl{left:1.5%;top:3.5%;width:24.5%}
+.hl>b{display:block;padding-bottom:.6em;border-bottom:1px solid #9fb8de66;font:500 .72em ui-monospace,Menlo,monospace;letter-spacing:.1em;color:#9fb8de}
+.hl p{padding:.9em 0 .3em;font:.68em ui-monospace,Menlo,monospace;color:#ffb38a}
+.hl label{display:block;padding:.7em .6em;border-bottom:1px solid #9fb8de33;color:#c6d6ee}
+.hl :checked+label{color:#fff;font-weight:700;box-shadow:inset .2em 0 #ffb38a;background:#ffffff0d}
+''',
+    narrow='.hv:after{left:0;width:100%}.hd,.tr,.fs{left:2.5%}.hl{margin:.8em}')
+
+# 9. Poster: regions as a tab bar across the top, the place name set large
+#    beside the map like a travel poster, black lines and one red accent.
+SKINS['poster'] = dict(
+    head='',
+    css='''
+.hw{background:#fff;color:#1c1c1c;font-family:Pretendard,sans-serif}
+.hv{margin-top:3.4em;border-top:2px solid #1c1c1c}
+.mb{background:#ececec;border-right:2px solid #1c1c1c}
+.hd{position:absolute;left:74%;top:6%;right:2%;z-index:4;font-size:2em;font-weight:800;line-height:1.15;letter-spacing:-.03em}
+.hd:before{content:var(--co);display:block;margin-bottom:.5em;padding-bottom:.4em;border-bottom:.12em solid #d7261e;font-size:.32em;font-weight:700;letter-spacing:.12em;color:#d7261e}
+.tr{position:absolute;left:74%;top:44%;z-index:4;display:flex;align-items:center;gap:.5em;font-weight:800;font-size:1.2em}
+.tr i{width:.7em;height:.7em;background:#d7261e}
+.tr:after{content:"БАННЕРЫ";font-size:.5em;letter-spacing:.14em;color:#888}
+.fs{position:absolute;left:74%;top:56%;right:2%;z-index:4;height:2.2em}
+.fs p{display:flex;gap:.3em}
+.fs label{padding:.35em .7em;border:2px solid #1c1c1c;font-size:.85em;font-weight:700}
+.fs :checked+label{background:#1c1c1c;color:#fff}
+.zc{position:absolute;left:74%;bottom:6%;z-index:4;display:flex;align-items:center;gap:.5em}
+.zm,.zp{display:grid;place-items:center;width:1.7em;height:1.7em;border:2px solid #ddd;color:#ccc;font-weight:800}
+.zm:before{content:"−"}.zp:before{content:"+"}.zm:before,.zp:before{grid-area:1/1}
+.zm label,.zp label{grid-area:1/1;place-items:center;width:1.7em;height:1.7em;margin:-2px;border:2px solid #1c1c1c;color:#1c1c1c;background:#fff}
+.zc b{width:6.5em;height:1em;align-items:center;background:linear-gradient(#1c1c1c 0 0) 50%/100% 2px no-repeat}
+.zc b label{width:2px;height:.7em;background:#1c1c1c}
+.zc b:after{top:50%;left:calc(var(--zi)/3*(100% - .7em));width:.7em;height:.7em;margin-top:-.35em;background:#d7261e}
+.hl{left:0;right:0;top:0;height:3.4em;display:flex;align-items:center;gap:.2em;padding:0 1.5%}
+.hl>b{display:none}
+.hl p{margin-left:.8em;font-size:.68em;font-weight:700;letter-spacing:.1em;color:#d7261e}
+.hl label{padding:.45em .8em;font-weight:600;color:#777;white-space:nowrap}
+.hl :checked+label{background:#1c1c1c;color:#fff}
+''',
+    narrow='.hv{margin-top:0}.hd{font-size:1.4em;left:2.5%;top:3%;right:auto;padding:.3em .5em;background:#fff}.hd:before{display:none}.tr{left:2.5%;top:auto;bottom:16%;font-size:1em;background:#fff;padding:.2em .5em}.fs{left:2.5%;top:auto;bottom:4%}.zc{left:auto;right:3%;bottom:4%}.hl{display:flex;flex-wrap:wrap;height:auto;padding:.6em}')
+
+# 10. White-night duotone: rose walkways on pale sky blocks, information in a
+#     calm column beside the map, regions as a dock of cards underneath.
+SKINS['duotone'] = dict(
+    head='',
+    css='''
+.hw{background:#f7f9fc;color:#2b3346;font-family:Pretendard,sans-serif}
+.mb{left:1.5%;top:50%;width:70%;translate:0 -50%;border-radius:1em;background:#e3ebf5}
+.hd{position:absolute;left:74%;top:6%;right:2%;z-index:4;font-size:1.35em;font-weight:800}
+.hd:before{content:var(--co);display:block;margin-bottom:.3em;font-size:.48em;font-weight:600;letter-spacing:.08em;color:#e2768c}
+.tr{position:absolute;left:74%;top:24%;right:2%;z-index:4;display:flex;align-items:center;gap:.5em;padding:.6em .8em;border-radius:.8em;background:#fff;box-shadow:0 .2em .8em #2b334612;font-weight:800}
+.tr i{width:.7em;height:.7em;border-radius:50%;background:#e2768c}
+.tr:after{content:"모은 배너";margin-left:auto;font-size:.7em;font-weight:500;color:#8b93a6}
+.fs{position:absolute;left:74%;top:42%;right:2%;z-index:4;height:2.6em}
+.fs p{display:flex;gap:.25em;padding:.25em;border-radius:.8em;background:#fff;box-shadow:0 .2em .8em #2b334612}
+.fs label{flex:1;padding:.4em 0;border-radius:.6em;text-align:center;font-size:.85em;font-weight:600;color:#8b93a6}
+.fs :checked+label{background:#f6d3da;color:#b34a62}
+.zc{position:absolute;left:74%;top:60%;right:2%;z-index:4;display:flex;align-items:center;gap:.6em;padding:.45em .6em;border-radius:.8em;background:#fff;box-shadow:0 .2em .8em #2b334612}
+.zm,.zp{display:grid;place-items:center;width:1.6em;height:1.6em;color:#d5dbe5;font-weight:700}
+.zm:before{content:"−"}.zp:before{content:"+"}.zm:before,.zp:before{grid-area:1/1}
+.zm label,.zp label{grid-area:1/1;place-items:center;width:1.6em;height:1.6em;border-radius:50%;background:#f6d3da;color:#b34a62}
+.zc b{flex:1;height:1em;align-items:center;background:linear-gradient(#e6eaf0 0 0) 50%/100% .25em no-repeat}
+.zc b label{width:.35em;height:.35em;border-radius:50%;background:#cfd6e0}
+.zc b:after{top:50%;left:calc(var(--zi)/3*(100% - .8em));width:.8em;height:.8em;margin-top:-.4em;border-radius:50%;background:#e2768c;box-shadow:0 0 0 .2em #fff}
+.hl{position:static;display:flex;flex-wrap:wrap;align-items:center;gap:.4em;padding:0 1.5% 1.2em}
+.hl>b{display:none}
+.hl p{width:100%;margin-top:.4em;font-size:.68em;font-weight:700;letter-spacing:.1em;color:#e2768c}
+.hl label{padding:.7em 1.1em;border-radius:.8em;background:#fff;box-shadow:0 .2em .8em #2b334612;color:#4a5368;font-weight:600}
+.hl :checked+label{background:#2b3346;color:#fff}
+''',
+    narrow='.mb{left:3%;top:3%;width:94%}.hd,.tr,.fs,.zc{left:auto}.hd{left:5%;top:5%;right:auto;padding:.4em .7em;border-radius:.6em;background:#fffe;font-size:1.1em}.hd:before{display:none}.tr{left:5%;top:auto;bottom:6%;right:auto;padding:.3em .6em}.fs{top:auto;bottom:6%;right:5%;width:10em}.zc{display:none}.hl{padding:.8em}')
+
+# 11. Aurora night: the map in the middle, floors and zoom on a slim rail to
+#     its left, places on the right, a faint aurora glow along the top.
+SKINS['aurora'] = dict(
+    head='СЕВЕРНОЕ СИЯНИЕ · 오로라',
+    css='''
+.hw{background:radial-gradient(60% 40% at 40% 0,#1f5a4f88,#0000),#0d1a20;color:#e2f1ef;font-family:Pretendard,sans-serif}
+.mb{left:8%;top:50%;width:64%;translate:0 -50%;border-radius:.9em;background:#13262f;box-shadow:0 0 0 1px #2c4c55}
+.hd{position:absolute;left:10%;top:7%;z-index:4;padding:.5em .9em;border-radius:.7em;background:#0d1a20d9;border:1px solid #2c4c55;font-size:1.1em;font-weight:700}
+.hd:before{content:var(--co);display:block;font-size:.58em;font-weight:500;color:#7de3b8}
+.tr{position:absolute;left:10%;top:calc(7% + 4.4em);z-index:4;display:flex;align-items:center;gap:.45em;padding:.3em .8em;border-radius:2em;background:#0d1a20d9;border:1px solid #2c4c55;font-size:.9em;font-weight:700}
+.tr i{width:.6em;height:.6em;border-radius:50%;background:#7de3b8;box-shadow:0 0 .5em #7de3b8}
+.fs{position:absolute;left:1.5%;top:12%;z-index:4;width:5%;height:46%}
+.fs p{display:flex;flex-direction:column;gap:.25em}
+.fs label{padding:.45em 0;border-radius:.5em;text-align:center;font-size:.8em;font-weight:700;color:#6f8f96;background:#13262f}
+.fs :checked+label{background:#7de3b8;color:#0d1a20}
+.zc{position:absolute;left:4%;bottom:12%;translate:-50%;z-index:4;display:flex;flex-direction:column-reverse;align-items:center;gap:.3em;padding:.3em;border-radius:2em;background:#13262f}
+.zm,.zp{display:grid;place-items:center;width:1.6em;height:1.6em;color:#2c4c55;font-weight:700}
+.zm:before{content:"−"}.zp:before{content:"+"}.zm:before,.zp:before{grid-area:1/1}
+.zm label,.zp label{grid-area:1/1;place-items:center;width:1.6em;height:1.6em;border-radius:50%;background:#1e3a44;color:#e2f1ef}
+.zc b{flex-direction:column-reverse;align-items:center;height:4.4em}
+.zc b label{width:.3em;height:.3em;border-radius:50%;background:#2c4c55}
+.zc b:after{left:50%;bottom:calc(var(--zi)/3*(100% - .65em));width:.65em;height:.65em;margin-left:-.325em;border-radius:50%;background:#7de3b8;box-shadow:0 0 .5em #7de3b8}
+.hl{right:1.5%;top:50%;translate:0 -50%;width:25%}
+.hl>b{display:block;padding:0 .7em .7em;font-size:.72em;letter-spacing:.12em;color:#7de3b8}
+.hl p{padding:.8em .7em .3em;font-size:.68em;font-weight:700;color:#6f8f96}
+.hl label{display:block;padding:.7em;border-radius:.6em;color:#b7cfcc}
+.hl :checked+label{background:linear-gradient(90deg,#7de3b833,#0000);color:#fff;box-shadow:inset .2em 0 #7de3b8}
+''',
+    narrow='.mb{left:3%;top:3%;width:94%}.hd,.tr{left:5%}.fs{left:5%;top:auto;bottom:6%;width:3.2em;height:7.5em}.fs p{justify-content:flex-end}.zc{left:auto;right:6%;translate:none}.hl{margin:.8em;translate:none}')
+
 def markup(skin, base):
     def floors(name, layers):
         o = ''
