@@ -20,18 +20,21 @@ CSS = '''
 .z{position:absolute;inset:0;--o:0;pointer-events:none}
 :checked+.z{--o:1;pointer-events:auto}
 .z img{position:absolute;z-index:var(--o);width:100%;height:100%;opacity:max(.13,var(--o));transition:opacity .4s}
-.z i{position:absolute;z-index:2;left:calc(var(--x)*1%);top:calc(var(--y)*1%);width:2.1em;height:2.1em;margin:-1.05em;display:grid;place-items:center;border:.14em solid #f0cd85;border-radius:50%;background:#2e2a24;color:#0000;text-shadow:0 0 0 #f5d595;font-style:normal;opacity:var(--o);filter:drop-shadow(0 0 .3em #fc78)}
-.hm:has(#q1:checked) .w,.hm:has(#q2:checked) .n{filter:grayscale(1) brightness(.6)}
-.mb h4{position:absolute;left:2.5%;top:3%;z-index:4;font-size:1.3em}
+.z i{position:absolute;z-index:2;left:calc(var(--x)*1%);top:calc(var(--y)*1%);translate:-50% -50%;font:normal 1.55em/1 sans-serif;color:#0000;text-shadow:0 0 0 #f1cd84;opacity:var(--o);--g:drop-shadow(0 0 .06em #1a1a1a) drop-shadow(0 0 .06em #1a1a1a) drop-shadow(0 .08em .1em #0008);filter:var(--g)}
+.hm:has(#q1:checked) .w,.hm:has(#q2:checked) .n{filter:grayscale(1) brightness(.75) var(--g)}
+.mb h4{position:absolute;left:2.5%;top:3%;z-index:4;padding-left:1.3em;font-size:1.3em;background:radial-gradient(circle at .42em .75em,#333 .1em,#0000 .12em .22em,#333 .24em .36em,#0000 .38em) no-repeat}
 .mb h4:before{content:"Навигация";display:block;font-size:.55em;font-weight:400;opacity:.6}
 .mb h4:after{content:var(--t)}
 .tr{position:absolute;left:2.5%;top:calc(3% + 3.4em);z-index:4;display:flex;gap:.5em;padding:.2em .8em;border-radius:2em;background:#222c;color:#eee}
 .tr i{width:1.5em;border-radius:.4em .4em .1em .1em;background:linear-gradient(#0000 40%,#6b3f14 0 52%,#0000 0),#dca444}
-.tr b:after{content:counter(var(--k)) " / " counter(st)}
+.tr b:after{content:counter(var(--k)) " / " counter(st)}.tr:after{content:"▾";opacity:.6}
 .mn{--n:sn}.mm{--n:sm}.ms{--n:ss}.p{counter-increment:st var(--n)}
-.z label{position:absolute;left:2.5%;bottom:calc(6% + var(--f,0)*2.8em);z-index:4;min-width:3.4em;padding:.3em;border-radius:1.4em;background:#7779;color:#fff;font-size:.9em;line-height:1.2;text-align:center;pointer-events:auto;cursor:pointer}
+.z label{position:absolute;left:2.5%;bottom:calc(6% + var(--f,0)*2.8em);z-index:4;min-width:3.4em;padding:.3em;border-radius:1.4em;background:#fff6;color:#444;font-size:.9em;line-height:1.2;text-align:center;pointer-events:auto;cursor:pointer}
 .z label:before{content:"Этаж";display:block;font-size:.7em}
-:checked+.z label{background:#f6f6f6;color:#222;box-shadow:0 -.2em #36d2e6}
+:checked+.z label{background:#fafafa;color:#222;box-shadow:0 .1em .4em #0002}
+:checked+.z label:after{content:"";position:absolute;left:50%;top:-.5em;margin-left:-.3em;border:.3em solid #0000;border-top:.4em solid #3cc8e0;border-bottom:0}
+.zs{position:absolute;left:36%;bottom:3%;z-index:4;translate:-50%;display:flex;justify-content:space-between;align-items:center;width:23%;padding:.15em .3em;border-radius:1em;background:radial-gradient(circle,#fff .25em,#f39a33 .3em .42em,#0000 .46em) 34% 50%/1em 1em no-repeat,linear-gradient(90deg,#f39a33 34%,#888 0) 50%/calc(100% - 3.4em) .18em no-repeat,#2b2b2bdd;color:#fff;font-size:.9em}
+.zs:before,.zs:after{content:"−";display:grid;place-items:center;width:1.2em;height:1.2em;border:.1em solid #fff;border-radius:50%;line-height:1}.zs:after{content:"+"}
 .hl{position:absolute;top:4%;right:1.5%;width:25.5%;z-index:5}
 .hl>b{display:block;margin-bottom:.9em;padding:.5em 1.1em;border-radius:2em;background:#3a3a3a;color:#eee;font-weight:500}
 .hl p{padding:.3em .8em;background:#c4c4c4;color:#555;font-size:.85em}
@@ -39,14 +42,14 @@ CSS = '''
 .hl label:before{content:"✦ ";font-size:.7em}
 .hl :checked+label{background:#1d1d1d;color:#fff}
 .hl :checked+label:after{content:"▼";float:right;color:#36d2e6;font-size:.75em}
-@container (max-width:560px){.hv{aspect-ratio:1.28}.mb{right:0}.hl{position:static;width:auto;padding:.6em}}
+@container (max-width:560px){.hv{aspect-ratio:1.28}.mb{right:0}.zs{left:50%}.hl{position:static;width:auto;padding:.6em}}
 '''
 
 # (emoji, x, y[, class]) in map coordinates
 MARKERS = {
     'n1': [('🍺', 668, 640), ('🔧', 130, 310), ('💊', 870, 600), ('🛒', 1120, 700),
            ('☕', 630, 345, 'w'), ('🌷', 870, 345, 'w'), ('📚', 620, 140, 'w'), ('🥐', 1125, 140, 'w'),
-           ('🎬', 410, 345, 'w'), ('🔭', 620, 935, 'n')],
+           ('🎬', 410, 345, 'w'), ('🔭', 900, 935, 'n')],
     'n2': [('🍲', 250, 340), ('🧖', 1050, 640)],
     'm1': [('🛍', 742, 290), ('🍦', 742, 510), ('🎭', 765, 105), ('☕', 940, 310), ('🍺', 985, 510),
            ('🥐', 1135, 510), ('🌷', 470, 185)],
@@ -71,7 +74,7 @@ def build(base):
         '<div class=mn>' + floors('n', base, [('n1', 'n1', '1', 1), ('n2', 'n2', 'B1', 0)]) + '<h4>노릴스크</h4></div>'
         '<div class=mm>' + floors('m', base, [('m1', 'm1', '1', 1), ('m2', 'm2', 'B1', 0)]) + '<h4>모스크바</h4></div>'
         '<div class=ms>' + floors('s', base, [('s1', 's1', '센가물', 2), ('s2', 's2', '현대물', 1), ('s3', 's3', '바다', 0)]) + '<h4>보금자리</h4></div>'
-        '</div><div class=tr><i></i><b></b></div></div>'
+        '</div><div class=tr><i></i><b></b></div><div class=zs></div></div>'
         '<div class=hl><b>✦ Карта звёздного пути ›</b><p>◈ 러시아</p>'
         '<input type=radio name=q id=q1 checked><label for=q1>노릴스크의 극야</label>'
         '<input type=radio name=q id=q2><label for=q2>노릴스크의 백야</label>'

@@ -22,6 +22,32 @@ def circ(cx,cy,r,hole=False,ry=None):
     ry = r if ry is None else ry
     s = 0 if hole else 1
     return [('M',(cx-r,cy)),('A',r,ry,s,(cx+r,cy)),('A',r,ry,s,(cx-r,cy)),('Z',)]
+def rr(x,y,w,h,q,hole=False):
+    """Rounded rectangle; q is the corner radius."""
+    q = min(q, w/2, h/2)
+    c = [('M',(x+q,y)),('L',(x+w-q,y)),('A',q,q,1,(x+w,y+q),0),('L',(x+w,y+h-q)),('A',q,q,1,(x+w-q,y+h),0),
+         ('L',(x+q,y+h)),('A',q,q,1,(x,y+h-q),0),('L',(x,y+q)),('A',q,q,1,(x+q,y),0),('Z',)]
+    c = [k for i,k in enumerate(c) if not (k[0]=='L' and c[i-1][0]=='A' and k[1]==c[i-1][4])]
+    return reverse(c) if hole else c
+def reverse(sh):
+    """Same outline, opposite winding (turns a fill shape into a hole)."""
+    pts=[sh[0][1]]; segs=[]
+    for k in sh[1:]:
+        if k[0]=='Z': break
+        segs.append(k); pts.append(k[1] if k[0]=='L' else k[4])
+    out=[('M',pts[0])]
+    if pts[-1]!=pts[0]: out.append(('L',pts[-1]))
+    for i in reversed(range(len(segs))):
+        k=segs[i]
+        out.append(('L',pts[i]) if k[0]=='L' else ('A',k[1],k[2],1-k[3],pts[i],k[5] if len(k)>5 else 1))
+    return out+[('Z',)]
+def fillet(x,y,q,corner):
+    """Concave quarter-round filling the inside corner at (x,y); corner in 'tl','tr','bl','br'
+    says which way the filler extends from the corner point."""
+    sx = 1 if corner[1]=='r' else -1; sy = 1 if corner[0]=='b' else -1
+    a=(x+sx*q,y); b=(x,y+sy*q)
+    sh = [('M',(x,y)),('L',a),('A',q,q,1 if sx*sy<0 else 0,b,0),('Z',)]
+    return reverse(sh) if sx*sy<0 else sh   # keep every fillet clockwise
 def line(*pts): return [('M',pts[0])]+[('L',p) for p in pts[1:]]
 def ring(cx,cy,r,ry=None):  # open circle for detail strokes
     ry = r if ry is None else ry
@@ -85,8 +111,8 @@ def minify(cmds):
             (emit(L.lower(),r) if len(nums(r))<=len(nums(a)) else emit(L,a))
             cur=(x,y); continue
         if k=='A':
-            rx,ry,s,(x,y)=c[1],c[2],c[3],c[4]
-            r=[rx,ry,0,1,s,x-cur[0],y-cur[1]]; a=[rx,ry,0,1,s,x,y]
+            rx,ry,s,(x,y)=c[1],c[2],c[3],c[4]; lg = c[5] if len(c)>5 else 1
+            r=[rx,ry,0,lg,s,x-cur[0],y-cur[1]]; a=[rx,ry,0,lg,s,x,y]
             (emit('a',r) if len(nums(r))<=len(nums(a)) else emit('A',a))
             cur=(x,y); continue
     return ''.join(out)
