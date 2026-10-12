@@ -690,7 +690,9 @@ def markup(skin, base):
     def floors(name, layers):
         o = ''
         for fid, key in layers:
-            mk = ''.join('<i%s style=--x:%d;--y:%d>%s</i>' % ((' class="%s"' if ' ' in m[3] else ' class=%s') % m[3] if len(m) > 3 else '', round(m[1] / 12.8), round(m[2] / 10), m[0]) for m in MARKERS[key])
+            # baked skins have the shop markers drawn into the maps; only banner pins stay HTML
+            ms = [m for m in MARKERS[key] if not SKINS[skin].get('baked') or (len(m) > 3 and m[3].split()[0] == 'p')]
+            mk = ''.join('<i%s style=--x:%d;--y:%d>%s</i>' % ((' class="%s"' if ' ' in m[3] else ' class=%s') % m[3] if len(m) > 3 else '', round(m[1] / 12.8), round(m[2] / 10), m[0]) for m in ms)
             nt = SKINS[skin].get('night') if name == 'n' else None
             o += '<div class=z><img src=%s%s.svg>%s%s</div>' % (base, key, '<img class=pd src=%s%s%s.svg>' % (base, key, nt) if nt else '', mk)
         return o
