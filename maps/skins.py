@@ -61,6 +61,12 @@ ZOOM = '''
 '''
 NARROW = '@container (max-width:560px){.hv{aspect-ratio:auto;height:calc(100cqi/1.28)}.mb{left:0;top:0;width:100%;translate:none}.hl{position:static;width:auto;padding:.6em}{SK}}'
 
+# HTML shop markers; skins with baked=True draw them into the maps instead (bake.py).
+MARKER_CSS = '''.z i{position:absolute;z-index:2;left:calc(var(--x)*1%);top:calc(var(--y)*1%);translate:-50% -50%;font:normal 1.55em/1 sans-serif;color:#0000;text-shadow:0 0 0 #f1cd84;opacity:var(--o);--g:drop-shadow(0 0 .06em #1a1a1a) drop-shadow(0 0 .06em #1a1a1a) drop-shadow(0 .08em .1em #0008);filter:var(--g)}
+'''
+SEASON_CSS = '''.hm:has(#q1:checked) .w,.hm:has(#q2:checked) .n{filter:grayscale(1) brightness(.75) var(--g)}
+'''
+
 # Star Rail floor capsule: one grey pill low on the left, upper floor on top,
 # the current floor a white oval with a cyan pointer.
 HSR_FS = '''
@@ -434,12 +440,13 @@ SKINS['sage'] = dict(
 #     or wheel; drag the map to pan. Both run on scroll-driven animations;
 #     browsers without them get plain drag-to-scroll and no zoom.
 #     Polar night swaps the Norilsk maps for the navy n1a/n2a and darkens
-#     the frame.
+#     the frame. Shop markers are drawn into the maps in k/ (bake.py).
 SKINS['kremlin'] = dict(
     zoom=False,
     strip=True,
     night='a',
-    base_sub=[('--zm:1;--zi:0;', ''), ('aspect-ratio:16/9', 'aspect-ratio:3/2'), ('overflow:auto;scrollbar-width:none;animation:k1 .6s}', 'overflow:hidden}'),
+    baked=True,
+    base_sub=[('--zm:1;--zi:0;', ''), ('aspect-ratio:16/9', 'aspect-ratio:3/2'), (MARKER_CSS, ''), (SEASON_CSS, ''), ('overflow:auto;scrollbar-width:none;animation:k1 .6s}', 'overflow:hidden}'),
               ('.mb::-webkit-scrollbar{display:none}\n', ''), ('.mi:after{content:"";position:absolute;left:50%;top:50%;width:1px;height:1px;scroll-snap-align:center}\n', ''), ('width:72%;aspect-ratio:1.28;', 'width:77%;height:100%;'), ('width:25.5%', 'width:20%'), ('padding:.5em 1.1em;', 'padding:.5em .9em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'),
               ('width:calc(var(--zm)*100%)', 'width:var(--w0);top:calc(var(--vh)/2 - var(--w0)/2.56)')],
     css=HSR_FS + '''
