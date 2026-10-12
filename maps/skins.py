@@ -500,6 +500,148 @@ SKINS['candy'] = dict(
 ''',
     narrow='.mb{left:3%;top:3%;width:94%}.zc{left:auto;right:6%;translate:none}')
 
+# 20. Gzhel: white porcelain and cobalt, controls framed with the double rim
+#     of a painted plate.
+SKINS['gzhel'] = dict(
+    css='''
+.hw{background:#f6f8fc;color:#173a7a;font-family:Pretendard,sans-serif}
+.mb{background:#eef2f8}
+.hd{position:absolute;left:2.5%;top:3.5%;z-index:4;padding:.55em 1.1em;background:#1f4fa3;box-shadow:inset 0 0 0 .2em #1f4fa3,inset 0 0 0 .28em #fff;color:#fff;font-size:1.1em;font-weight:700}
+.tr,.fs p,.zc{background:#fff;box-shadow:0 0 0 1px #1f4fa3,0 0 0 3px #fff,0 0 0 4px #1f4fa355}
+.tr{position:absolute;left:2.5%;top:calc(3.5% + 3.7em);z-index:4;display:flex;align-items:center;gap:.45em;padding:.3em .9em;font-weight:700}
+.tr i{width:.7em;height:.7em;border:.15em solid #1f4fa3;border-radius:50%;background:#c9d6ec}
+.fs{position:absolute;left:2.5%;bottom:5%;z-index:4;width:20em;height:2.3em}
+.fs p{inset:auto auto 0 0;display:flex;gap:.15em;padding:.15em}
+.fs label{padding:.3em .9em;font-size:.85em;font-weight:700;color:#5d7fbf}
+.fs :checked+label{background:#1f4fa3;color:#fff}
+.zc{position:absolute;left:70%;bottom:5%;translate:-100%;z-index:4;display:flex;align-items:center;gap:.4em;padding:.3em .4em}
+.zm,.zp{width:1.5em;height:1.5em;color:#c9d6ec}
+.zm label,.zp label{border-radius:50%;background:#1f4fa3;color:#fff}
+.zc b{width:5em;height:1em;align-items:center;background:linear-gradient(#1f4fa3 0 0) 50%/100% 1px no-repeat}
+.zc b label{width:.4em;height:.4em;border-radius:50%;background:#fff;box-shadow:inset 0 0 0 1px #1f4fa3}
+.zc b:after{top:50%;left:calc(var(--zi)/3*(100% - .7em));width:.7em;height:.7em;margin-top:-.35em;border-radius:50%;background:#1f4fa3;box-shadow:0 0 0 .15em #fff,0 0 0 .22em #1f4fa3}
+''',
+    narrow='.zc{left:auto;right:3%;translate:none}')
+
+# 21. Mono: charcoal walkways on pale grey, black controls and a single
+#     signal-orange accent, like a hardware display.
+SKINS['mono'] = dict(
+    css='''
+.hw{background:#f7f7f7;color:#111;font-family:Pretendard,sans-serif}
+.mb{background:#efefef}
+.hd,.tr,.fs p,.zc{background:#111;color:#fff;border-radius:.25em}
+.hd{position:absolute;left:2.5%;top:3.5%;z-index:4;display:flex;align-items:center;gap:.6em;padding:.5em .9em;font-size:1.05em;font-weight:700}
+.hd:before{content:"";width:.5em;height:.5em;border-radius:50%;background:#ff5a1f}
+.tr{position:absolute;right:30.5%;top:3.5%;z-index:4;display:flex;align-items:center;gap:.5em;padding:.4em .8em;font:700 .9em ui-monospace,monospace}
+.tr i{width:.55em;height:.55em;background:#ff5a1f}
+.fs{position:absolute;left:2.5%;bottom:5%;z-index:4;width:4.6em;height:9em}
+.fs p{top:auto;display:flex;flex-direction:column;gap:.15em;padding:.2em}
+.fs label{padding:.4em 0;border-radius:.15em;font-size:.85em;font-weight:700;text-align:center;color:#8a8a8a}
+.fs :checked+label{background:#fff;color:#111}
+.zc{position:absolute;left:70%;bottom:5%;translate:-100%;z-index:4;display:flex;align-items:center;gap:.5em;padding:.25em .3em}
+.zm,.zp{width:1.5em;height:1.5em;color:#444}
+.zm label,.zp label{border-radius:.15em;background:#ff5a1f;color:#fff}
+.zc b{width:5em;height:1em;align-items:center}
+.zc b label{width:2px;height:.6em;background:#555}
+.zc b:after{top:0;left:calc(var(--zi)/3*(100% - 3px));width:3px;height:1em;background:#ff5a1f}
+''',
+    narrow='.tr{right:3%}.zc{left:auto;right:3%;translate:none}')
+
+# 22. White-night lilac: the map mounted on a white mat like a print,
+#     hairline captions and underlined floor tabs, deep ink accents.
+SKINS['neva'] = dict(
+    css='''
+.hw{background:linear-gradient(#f3f1f8,#e9e6f2);color:#2b2f6b;font-family:Pretendard,sans-serif}
+.mb{left:2%;top:50%;width:68%;translate:0 -50%;background:#eceaf3;box-shadow:0 0 0 .5em #fff,0 1em 2em -1em #2b2f6b40}
+.hd,.tr,.fs p,.zc{background:#fffe}
+.hd{position:absolute;left:4.5%;top:7%;z-index:4;padding:.6em 1em;border-top:2px solid #2b2f6b;font-size:1.1em;font-weight:700}
+.hd:before{content:"ПУТЕШЕСТВИЕ";display:block;margin-bottom:.2em;font-size:.55em;font-weight:500;letter-spacing:.25em;opacity:.6}
+.tr{position:absolute;left:4.5%;top:calc(7% + 5.2em);z-index:4;display:flex;align-items:center;gap:.5em;padding:.25em .8em;font-size:.9em;font-weight:700}
+.tr i{width:.55em;height:.55em;rotate:45deg;border:1px solid #2b2f6b}
+.fs{position:absolute;left:4.5%;bottom:8%;z-index:4;width:20em;height:2.3em}
+.fs p{inset:auto auto 0 0;display:flex;gap:.2em;padding:.25em .4em}
+.fs label{padding:.25em .6em;border-bottom:2px solid #0000;font-size:.85em;font-weight:600;color:#9a97bb}
+.fs :checked+label{border-color:#2b2f6b;color:#2b2f6b}
+.zc{position:absolute;left:68%;bottom:8%;translate:-100%;z-index:4;display:flex;align-items:center;gap:.4em;padding:.3em .4em}
+.zm,.zp{width:1.5em;height:1.5em;color:#cfcbe2}
+.zm label,.zp label{border:1px solid #2b2f6b;border-radius:50%;color:#2b2f6b}
+.zc b{width:5em;height:1em;align-items:center;background:linear-gradient(#2b2f6b55 0 0) 50%/100% 1px no-repeat}
+.zc b label{width:1px;height:.5em;background:#2b2f6b}
+.zc b:after{top:50%;left:calc(var(--zi)/3*(100% - .7em));width:.7em;height:.7em;margin-top:-.35em;border-radius:50%;background:#2b2f6b}
+''',
+    narrow='.mb{left:3%;top:3%;width:94%;translate:none}.zc{left:auto;right:6%;translate:none}')
+
+# 23. Midnight: navy map with silver hairline walkways, dark glass controls,
+#     floors stacked low on the left and the zoom centred under the map.
+SKINS['midnight'] = dict(
+    css='''
+.hw{background:#0b111c;color:#e9eef6;font-family:Pretendard,sans-serif}
+.mb{background:#0f1724}
+.hd,.tr,.fs p,.zc{background:#0b111ce6;border:1px solid #b9c6da55;border-radius:.3em}
+.hd{position:absolute;left:2.5%;top:3.5%;z-index:4;padding:.5em 1em;font-size:1.1em;font-weight:600;letter-spacing:.03em}
+.hd:before{content:"✧ ";color:#b9c6da}
+.tr{position:absolute;left:2.5%;top:calc(3.5% + 3.4em);z-index:4;display:flex;align-items:center;gap:.5em;padding:.3em .8em;font-weight:600;color:#b9c6da}
+.tr i{width:.5em;height:.5em;rotate:45deg;border:1px solid #e9eef6}
+.fs{position:absolute;left:2.5%;bottom:5%;z-index:4;width:4.6em;height:9em}
+.fs p{top:auto;display:flex;flex-direction:column;gap:.15em;padding:.2em}
+.fs label{padding:.4em 0;border-radius:.2em;font-size:.85em;font-weight:600;text-align:center;color:#7f91b0}
+.fs :checked+label{background:#e9eef6;color:#0b111c}
+.zc{position:absolute;left:36%;bottom:5%;translate:-50%;z-index:4;display:flex;align-items:center;gap:.5em;padding:.25em .35em}
+.zm,.zp{width:1.5em;height:1.5em;color:#33415c}
+.zm label,.zp label{border:1px solid #b9c6da;border-radius:.2em;color:#e9eef6}
+.zc b{width:6em;height:1em;align-items:center;background:linear-gradient(#b9c6da55 0 0) 50%/100% 1px no-repeat}
+.zc b label{width:.3em;height:.3em;border-radius:50%;background:#7f91b0}
+.zc b:after{top:50%;left:calc(var(--zi)/3*(100% - .6em));width:.6em;height:.6em;margin-top:-.3em;border-radius:50%;background:#e9eef6;box-shadow:0 0 .5em #b9c6da}
+''',
+    narrow='.zc{left:50%}')
+
+# 24. Bolshoi: deep wine like a theatre hall, blush walkways, a programme-
+#     style title between double rules.
+SKINS['bolshoi'] = dict(
+    css='''
+.hw{background:#170c10;color:#f3e4e7;font-family:Pretendard,sans-serif}
+.mb{background:#1f1116}
+.hd,.tr,.fs p,.zc{background:#170c10e6}
+.hd{position:absolute;left:2.5%;top:3.5%;z-index:4;padding:.45em 1em;border-block:3px double #e7a9b6;font-size:1.1em;font-weight:700;letter-spacing:.04em}
+.tr,.fs p,.zc{border:1px solid #e7a9b666}
+.tr{position:absolute;left:2.5%;top:calc(3.5% + 3.4em);z-index:4;display:flex;align-items:center;gap:.5em;padding:.3em .8em;font-weight:700;color:#e7a9b6}
+.tr i{width:.55em;height:.55em;rotate:45deg;background:#e7a9b6}
+.fs{position:absolute;left:2.5%;bottom:5%;z-index:4;width:20em;height:2.3em}
+.fs p{inset:auto auto 0 0;display:flex;gap:.15em;padding:.15em}
+.fs label{padding:.3em .9em;font-size:.85em;font-weight:700;color:#b98a95}
+.fs :checked+label{background:#e7a9b6;color:#170c10}
+.zc{position:absolute;left:70%;bottom:5%;translate:-100%;z-index:4;display:flex;align-items:center;gap:.4em;padding:.3em .4em}
+.zm,.zp{width:1.5em;height:1.5em;color:#4a2a35}
+.zm label,.zp label{background:#e7a9b6;color:#170c10}
+.zc b{width:5em;height:1em;align-items:center;background:linear-gradient(#e7a9b666 0 0) 50%/100% 1px no-repeat}
+.zc b label{width:.35em;height:.35em;rotate:45deg;background:#4a2a35}
+.zc b:after{top:50%;left:calc(var(--zi)/3*(100% - .6em));width:.6em;height:.6em;margin-top:-.3em;rotate:45deg;background:#e7a9b6}
+''',
+    narrow='.zc{left:auto;right:3%;translate:none}')
+
+# 25. Hermitage: palace mint and white, deep green accents, soft white cards
+#     with the zoom low on the left and floors low on the right.
+SKINS['hermitage'] = dict(
+    css='''
+.hw{background:#f4f8f7;color:#163f39;font-family:Pretendard,sans-serif}
+.mb{left:1.5%;top:50%;width:69%;translate:0 -50%;border-radius:.4em;background:#e6efec;box-shadow:0 0 0 1px #1f6b5f33}
+.hd,.tr,.fs p,.zc{background:#fff;border-radius:.3em;box-shadow:0 .15em .6em #1f6b5f1f}
+.hd{position:absolute;left:3.5%;top:6%;z-index:4;padding:.5em 1em .5em .8em;border-left:.3em solid #1f6b5f;font-size:1.1em;font-weight:700}
+.tr{position:absolute;left:3.5%;top:calc(6% + 3.4em);z-index:4;display:flex;align-items:center;gap:.5em;padding:.3em .8em;font-weight:700;color:#1f6b5f}
+.tr i{width:.65em;height:.65em;border:.15em solid #1f6b5f;border-radius:50%}
+.fs{position:absolute;right:33%;bottom:7%;z-index:4;width:4.6em;height:9em}
+.fs p{top:auto;display:flex;flex-direction:column;gap:.15em;padding:.25em}
+.fs label{padding:.4em 0;border-radius:.2em;font-size:.85em;font-weight:700;text-align:center;color:#7fa69b}
+.fs :checked+label{background:#1f6b5f;color:#fff}
+.zc{position:absolute;left:3.5%;bottom:7%;z-index:4;display:flex;align-items:center;gap:.4em;padding:.3em .4em}
+.zm,.zp{width:1.5em;height:1.5em;color:#cfe3dc}
+.zm label,.zp label{border-radius:.25em;background:#1f6b5f;color:#fff}
+.zc b{width:5em;height:1em;align-items:center;background:linear-gradient(#cfe3dc 0 0) 50%/100% .25em no-repeat}
+.zc b label{width:.3em;height:.3em;border-radius:50%;background:#9cc5b8}
+.zc b:after{top:50%;left:calc(var(--zi)/3*(100% - .7em));width:.7em;height:.7em;margin-top:-.35em;border-radius:50%;background:#1f6b5f;box-shadow:0 0 0 .15em #fff}
+''',
+    narrow='.mb{left:3%;top:3%;width:94%;translate:none}.fs{right:6%}')
+
 def markup(skin, base):
     def floors(name, layers):
         o = ''
