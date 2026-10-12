@@ -432,9 +432,12 @@ SKINS['sage'] = dict(
 #     title and treasure pill. Zoom with a strip slid up and down by finger
 #     or wheel; drag the map to pan. Both run on scroll-driven animations;
 #     browsers without them get plain drag-to-scroll and no zoom.
+#     Polar night swaps the Norilsk maps for the navy n1a/n2a and darkens
+#     the frame.
 SKINS['kremlin'] = dict(
     zoom=False,
     strip=True,
+    night='a',
     base_sub=[('aspect-ratio:16/9', 'aspect-ratio:3/2'), ('overflow:auto;scrollbar-width:none;animation:k1 .6s}', 'overflow:hidden}'),
               ('.mb::-webkit-scrollbar{display:none}\n', ''), ('.mi:after{content:"";position:absolute;left:50%;top:50%;width:1px;height:1px;scroll-snap-align:center}\n', ''), ('width:72%;aspect-ratio:1.28;', 'width:77%;height:100%;'), ('width:25.5%', 'width:20%'), ('padding:.5em 1.1em;', 'padding:.5em .9em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'),
               ('width:calc(var(--zm)*100%)', 'width:var(--w0);top:calc(var(--vh)/2 - var(--w0)/2.56)')],
@@ -467,6 +470,9 @@ SKINS['kremlin'] = dict(
 @keyframes tx{from{translate:max(0px,calc(var(--v)/2 - 50%))}to{translate:min(calc(var(--v) - 100%),calc(var(--v)/2 - 50%))}}
 @keyframes ty{from{transform:translateY(max(0px,calc(var(--vh)/2 - 50%)))}to{transform:translateY(min(calc(var(--vh) - 100%),calc(var(--vh)/2 - 50%)))}}
 @keyframes zk{to{top:2.1em}}
+.hm:not(:has(#q1:checked)) .pd,.hm:has(#q1:checked) .mn img:not(.pd){display:none}
+.hm:has(#q1:checked) .hw{--F:#161c2e;--V:#0c1222;background:#0f1424}
+.hm:has(#q1:checked) :is(.hd,.zc){filter:invert(1) hue-rotate(180deg)}
 ''',
     narrow='.hw{--v:100cqi;--vh:78.13cqi;--w0:100cqi}.zc{right:3%;width:34px;height:130px}')
 
