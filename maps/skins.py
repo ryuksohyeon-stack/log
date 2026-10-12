@@ -469,13 +469,13 @@ SKINS['soft'] = dict(
 .zc b{flex-direction:column-reverse;align-items:center;height:4.4em}
 .zc b label{width:.35em;height:.35em;border-radius:50%;background:#cfd4dc}
 .zc b:after{left:50%;bottom:calc(var(--zi)/3*(100% - .7em));width:.7em;height:.7em;margin-left:-.35em;border-radius:50%;background:#9a8cd8}
-.hl{left:5%;right:5%;bottom:5%;display:flex;flex-wrap:wrap;align-items:center;gap:.5em;padding:.7em 1em;border-radius:1.2em}
+.hl{position:relative;margin:-1.4em 5% 1.4em;display:flex;flex-wrap:wrap;align-items:center;gap:.5em;padding:.7em 1em;border-radius:1.2em}
 .hl>b{display:none}
 .hl p{font-size:.68em;font-weight:700;letter-spacing:.08em;color:#9a8cd8}
 .hl label{padding:.55em 1em;border-radius:.8em;font-weight:600;color:#5b6377}
 .hl :checked+label{box-shadow:inset .2em .2em .5em #c5cad3,inset -.2em -.2em .5em #fff;color:#7a6cc4}
 ''' + ZOOMBTN,
-    narrow='.mb{left:3%;top:3%;width:94%}.hl{position:static;margin:.6em .8em 1em}')
+    narrow='.mb{left:3%;top:3%;width:94%}.hl{position:relative;margin:-1em .8em 1em}')
 
 # 14. White-night sunset: the place name large in a left column with the
 #     list under it, map on the right, peach-to-lilac accent on plum.
