@@ -4,8 +4,9 @@ Russia concept.
 
 python3 skins.py <skin> <image-base> <out.html>
   The widgets in use are ../star-rail-map.html (kremlin) and
-  ../star-rail-map-mono.html (mono), built with image-base
-  https://cdn.jsdelivr.net/gh/ryuksohyeon-stack/log@<sha>/maps/<skin>/
+  ../star-rail-map-mono.html (mono). The kremlin one loads the copies in
+  ../k/ (short links): https://cdn.jsdelivr.net/gh/ryuksohyeon-stack/log@<7-char sha>/k/
+  The mono one uses https://cdn.jsdelivr.net/gh/ryuksohyeon-stack/log@<sha>/maps/mono/
   Banner pins are markers with class "p" ("p x" once exchanged); the treasure
   counter shows exchanged / all pins on the floor being shown.
   skin: journal | transit | hud
@@ -438,7 +439,7 @@ SKINS['kremlin'] = dict(
     zoom=False,
     strip=True,
     night='a',
-    base_sub=[('aspect-ratio:16/9', 'aspect-ratio:3/2'), ('overflow:auto;scrollbar-width:none;animation:k1 .6s}', 'overflow:hidden}'),
+    base_sub=[('--zm:1;--zi:0;', ''), ('aspect-ratio:16/9', 'aspect-ratio:3/2'), ('overflow:auto;scrollbar-width:none;animation:k1 .6s}', 'overflow:hidden}'),
               ('.mb::-webkit-scrollbar{display:none}\n', ''), ('.mi:after{content:"";position:absolute;left:50%;top:50%;width:1px;height:1px;scroll-snap-align:center}\n', ''), ('width:72%;aspect-ratio:1.28;', 'width:77%;height:100%;'), ('width:25.5%', 'width:20%'), ('padding:.5em 1.1em;', 'padding:.5em .9em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'),
               ('width:calc(var(--zm)*100%)', 'width:var(--w0);top:calc(var(--vh)/2 - var(--w0)/2.56)')],
     css=HSR_FS + '''
@@ -461,10 +462,11 @@ SKINS['kremlin'] = dict(
 .pn:after{content:"";position:absolute;left:100%;top:100%;width:1px;height:1px;scroll-snap-align:center}
 .mi{top:0;pointer-events:none;animation:zw linear both,tx linear both,ty linear both;animation-timeline:--zt,--tx,--ty}
 .z{pointer-events:none!important}
-.zc{display:block;position:absolute;right:1.5%;bottom:4%;z-index:4;width:2.2em;height:9em;border:1px solid #8c1724;background:linear-gradient(#8c1724 0 0) 50% .6em/.7em .14em,linear-gradient(#8c1724 0 0) 50% .32em/.14em .7em,linear-gradient(#8c1724 0 0) 50% calc(100% - .6em)/.7em .14em,linear-gradient(#d9b3b7 0 0) 50%/1px calc(100% - 3.6em) #fff;background-repeat:no-repeat}
+.zc{display:flex;flex-direction:column;justify-content:space-between;align-items:center;position:absolute;right:1.5%;bottom:4%;z-index:4;width:2.2em;height:9em;border:1px solid #8c1724;background:linear-gradient(#d9b3b7 0 0) 50%/1px 60% no-repeat #fff;color:#8c1724;font-weight:700}
+.zc:before{content:"+"}.zc:after{content:"−"}
 .zg{touch-action:pan-y;scroll-timeline:--zt y}
 .zg i{display:block;height:400%}
-.zc:after{content:"";position:absolute;left:50%;top:calc(100% - 2.1em);width:.6em;height:.6em;margin:-.3em;rotate:45deg;background:#8c1724;pointer-events:none;animation:zk linear both;animation-timeline:--zt}
+.zc u{position:absolute;left:50%;top:calc(100% - 2.1em);width:.6em;height:.6em;margin:-.3em;rotate:45deg;background:#8c1724;pointer-events:none;animation:zk linear both;animation-timeline:--zt}
 }
 @keyframes zw{to{width:calc(var(--w0)*3)}}
 @keyframes tx{from{translate:max(0px,calc(var(--v)/2 - 50%))}to{translate:min(calc(var(--v) - 100%),calc(var(--v)/2 - 50%))}}
@@ -697,7 +699,7 @@ def markup(skin, base):
     zl = lambda ks, t: ''.join('<label for=z%d>%s</label>' % (k, t) for k in ks)
     zoom = SKINS[skin].get('zoom', True)
     return ('<div class=hw>' + (''.join('<input type=radio name=zz id=z%d%s>' % (k, ' checked' if k == 1 else '') for k in range(1, 5)) if zoom else '') +
-        '<div class=hv>' + ('<div class=zc><b class=zg><i></i></b></div><div class=mb><b class=pn></b>' if SKINS[skin].get('strip') else '<div class=mb>') + '<div class=mi>'
+        '<div class=hv>' + ('<div class=zc><b class=zg><i></i></b><u></u></div><div class=mb><b class=pn></b>' if SKINS[skin].get('strip') else '<div class=mb>') + '<div class=mi>'
         '<div class=mn>' + floors('n', [('n1', 'n1'), ('n2', 'n2')]) + '</div>'
         '<div class=mm>' + floors('m', [('m1', 'm1'), ('m2', 'm2')]) + '</div>'
         '<div class=ms>' + floors('s', [('s1', 's1'), ('s2', 's2'), ('s3', 's3')]) + '</div>'
