@@ -24,11 +24,11 @@ BASE = '''
 .hm:has(#q2:checked) .hw{--nm:"노릴스크 · 백야"}
 .hm:has(#q3:checked) .hw{--nm:"모스크바의 거리"}
 .hm:has(#q4:checked) .hw{--nm:"소중한 이들과 만남"}
-.hw:has(#z2:checked){--zm:1.5;--zi:1}.hw:has(#z3:checked){--zm:2;--zi:2}.hw:has(#z4:checked){--zm:3;--zi:3}
 .hv{position:relative;aspect-ratio:16/9}
-.mb{position:absolute;left:0;top:0;width:72%;aspect-ratio:1.28;overflow:auto;scrollbar-width:none;scroll-snap-type:both proximity}
+.mb{position:absolute;left:0;top:0;width:72%;aspect-ratio:1.28;overflow:auto;scrollbar-width:none;animation:k1 .6s}
+@keyframes k1{from,to{scroll-snap-type:both mandatory}}
 .mb::-webkit-scrollbar{display:none}
-.mi{position:relative;width:calc(var(--zm)*100%);aspect-ratio:1.28;transition:width .35s}
+.mi{position:relative;width:calc(var(--zm)*100%);aspect-ratio:1.28}
 .mi:after{content:"";position:absolute;left:50%;top:50%;width:1px;height:1px;scroll-snap-align:center}
 .mi>div,.fs p{position:absolute;inset:0;visibility:hidden}
 .hm:has(#q1:checked,#q2:checked) :is(.mn,.fn),.hm:has(#q3:checked) :is(.mm,.fm),.hm:has(#q4:checked) :is(.ms,.fx){visibility:visible;--c:pt;--e:pt px}
@@ -40,10 +40,6 @@ BASE = '''
 .p{counter-increment:var(--a)}.p.x{counter-increment:var(--b)}
 .hd:after{content:var(--nm)}
 .tr b:after{content:counter(px) " / " counter(pt)}
-.zm,.zp{display:grid;place-items:center;font-weight:700}.zm:before{content:"−"}.zp:before{content:"+"}.zm:before,.zp:before,.zm label,.zp label{grid-area:1/1}.zm label,.zp label{display:none;place-items:center;width:100%;height:100%}
-.hw:has(#z2:checked) .zm [for=z1],.hw:has(#z3:checked) .zm [for=z2],.hw:has(#z4:checked) .zm [for=z3],.hw:has(#z1:checked) .zp [for=z2],.hw:has(#z2:checked) .zp [for=z3],.hw:has(#z3:checked) .zp [for=z4]{display:grid}
-.zc b{position:relative;display:flex;justify-content:space-between}
-.zc b:after{content:"";position:absolute;pointer-events:none;transition:.35s}
 .hl{position:absolute;top:4%;right:1.5%;width:25.5%;z-index:5}
 .hl>b{display:block;margin-bottom:.9em;padding:.5em 1.1em;border-radius:2em;background:#3a3a3a;color:#eee;font-weight:500}
 .hl p{padding:.3em .8em;background:#c4c4c4;color:#555;font-size:.85em}
@@ -51,6 +47,16 @@ BASE = '''
 .hl label:before{content:"✦ ";font-size:.7em}
 .hl :checked+label{background:#1d1d1d;color:#fff}
 .hl :checked+label:after{content:"▼";float:right;color:#36d2e6;font-size:.75em}
+'''
+# Zoom buttons: four steps; each step restarts the short centring snap.
+ZOOM = '''
+.hw:has(#z2:checked){--zm:1.5;--zi:1}.hw:has(#z3:checked){--zm:2;--zi:2}.hw:has(#z4:checked){--zm:3;--zi:3}
+.hw:has(#z2:checked) .mb{animation-name:k2}.hw:has(#z3:checked) .mb{animation-name:k3}.hw:has(#z4:checked) .mb{animation-name:k4}
+@keyframes k2{from,to{scroll-snap-type:both mandatory}}@keyframes k3{from,to{scroll-snap-type:both mandatory}}@keyframes k4{from,to{scroll-snap-type:both mandatory}}
+.zm,.zp{display:grid;place-items:center;font-weight:700}.zm:before{content:"−"}.zp:before{content:"+"}.zm:before,.zp:before,.zm label,.zp label{grid-area:1/1}.zm label,.zp label{display:none;place-items:center;width:100%;height:100%}
+.hw:has(#z2:checked) .zm [for=z1],.hw:has(#z3:checked) .zm [for=z2],.hw:has(#z4:checked) .zm [for=z3],.hw:has(#z1:checked) .zp [for=z2],.hw:has(#z2:checked) .zp [for=z3],.hw:has(#z3:checked) .zp [for=z4]{display:grid}
+.zc b{position:relative;display:flex;justify-content:space-between}
+.zc b:after{content:"";position:absolute;pointer-events:none;transition:.35s}
 '''
 NARROW = '@container (max-width:560px){.hv{aspect-ratio:auto;height:calc(100cqi/1.28)}.mb{left:0;top:0;width:100%;translate:none}.hl{position:static;width:auto;padding:.6em}{SK}}'
 
@@ -425,8 +431,9 @@ SKINS['sage'] = dict(
 #     3:2 frame (the map fills it and pans sideways), Star Rail navigation
 #     title and treasure pill, zoom under the place list.
 SKINS['kremlin'] = dict(
+    zoom=False,
     base_sub=[('aspect-ratio:16/9', 'aspect-ratio:3/2'), ('width:72%;aspect-ratio:1.28;', 'width:72%;height:100%;'),
-              ('width:calc(var(--zm)*100%);aspect-ratio', 'width:calc(var(--zm)*85.33cqi);aspect-ratio')],
+              ('width:calc(var(--zm)*100%)', 'width:85.33cqi')],
     css=HSR_FS + '''
 .hw{background:#efe5e5;color:#2a1416;font-family:Pretendard,sans-serif}
 .mb{background:#dcc7c8}
@@ -435,14 +442,8 @@ SKINS['kremlin'] = dict(
 .tr{position:absolute;left:2.5%;top:calc(3.5% + 3.3em);z-index:4;display:flex;align-items:center;gap:.6em;padding:.35em .8em .35em 1em;border-radius:2em;background:#2b2b2bd9;color:#eee}
 .tr i{width:1.4em;height:1.1em;border-radius:.4em .4em .1em .1em;background:linear-gradient(90deg,#0000 40%,#fbe3a0 0 60%,#0000 0) 0 40%/100% 30% no-repeat,linear-gradient(#0000 42%,#6b3f14 0 54%,#0000 0),#e3b04f}
 .tr:after{content:"▾";margin-left:1.6em}
-.zc{position:absolute;right:1.5%;bottom:4%;z-index:4;display:flex;align-items:center;gap:.4em;padding:.3em .4em;background:#fff;border:1px solid #8c1724}
-.zm,.zp{width:1.5em;height:1.5em;color:#d9b3b7}
-.zm label,.zp label{background:#8c1724;color:#fff}
-.zc b{width:5em;height:1em;align-items:center;background:linear-gradient(#8c1724 0 0) 50%/100% 1px no-repeat}
-.zc b label{width:.35em;height:.35em;background:#d9b3b7}
-.zc b:after{top:.2em;left:calc(var(--zi)*(100% - .6em)/3);width:.6em;height:.6em;rotate:45deg;background:#8c1724}
 ''',
-    narrow='.mi{width:calc(var(--zm)*100%)}.zc{right:3%}')
+    narrow='.mi{width:100%}')
 
 # 17. Taiga: deep forest map with pale birch walkways, floors up in the
 #     map's corner, zoom low on the left, leaf-shaped accents.
@@ -662,7 +663,8 @@ def markup(skin, base):
     def fsel(cls, name, items):
         return '<p class=%s>%s</p>' % (cls, ''.join('<input type=radio name=%s id=%s%s><label for=%s>%s</label>' % (name, i, ' checked' if k == 0 else '', i, lab) for k, (i, lab) in enumerate(items)))
     zl = lambda ks, t: ''.join('<label for=z%d>%s</label>' % (k, t) for k in ks)
-    return ('<div class=hw>' + ''.join('<input type=radio name=zz id=z%d%s>' % (k, ' checked' if k == 1 else '') for k in range(1, 5)) +
+    zoom = SKINS[skin].get('zoom', True)
+    return ('<div class=hw>' + (''.join('<input type=radio name=zz id=z%d%s>' % (k, ' checked' if k == 1 else '') for k in range(1, 5)) if zoom else '') +
         '<div class=hv><div class=mb><div class=mi>'
         '<div class=mn>' + floors('n', [('n1', 'n1'), ('n2', 'n2')]) + '</div>'
         '<div class=mm>' + floors('m', [('m1', 'm1'), ('m2', 'm2')]) + '</div>'
@@ -670,7 +672,7 @@ def markup(skin, base):
         '</div></div><h4 class=hd></h4><div class=tr>' + SKINS[skin].get('deco', '') + '<i></i><b></b></div>'
         '<div class=fs>' + fsel('fn', 'n', [('n1', '1'), ('n2', 'B1')]) + fsel('fm', 'm', [('m1', '1'), ('m2', 'B1')]) +
         fsel('fx', 's', [('s1', '센가물'), ('s2', '현대물'), ('s3', '바다')]) + '</div>'
-        '<div class=zc><span class=zm>' + zl((1, 2, 3), '−') + '</span><b>' + zl((1, 2, 3, 4), '') + '</b><span class=zp>' + zl((2, 3, 4), '+') + '</span></div></div>'
+        + ('<div class=zc><span class=zm>' + zl((1, 2, 3), '−') + '</span><b>' + zl((1, 2, 3, 4), '') + '</b><span class=zp>' + zl((2, 3, 4), '+') + '</span></div>' if zoom else '') + '</div>'
         '<div class=hl><b>✦ Карта звёздного пути ›</b><p>◈ 러시아</p>'
         '<input type=radio name=q id=q1 checked><label for=q1>노릴스크의 극야</label>'
         '<input type=radio name=q id=q2><label for=q2>노릴스크의 백야</label>'
@@ -682,7 +684,7 @@ def build(skin, base):
     for a, b in SKINS[skin].get('base_sub', ()):
         assert bcss.count(a) == 1, a
         bcss = bcss.replace(a, b)
-    css = (bcss + SKINS[skin]['css']).replace('\n', '') + NARROW.replace('{SK}', SKINS[skin]['narrow'])
+    css = (bcss + (ZOOM if SKINS[skin].get('zoom', True) else '') + SKINS[skin]['css']).replace('\n', '') + NARROW.replace('{SK}', SKINS[skin]['narrow'])
     return '<div class=hm><style>' + css + '</style>' + markup(skin, base) + '</div>'
 
 if __name__ == '__main__':
