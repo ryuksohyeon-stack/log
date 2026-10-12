@@ -23,15 +23,29 @@ PALETTES = {
     'hud': dict(f='#d2dce5', fs='#dae3eb', fr='#c8d3dd', v='#b8d1e5', vw='#a7c4dc', b='#f5f9fc', b2='#e5ecf2', rim='#ffffff',
                 r='#cdd9e3', rk='#dbe4ec', rks='#c9d5df', w='#45576c', w2='#8397ac', curb='#596c82', t='#5b6e83',
                 s='#a8bbcc', d='#2fb4d8', o='#f5f9fc', os='#b3c4d3', blur=.5, shadow='#3a5a7a30'),
+    # clean drafts: light map-app, white-night glass, dark minimal, line art
+    'clean': dict(f='#e2e6eb', fs='#e8ebef', fr='#d9dee4', v='#c6ddf0', vw='#b5d1e8', b='#d8dde4', b2='#ced4dc', rim='#e4e8ed',
+                r='#c8cfd8', rk='#d2d8df', rks='#c2c9d2', w='#ffffff', ws='#c3cad3', wsw=3, w2='#eef1f5', curb='#ffffff', t='#e7ebf0',
+                s='#cfd5dd', d='#ef6f6c', o='#d8dde4', os='#c2c9d2', blur=.6, shadow='#4a5b7030'),
+    'dusk': dict(f='#d8d3e7', fs='#dfdbeb', fr='#cec9df', v='#bccde8', vw='#aabfe0', b='#ccc7df', b2='#c1bbd7', rim='#d8d4e8',
+                r='#bcb6d2', rk='#c6c0db', rks='#b7b1ce', w='#f8f6fc', ws='#bdb6d4', wsw=3, w2='#e6e2f1', curb='#f8f6fc', t='#e7e3f1',
+                s='#cdc7e0', d='#e98aa0', o='#ccc7df', os='#b9b3cf', blur=.6, shadow='#5a4a8a33'),
+    'nord': dict(f='#262b32', fs='#2b3139', fr='#22272d', v='#1d3247', vw='#233c55', b='#323a44', b2='#2c333c', rim='#3a434e',
+                r='#2a3139', rk='#38414b', rks='#2a3038', w='#5c6775', ws='#6c7785', wsw=2, w2='#46505c', curb='#5c6775', t='#66717f',
+                s='#7c8796', d='#f4a3b4', o='#3a434e', os='#545f6b', blur=.5, shadow=None),
+    'line': dict(f='#f1f3f6', fs='#e7eaef', fr='#e5e8ed', v='#dbe8f3', vw='#c7d9ea', b='#ffffff', b2='#f6f7f9', rim='#ffffff', bs='#9aa5b6', bsw=1.6,
+                r='#dde1e7', rk='#f0f2f5', rks='#d4d9e0', w='#e9eef4', ws='#1d2433', wsw=2.2, w2='#d9e0e9', curb='#e9eef4', t='#c9d1db',
+                s='#1d2433', d='#d94141', o='#ffffff', os='#1d2433', blur=0, shadow=None),
 }
 
 def style(p):
+    p = dict(dict(ws='none', wsw=0, bs='none', bsw=0), **p)
     return (
         '.f{fill:%(f)s;stroke:%(fs)s;stroke-width:2}.fr{fill:none;stroke:%(fr)s;stroke-width:1.5}'
         '.v{fill:%(v)s}.vw{fill:none;stroke:%(vw)s;stroke-width:2;stroke-linecap:round}'
-        '.b{fill:%(b)s}.b2{fill:%(b2)s}'
+        '.b,.b2{stroke:%(bs)s;stroke-width:%(bsw)s}.b{fill:%(b)s}.b2{fill:%(b2)s}'
         '.r,.or{fill:none;stroke:%(r)s;stroke-width:1.6}.rk{fill:%(rk)s;stroke:%(rks)s;stroke-width:1}'
-        '.w{fill:%(w)s}.w2{fill:%(w2)s}'
+        '.w{fill:%(w)s;stroke:%(ws)s;stroke-width:%(wsw)s;paint-order:stroke;stroke-linejoin:round}.w2{fill:%(w2)s;stroke:%(ws)s;stroke-width:%(wsw)s;paint-order:stroke}'
         '.t{fill:none;stroke:%(t)s;stroke-width:2}.tk{fill:%(w)s;stroke:%(t)s;stroke-width:1.2}'
         '.s{fill:none;stroke:%(s)s;stroke-dasharray:4 4}'
         '.d{fill:none;stroke:%(d)s;stroke-width:3.5;stroke-linecap:round;stroke-dasharray:0 11}'

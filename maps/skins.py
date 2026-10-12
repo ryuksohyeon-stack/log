@@ -30,8 +30,8 @@ BASE = '''
 .z{position:absolute;inset:0;--o:0;pointer-events:none}
 .hw:has(#n1:checked) .mn>:nth-child(1),.hw:has(#n2:checked) .mn>:nth-child(2),.hw:has(#m1:checked) .mm>:nth-child(1),.hw:has(#m2:checked) .mm>:nth-child(2),.hw:has(#s1:checked) .ms>:nth-child(1),.hw:has(#s2:checked) .ms>:nth-child(2),.hw:has(#s3:checked) .ms>:nth-child(3){--o:1;pointer-events:auto}
 .z img{position:absolute;z-index:var(--o);width:100%;height:100%;opacity:max(.13,var(--o));transition:opacity .4s}
-.z i{position:absolute;z-index:2;left:calc(var(--x)*1%);top:calc(var(--y)*1%);translate:-50% -50%;font-style:normal;line-height:1;opacity:var(--o)}
-.hm:has(#q1:checked) .w,.hm:has(#q2:checked) .n{filter:grayscale(1) opacity(.55)}
+.z i{position:absolute;z-index:2;left:calc(var(--x)*1%);top:calc(var(--y)*1%);translate:-50% -50%;font:normal 1.55em/1 sans-serif;color:#0000;text-shadow:0 0 0 #f1cd84;opacity:var(--o);--g:drop-shadow(0 0 .06em #1a1a1a) drop-shadow(0 0 .06em #1a1a1a) drop-shadow(0 .08em .1em #0008);filter:var(--g)}
+.hm:has(#q1:checked) .w,.hm:has(#q2:checked) .n{filter:grayscale(1) brightness(.75) var(--g)}
 .mn{--n:sn}.mm{--n:sm}.ms{--n:ss}.p{counter-increment:st var(--n)}
 .hd:after{content:var(--nm)}
 .tr b:after{content:counter(var(--k)) " / " counter(st)}
@@ -73,8 +73,6 @@ SKINS['journal'] = dict(
 .zc b{flex-direction:column-reverse;height:5.5em;align-items:center}
 .zc b label{width:.5em;height:.5em;border-radius:50%;background:#d9d4e8}
 .zc b:after{left:50%;bottom:calc(var(--zi)/3*(100% - .9em));width:.9em;height:.9em;margin-left:-.45em;border-radius:50%;background:#e07f98;box-shadow:0 0 0 .2em #f9d5df}
-.z i{width:2.1em;height:2.1em;display:grid;place-items:center;border:.14em solid #fff;border-radius:50%;background:#fff;box-shadow:0 .2em .5em #6f62a055;font-size:1.05em;rotate:-6deg}
-.z i:nth-child(odd){rotate:5deg}
 .hl{right:2%;top:5%;width:26%;padding:1em .8em;border-radius:.8em;background:repeating-linear-gradient(#fff 0 1.9em,#eceaf5 0 2em);box-shadow:0 .6em 1.6em #6f62a033}
 .hl>b{display:block;margin-bottom:.6em;font:italic 700 1.15em Georgia,serif;color:#5b5e94}
 .hl>b:after{content:"여행 일지";display:block;font:500 .6em Pretendard,sans-serif;letter-spacing:.2em;color:#9a9cc0}
@@ -111,7 +109,6 @@ SKINS['transit'] = dict(
 .zc b{width:9em;height:1em;align-items:center;background:linear-gradient(#9aa1ad 0 0) 0 30%/100% .12em no-repeat,linear-gradient(#9aa1ad 0 0) 0 70%/100% .12em no-repeat,repeating-linear-gradient(90deg,#555b66 0 .15em,#0000 0 .6em)}
 .zc b label{width:.7em;height:.7em;border-radius:50%;border:.12em solid #9aa1ad;background:#22252b}
 .zc b:after{top:50%;left:calc(var(--zi)/3*(100% - 1em));width:1em;height:1em;margin-top:-.5em;border-radius:50%;background:#d63a3a;box-shadow:0 0 0 .18em #fff}
-.z i{width:1.9em;height:1.9em;display:grid;place-items:center;border:.22em solid #d63a3a;border-radius:50%;background:#fff;font-size:1em}
 .hl{right:1.5%;top:3%;width:25.5%;padding:.7em .6em;border-radius:.5em;background:#16181d;color:#e9edf3;font-family:ui-monospace,Menlo,Consolas,monospace;box-shadow:0 .5em 1.4em #0004}
 .hl>b{display:block;margin-bottom:.5em;padding-bottom:.4em;border-bottom:1px solid #2c3038;color:#ffcc4d;letter-spacing:.08em}
 .hl p{margin:.5em 0 .25em;font-size:.72em;color:#ff6b6b;letter-spacing:.12em}
@@ -149,7 +146,6 @@ SKINS['hud'] = dict(
 .zc b{flex-direction:column-reverse;height:5.5em;width:1.4em;align-items:center;background:repeating-linear-gradient(#2fb4d855 0 1px,#0000 0 .5em)}
 .zc b label{width:1.4em;height:.3em}
 .zc b:after{left:50%;bottom:calc(var(--zi)/3*(100% - .8em));width:.8em;height:.8em;margin-left:-.4em;rotate:45deg;background:#2fb4d8;box-shadow:0 0 .6em #2fb4d8}
-.z i{width:1.9em;height:1.9em;display:grid;place-items:center;border:.12em solid #2fb4d8;border-radius:.35em;background:#0d1520e6;color:#0000;text-shadow:0 0 0 #dff4ff;font-size:1em;box-shadow:0 0 .6em #2fb4d888}
 .hl{right:1.5%;top:3%;width:25.5%;padding:.7em .6em;border:1px solid #2fb4d855;border-radius:.4em;background:#0d1520;counter-reset:li}
 .hl>b{display:block;margin-bottom:.6em;font-size:.85em;letter-spacing:.14em;color:#2fb4d8}
 .hl p{margin:.6em 0 .25em;font-size:.7em;letter-spacing:.14em;color:#6f8aa0}
@@ -159,6 +155,134 @@ SKINS['hud'] = dict(
 .hl :checked+label:before{color:#2fb4d8}
 ''',
     narrow='.hv:after{width:100%}.hw:before{left:auto;right:3%}.zc{left:auto;right:4%;translate:0 -50%}.hl{margin:.8em}')
+
+
+# 4. Clean light map: white walkways on soft grey blocks, white cards with
+#    one coral accent, segmented floor switch, map-app style zoom.
+SKINS['clean'] = dict(
+    head='МАРШРУТ · 여행지',
+    css='''
+.hw{background:#eef1f4;color:#1f2a37;font-family:Pretendard,sans-serif}
+.mb{background:#e2e6eb}
+.hd,.tr,.fs p,.zc,.hl{background:#fff;box-shadow:0 .2em .9em #1f2a3717}
+.hd{position:absolute;left:2.5%;top:3.5%;z-index:4;padding:.55em .95em;border-radius:.7em;font-size:1.1em;font-weight:700}
+.hd:before{content:var(--co);display:block;font-size:.58em;font-weight:500;color:#8a95a3}
+.tr{position:absolute;left:2.5%;top:calc(3.5% + 4.3em);z-index:4;display:flex;align-items:center;gap:.45em;padding:.35em .85em;border-radius:2em;font-size:.9em;font-weight:700}
+.tr i{width:.6em;height:.6em;border-radius:50%;background:#ef6f6c}
+.fs{position:absolute;left:2.5%;bottom:5%;z-index:4;width:20em;height:2.4em}
+.fs p{inset:auto auto 0 0;display:flex;align-items:center;gap:.15em;padding:.25em;border-radius:.7em}
+.fs p:before{content:"ЭТАЖ";padding:0 .5em;font-size:.6em;color:#8a95a3}
+.fs label{padding:.35em .75em;border-radius:.5em;font-size:.85em;font-weight:600;color:#5b6675}
+.fs :checked+label{background:#1f2a37;color:#fff}
+.zc{position:absolute;left:70%;bottom:5%;translate:-100%;z-index:4;display:flex;flex-direction:column-reverse;align-items:center;gap:.3em;padding:.3em;border-radius:.7em}
+.zm,.zp{display:grid;place-items:center;width:1.8em;height:1.8em;color:#c3cad3;font-weight:700}
+.zm:before{content:"−"}.zp:before{content:"+"}.zm:before,.zp:before{grid-area:1/1}
+.zm label,.zp label{grid-area:1/1;place-items:center;width:1.8em;height:1.8em;border-radius:.45em;color:#1f2a37;background:#f1f3f6}
+.zc b{flex-direction:column-reverse;align-items:center;height:4.6em}
+.zc b label{width:.35em;height:.35em;border-radius:50%;background:#d3d9e0}
+.zc b:after{left:50%;bottom:calc(var(--zi)/3*(100% - .7em));width:.7em;height:.7em;margin-left:-.35em;border-radius:50%;background:#ef6f6c}
+.hl{right:2%;top:3.5%;width:25%;padding:.6em;border-radius:.9em}
+.hl>b{display:block;padding:.4em .6em .5em;font-size:.72em;letter-spacing:.12em;color:#8a95a3}
+.hl p{padding:.7em .6em .3em;font-size:.72em;font-weight:700;color:#ef6f6c}
+.hl label{display:block;padding:.65em .7em;border-radius:.55em;color:#3b4654}
+.hl :checked+label{background:#1f2a37;color:#fff}
+''',
+    narrow='.zc{left:auto;right:3%;translate:none}.hl{margin:.8em}')
+
+# 5. White-night glass: the sky's pastel gradient around a framed map,
+#    frosted cards, lilac-to-rose accent on the chosen place.
+SKINS['dusk'] = dict(
+    head='БЕЛЫЕ НОЧИ · 백야 여행',
+    css='''
+.hw{background:linear-gradient(135deg,#d6e2f5,#e5ddf2 45%,#f6dde4 80%,#fae6dc);color:#2c2a4a;font-family:Pretendard,sans-serif}
+.mb{left:2%;top:50%;width:68%;translate:0 -50%;border-radius:1.1em;background:#dcd7ea;box-shadow:0 1em 2.4em #5a4a8a30}
+.hd,.tr,.fs p,.zc,.hl{background:#ffffff8c;border:1px solid #ffffffc0;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.hd{position:absolute;left:4%;top:7%;z-index:4;padding:.55em .95em;border-radius:.8em;font-size:1.1em;font-weight:700}
+.hd:before{content:var(--co);display:block;font-size:.58em;font-weight:500;letter-spacing:.06em;color:#7b76a3}
+.tr{position:absolute;left:4%;top:calc(7% + 4.4em);z-index:4;display:flex;align-items:center;gap:.45em;padding:.35em .85em;border-radius:2em;font-size:.9em;font-weight:700}
+.tr i{width:.65em;height:.65em;border-radius:50%;background:linear-gradient(135deg,#8f86c9,#e98aa0)}
+.fs{position:absolute;left:4%;bottom:7%;z-index:4;width:4.4em;height:9em}
+.fs p{inset:auto 0 0;display:flex;flex-direction:column;gap:.15em;padding:.25em;border-radius:.8em}
+.fs label{padding:.4em .2em;border-radius:.55em;text-align:center;font-size:.85em;font-weight:600;color:#5a577d}
+.fs :checked+label{background:#2c2a4a;color:#fff}
+.zc{position:absolute;left:68%;bottom:7%;translate:-100%;z-index:4;display:flex;flex-direction:column-reverse;align-items:center;gap:.3em;padding:.3em;border-radius:.8em}
+.zm,.zp{display:grid;place-items:center;width:1.8em;height:1.8em;color:#bdb6d4;font-weight:700}
+.zm:before{content:"−"}.zp:before{content:"+"}.zm:before,.zp:before{grid-area:1/1}
+.zm label,.zp label{grid-area:1/1;place-items:center;width:1.8em;height:1.8em;border-radius:.5em;color:#2c2a4a;background:#ffffffb0}
+.zc b{flex-direction:column-reverse;align-items:center;height:4.6em}
+.zc b label{width:.35em;height:.35em;border-radius:50%;background:#c9c3dd}
+.zc b:after{left:50%;bottom:calc(var(--zi)/3*(100% - .7em));width:.7em;height:.7em;margin-left:-.35em;border-radius:50%;background:linear-gradient(135deg,#8f86c9,#e98aa0)}
+.hl{right:2%;top:50%;translate:0 -50%;width:26%;padding:.7em;border-radius:1em}
+.hl>b{display:block;padding:.3em .6em .5em;font-size:.72em;letter-spacing:.12em;color:#7b76a3}
+.hl p{padding:.7em .6em .3em;font-size:.72em;font-weight:700;color:#c56f8a}
+.hl label{display:block;padding:.65em .75em;border-radius:.6em;color:#3d3a60}
+.hl :checked+label{background:linear-gradient(90deg,#8f86c9,#e98aa0);color:#fff}
+''',
+    narrow='.mb{left:3%;top:3%;width:94%}.zc{left:auto;right:6%;translate:none}.hl{margin:1em .8em;translate:none}')
+
+# 6. Dark minimal: night-mode map, quiet slate cards, one soft pink accent.
+SKINS['nord'] = dict(
+    head='МАРШРУТ · 여행지',
+    css='''
+.hw{background:#16191e;color:#e8ecf1;font-family:Pretendard,sans-serif}
+.mb{background:#22272e}
+.hd,.tr,.fs p,.zc,.hl{background:#1c2026e6;border:1px solid #2c323a}
+.hd{position:absolute;left:2.5%;top:3.5%;z-index:4;padding:.55em .95em;border-radius:.7em;font-size:1.1em;font-weight:700}
+.hd:before{content:var(--co);display:block;font-size:.58em;font-weight:500;color:#7f8a98}
+.tr{position:absolute;left:2.5%;top:calc(3.5% + 4.3em);z-index:4;display:flex;align-items:center;gap:.45em;padding:.35em .85em;border-radius:2em;font-size:.9em;font-weight:700}
+.tr i{width:.6em;height:.6em;border-radius:50%;background:#f4a3b4}
+.fs{position:absolute;left:2.5%;bottom:5%;z-index:4;width:20em;height:2.4em}
+.fs p{inset:auto auto 0 0;display:flex;align-items:center;gap:.15em;padding:.25em;border-radius:.7em}
+.fs p:before{content:"ЭТАЖ";padding:0 .5em;font-size:.6em;color:#7f8a98}
+.fs label{padding:.35em .75em;border-radius:.5em;font-size:.85em;font-weight:600;color:#aab4c0}
+.fs :checked+label{background:#f4a3b4;color:#16191e}
+.zc{position:absolute;left:70%;bottom:5%;translate:-100%;z-index:4;display:flex;flex-direction:column-reverse;align-items:center;gap:.3em;padding:.3em;border-radius:.7em}
+.zm,.zp{display:grid;place-items:center;width:1.8em;height:1.8em;color:#3d4550;font-weight:700}
+.zm:before{content:"−"}.zp:before{content:"+"}.zm:before,.zp:before{grid-area:1/1}
+.zm label,.zp label{grid-area:1/1;place-items:center;width:1.8em;height:1.8em;border-radius:.45em;color:#e8ecf1;background:#2a3038}
+.zc b{flex-direction:column-reverse;align-items:center;height:4.6em}
+.zc b label{width:.35em;height:.35em;border-radius:50%;background:#3d4550}
+.zc b:after{left:50%;bottom:calc(var(--zi)/3*(100% - .7em));width:.7em;height:.7em;margin-left:-.35em;border-radius:50%;background:#f4a3b4}
+.hl{right:2%;top:3.5%;width:25%;padding:.6em;border-radius:.9em}
+.hl>b{display:block;padding:.4em .6em .5em;font-size:.72em;letter-spacing:.12em;color:#7f8a98}
+.hl p{padding:.7em .6em .3em;font-size:.72em;font-weight:700;color:#f4a3b4}
+.hl label{display:block;padding:.65em .7em;border-radius:.55em;color:#c3cbd5}
+.hl :checked+label{background:#f4a3b4;color:#16191e}
+''',
+    narrow='.zc{left:auto;right:3%;translate:none}.hl{margin:.8em}')
+
+# 7. Line-art guidebook: printed-city-guide map, big type, thin rules,
+#    numbered places, a single red accent.
+SKINS['line'] = dict(
+    head='ПУТЕВОДИТЕЛЬ',
+    css='''
+.hw{background:#fff;color:#1d2433;font-family:Pretendard,sans-serif;counter-reset:st sn sm ss li}
+.mb{left:2%;top:50%;width:68%;translate:0 -50%;background:#f1f3f6;outline:1px solid #1d2433;outline-offset:.35em}
+.hd{position:absolute;left:4%;top:6%;z-index:4;padding:.4em .7em;background:#fff;font-size:1.3em;font-weight:800;letter-spacing:-.02em}
+.hd:before{content:var(--co);display:block;font-size:.5em;font-weight:600;letter-spacing:.08em;color:#d94141}
+.tr{position:absolute;left:4%;top:calc(6% + 5em);z-index:4;display:flex;align-items:center;gap:.45em;padding:.25em .7em;background:#fff;border:1px solid #1d2433;font-size:.85em;font-weight:700}
+.tr i{width:.55em;height:.55em;background:#d94141}
+.fs{position:absolute;left:4%;bottom:7%;z-index:4;width:20em;height:2.2em}
+.fs p{inset:auto auto 0 0;display:flex;align-items:center;gap:.9em;padding:.35em .7em;background:#fff;border:1px solid #1d2433}
+.fs p:before{content:"ЭТАЖ";font-size:.6em;letter-spacing:.1em;color:#7a8394}
+.fs label{padding:.1em 0;font-size:.85em;font-weight:600;color:#7a8394;border-bottom:.15em solid #0000}
+.fs :checked+label{color:#1d2433;border-bottom-color:#d94141}
+.zc{position:absolute;left:67.5%;bottom:7%;translate:-100%;z-index:4;display:flex;align-items:center;gap:.5em;padding:.35em .6em;background:#fff;border:1px solid #1d2433}
+.zm,.zp{display:grid;place-items:center;width:1.2em;height:1.2em;color:#c3c9d3;font-weight:700}
+.zm:before{content:"−"}.zp:before{content:"+"}.zm:before,.zp:before{grid-area:1/1}
+.zm label,.zp label{grid-area:1/1;place-items:center;width:1.2em;height:1.2em;color:#1d2433;background:#fff}
+.zc b{width:6em;height:1em;align-items:center;background:linear-gradient(#1d2433 0 0) 50%/100% 1px no-repeat}
+.zc b label{width:1px;height:.6em;background:#1d2433}
+.zc b:after{top:50%;left:calc(var(--zi)/3*(100% - .6em));width:.6em;height:.6em;margin-top:-.3em;border-radius:50%;background:#d94141}
+.hl{right:2%;top:50%;translate:0 -50%;width:26%}
+.hl>b{display:block;padding-bottom:.6em;border-bottom:2px solid #1d2433;font-size:.8em;letter-spacing:.16em}
+.hl p{padding:.9em 0 .3em;font-size:.7em;letter-spacing:.1em;color:#7a8394}
+.hl label{display:flex;gap:.8em;padding:.7em 0;border-bottom:1px solid #dfe3e9;counter-increment:li;color:#3b4456}
+.hl label:before{content:counter(li,decimal-leading-zero);font-weight:800;color:#c3c9d3}
+.hl :checked+label{color:#1d2433;font-weight:700}
+.hl :checked+label:before{color:#d94141}
+''',
+    narrow='.mb{left:3%;top:3%;width:94%}.zc{left:auto;right:6%;translate:none}.hl{margin:1.2em .8em;translate:none}')
 
 def markup(skin, base):
     def floors(name, layers):
