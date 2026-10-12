@@ -423,9 +423,8 @@ SKINS['sage'] = dict(
 # ---- fifth batch ---------------------------------------------------------
 # 16. Kremlin red: white walkways ruled in deep red on rose blocks. Taller
 #     3:2 frame (the map fills it and pans sideways), Star Rail navigation
-#     title, quest button and treasure pill, zoom under the place list.
+#     title and treasure pill, zoom under the place list.
 SKINS['kremlin'] = dict(
-    deco='<u></u>',
     base_sub=[('aspect-ratio:16/9', 'aspect-ratio:3/2'), ('width:72%;aspect-ratio:1.28;', 'width:72%;height:100%;'),
               ('width:calc(var(--zm)*100%);aspect-ratio', 'width:calc(var(--zm)*85.33cqi);aspect-ratio')],
     css=HSR_FS + '''
@@ -433,13 +432,9 @@ SKINS['kremlin'] = dict(
 .mb{background:#dcc7c8}
 .hd{position:absolute;left:2.5%;top:3.5%;z-index:4;padding-left:1.5em;background:radial-gradient(circle at .5em .6em,#0000 .13em,#222 .15em .4em,#0000 .42em),conic-gradient(from -30deg at 50% 100%,#222 60deg,#0000 0) .1em .8em/.8em .6em no-repeat;color:#555;font-size:1.15em;font-weight:500}
 .hd:before{content:"Навигация";display:block;color:#222;font-size:.62em;font-weight:700}
-.tr,.tr u{background:#2b2b2bd9;border-radius:2em}
-.tr{position:absolute;left:calc(2.5% + 3.3em);top:calc(3.5% + 3.3em);z-index:4;display:flex;align-items:center;gap:.6em;padding:.35em .8em .35em 1em;color:#eee}
+.tr{position:absolute;left:2.5%;top:calc(3.5% + 3.3em);z-index:4;display:flex;align-items:center;gap:.6em;padding:.35em .8em .35em 1em;border-radius:2em;background:#2b2b2bd9;color:#eee}
 .tr i{width:1.4em;height:1.1em;border-radius:.4em .4em .1em .1em;background:linear-gradient(90deg,#0000 40%,#fbe3a0 0 60%,#0000 0) 0 40%/100% 30% no-repeat,linear-gradient(#0000 42%,#6b3f14 0 54%,#0000 0),#e3b04f}
 .tr:after{content:"▾";margin-left:1.6em}
-.tr u{position:absolute;right:calc(100% + .45em);top:0;width:2.7em;height:100%}
-.tr u:before{content:"";position:absolute;inset:.4em 1em;border:.13em solid #ddd;border-radius:.15em}
-.tr u:after{content:"!";position:absolute;right:-.3em;top:-.5em;width:1.1em;border-radius:50%;background:#e5484d;color:#fff;font:700 .75em/1.1em sans-serif;text-align:center}
 .zc{position:absolute;right:1.5%;bottom:4%;z-index:4;display:flex;align-items:center;gap:.4em;padding:.3em .4em;background:#fff;border:1px solid #8c1724}
 .zm,.zp{width:1.5em;height:1.5em;color:#d9b3b7}
 .zm label,.zp label{background:#8c1724;color:#fff}
