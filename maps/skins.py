@@ -432,7 +432,7 @@ SKINS['sage'] = dict(
 #     title and treasure pill, zoom under the place list.
 SKINS['kremlin'] = dict(
     zoom=False,
-    base_sub=[('aspect-ratio:16/9', 'aspect-ratio:3/2'), ('width:72%;aspect-ratio:1.28;', 'width:72%;height:100%;'),
+    base_sub=[('aspect-ratio:16/9', 'aspect-ratio:3/2'), ('width:72%;aspect-ratio:1.28;', 'width:77%;height:100%;'), ('width:25.5%', 'width:20%'), ('padding:.5em 1.1em;', 'padding:.5em .9em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'),
               ('width:calc(var(--zm)*100%)', 'width:85.33cqi')],
     css=HSR_FS + '''
 .hw{background:#efe5e5;color:#2a1416;font-family:Pretendard,sans-serif}
