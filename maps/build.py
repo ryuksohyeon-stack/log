@@ -19,7 +19,7 @@ def benches(m, x0, x1, y, step, w=18, h=8):
 def pylons(m, x0, x1, y, w, h, gap):
     x = x0
     while x + w <= x1:
-        m.holes(rect(x, y, w, h)); x += w + gap
+        m.obj(rect(x, y, w, h)); x += w + gap
 
 def stalls(m, x0, x1, y0, y1, step):
     x = x0
@@ -28,8 +28,8 @@ def stalls(m, x0, x1, y0, y1, step):
 
 # ===================== Norilsk, street level =====================
 def norilsk1():
-    m = Map()
-    far(m, [(20, 110, 170, 60), (380, 20, 300, 50), (740, 30, 230, 60), (1030, 20, 230, 50), (1240, 210, 40, 400)])
+    m = Map(11)
+    m.far_city()
     m.add('v', poly([(0, 900), (180, 884), (420, 892), (640, 878), (860, 896), (1080, 882), (1280, 890), (1280, 1000), (0, 1000)]))
     for y, x0, x1 in ((925, 60, 380), (948, 300, 560), (930, 720, 1010), (955, 880, 1200), (975, 120, 420)):
         m.add('vw', line((x0, y), (x1, y)))
@@ -69,7 +69,7 @@ def norilsk1():
     m.holes(circ(1130, 490, 34)); m.add('r', ring(1130, 490, 24), ring(1130, 490, 10))
     m.add('t', ngon(1130, 490, 70, 8), ngon(1130, 490, 98, 8))
     for x, y in ((1075, 392), (1160, 392), (1075, 578), (1160, 578)):
-        m.holes(rect(x, y, 26, 18)); m.add('r', line((x, y + 9), (x + 26, y + 9)))
+        m.obj(rect(x, y, 26, 18)); m.add('or', line((x, y + 9), (x + 26, y + 9)))
     # boulevard medians with trees, benches on the embankment
     m.isl(370, 481, 70, 18, 3); m.isl(530, 481, 190, 18, 7); m.isl(800, 481, 140, 18, 5)
     m.add('t', line((355, 462), (1045, 462)), line((355, 518), (1045, 518)))
@@ -94,13 +94,34 @@ def norilsk1():
     m.steps(620, 866, 620, 898, 40)
     m.steps(240, 252, 240, 284, 40)
     m.add('d', line((205, 200), (305, 200)))
+    # street furniture: lamps, bus shelters, planters round the square
+    m.lamps(372, 470, 452, 470, 40); m.lamps(530, 470, 730, 470, 50); m.lamps(800, 470, 940, 470, 47)
+    m.lamps(372, 510, 452, 510, 40); m.lamps(530, 510, 730, 510, 50); m.lamps(800, 510, 940, 510, 47)
+    m.lamps(520, 207, 720, 207, 50); m.lamps(800, 207, 940, 207, 47)
+    for x in (585, 845):
+        m.holes(rect(x, 454, 44, 7)); m.holes(rect(x, 519, 44, 7))
+    for k in range(12):
+        a = k * math.pi / 6 + math.pi / 12
+        m.holes(circ(round(240 + 100 * math.cos(a), 1), round(490 + 100 * math.sin(a), 1), 5))
+    for k in range(4):
+        a = k * math.pi / 2 + math.pi / 4
+        m.holes(rect(round(240 + 74 * math.cos(a) - 9, 1), round(490 + 74 * math.sin(a) - 4, 1), 18, 8))
+    # courtyard trees and a sandbox
+    for x, y in ((830, 300), (910, 300), (830, 390), (910, 390)):
+        m.obj(circ(x, y, 7)); m.add('or', ring(x, y, 3))
+    m.obj(rect(575, 600, 26, 26)); m.add('or', rect(580, 605, 16, 16))
+    for x in (668, 690):
+        m.holes(circ(x, 600, 6))
+    # east square: benches round the fountain
+    for k in range(8):
+        a = k * math.pi / 4 + math.pi / 8
+        m.holes(rect(round(1130 + 54 * math.cos(a) - 7, 1), round(490 + 54 * math.sin(a) - 3, 1), 14, 6))
     return m
 
 # ===================== Norilsk, B1 mine =====================
 def norilsk2():
-    m = Map()
-    m.add('f', poly([(40, 60), (420, 40), (470, 150), (380, 210), (60, 230)]), poly([(860, 40), (1240, 70), (1250, 230), (880, 220)]),
-          poly([(40, 790), (430, 770), (470, 900), (60, 960)]), poly([(860, 790), (1240, 780), (1260, 960), (840, 950)]))
+    m = Map(12)
+    m.far_rock(70)
     # galleries and chambers
     m.add('w', rect(130, 465, 420, 60), rect(730, 465, 400, 60), circ(640, 495, 96),
           rect(615, 180, 50, 225), cham(500, 90, 280, 100, 25), rect(615, 585, 50, 150), cham(470, 730, 340, 130, 30),
@@ -146,12 +167,25 @@ def norilsk2():
     m.steps(250, 192, 250, 268, 50); m.steps(1025, 192, 1025, 268, 50)
     m.steps(80, 495, 128, 495, 50); m.steps(1132, 495, 1200, 495, 50)
     m.add('d', line((660, 600), (660, 720)), line((620, 600), (620, 720)))
+    # timber props along the galleries, lights on the walls
+    for x0, x1 in ((150, 540), (745, 1115)):
+        for x in range(x0, x1, 48):
+            m.holes(rect(x, 468, 7, 6), rect(x, 516, 7, 6))
+    for y in range(200, 400, 48):
+        m.holes(rect(618, y, 6, 7), rect(656, y, 6, 7))
+    m.add('d', line((150, 474), (540, 474)), line((745, 474), (1115, 474)))
+    # chamber detail: benches, lockers, tool racks
+    m.add('t', cham(146, 286, 208, 108, 22), cham(916, 286, 218, 108, 22), cham(166, 616, 208, 118, 22), cham(906, 616, 228, 118, 22))
+    for x in range(930, 1130, 26):
+        m.holes(rect(x, 384, 18, 10))
+    m.holes(rect(166, 700, 90, 12), rect(266, 700, 90, 12))
+    m.add('t', cham(516, 106, 248, 68, 18))
     return m
 
 # ===================== Moscow, street level =====================
 def moscow1():
-    m = Map()
-    far(m, [(10, 80, 120, 140), (1240, 230, 40, 380), (10, 700, 80, 120)])
+    m = Map(21)
+    m.far_city()
     bank = [(0, 860), (300, 820), (640, 880), (960, 850), (1280, 790)]
     m.add('v', poly(bank + [(1280, 890), (960, 950), (640, 980), (300, 920), (0, 960)]))
     for (x0, y0), (x1, y1) in zip(bank, bank[1:]):
@@ -176,8 +210,8 @@ def moscow1():
     # Red Square with the mausoleum, Lobnoye Mesto, monument
     m.add('w', rect(545, 230, 120, 390))
     m.holes(rect(550, 370, 40, 54)); m.add('r', rect(556, 376, 28, 42), rect(562, 384, 16, 26))
-    m.holes(circ(605, 585, 16)); m.add('r', ring(605, 585, 8))
-    m.holes(rect(512, 640, 30, 24)); m.add('r', rect(518, 646, 18, 12))
+    m.obj(circ(605, 585, 16)); m.add('or', ring(605, 585, 8))
+    m.obj(rect(512, 640, 30, 24)); m.add('or', rect(518, 646, 18, 12))
     for y in range(260, 611, 35):
         m.add('t', line((600, y), (660, y)))
     m.add('t', line((600, 240), (600, 360)), line((600, 432), (600, 560)))
@@ -227,6 +261,12 @@ def moscow1():
     m.add('t', line((1000, 820), (1062, 928)))
     for x in (570, 715):
         m.steps(x, 228, x, 190, 30)
+    # lamps along the streets and the embankment, trees in the Kremlin
+    m.lamps(870, 198, 1260, 198, 56); m.lamps(870, 402, 1260, 402, 56); m.lamps(870, 602, 1260, 602, 56)
+    m.lamps(560, 240, 560, 610, 46); m.lamps(650, 240, 650, 610, 46)
+    for x, y in ((220, 350), (245, 345), (200, 400), (440, 470), (460, 520), (300, 610), (340, 615), (380, 620), (250, 600)):
+        m.obj(circ(x, y, 8)); m.add('or', ring(x, y, 3.5))
+    m.holes(rect(536, 300, 8, 60), rect(536, 440, 8, 60))
     return m
 
 # ===================== Moscow, B1 metro =====================
@@ -243,8 +283,8 @@ def station(m, x, y, w):
     m.add('t', line((x + 20, y + 80), (x + w - 20, y + 80)))
 
 def moscow2():
-    m = Map()
-    m.add('f', poly([(30, 40), (560, 30), (600, 240), (40, 260)]), poly([(40, 600), (560, 640), (580, 960), (30, 960)]), poly([(1160, 200), (1270, 180), (1270, 560), (1180, 580)]))
+    m = Map(22)
+    m.far_rock(70)
     station(m, 160, 340, 400)
     station(m, 700, 140, 380)
     station(m, 700, 620, 380)
@@ -263,6 +303,10 @@ def moscow2():
         a = k * math.pi / 4
         m.holes(rect(round(1200 + 54 * math.cos(a) - 5, 1), round(700 + 54 * math.sin(a) - 5, 1), 10, 10))
     m.add('w', rect(870, 20, 40, 122)); m.steps(890, 30, 890, 130, 40, '3 3')
+    # turnstiles in the vestibules, benches on the central halls
+    for k in range(5):
+        m.holes(rect(1166 + k * 14, 664, 6, 18))
+    m.add('t', line((870, 300), (870, 620)), line((910, 300), (910, 620)), line((70, 400), (160, 400)), line((70, 440), (160, 440)))
     return m
 
 # ===================== Home: superpower headquarters =====================
@@ -270,8 +314,8 @@ def jag(cx, cy, pts):
     return poly([(cx + x, cy + y) for x, y in pts])
 
 def home1():
-    m = Map()
-    far(m, [(20, 40, 300, 80), (1100, 760, 170, 200), (20, 900, 400, 80)])
+    m = Map(31)
+    m.far_city()
     # headquarters footprint
     m.add('b', cham(360, 120, 560, 620, 80))
     m.add('r', cham(380, 140, 520, 580, 70), line((360, 200), (380, 210)), line((920, 200), (900, 210)))
@@ -317,6 +361,17 @@ def home1():
     m.add('t', ring(1020, 590, 50), ring(1020, 590, 26), line((975, 560), (995, 578)), line((1060, 545), (1043, 568)), line((1065, 630), (1043, 610)))
     # intact buildings around
     m.hip(80, 650, 200, 120); m.flat(120, 120, 180, 100, 10, 4, 2); m.flat(1000, 760, 180, 80, 10, 4, 1)
+    # command hall consoles, wing rooms, helipad lights
+    for k in range(12):
+        a = k * math.pi / 6
+        m.holes(rect(round(640 + 96 * math.cos(a) - 7, 1), round(430 + 96 * math.sin(a) - 4, 1), 14, 8))
+    for x0 in (380, 820):
+        for y in (320, 400, 480, 560):
+            m.add('t', line((x0 + 10, y), (x0 + 70, y)))
+    m.add('d', ring(1080, 200, 74))
+    m.add('t', rect(900, 196, 100, 8))
+    m.holes(rect(90, 560, 24, 14), rect(270, 290, 14, 24))
+    m.add('t', line((70, 470), (300, 470)))
     return m
 
 # ===================== Home: modern city =====================
@@ -326,8 +381,8 @@ def plus(m, cx, cy, a, b):
     m.add('b', poly(pts)); m.add('r', rect(cx - b + 8, cy - b + 8, 2 * b - 16, 2 * b - 16), line((cx, cy - a + 8), (cx, cy + a - 8)), line((cx - a + 8, cy), (cx + a - 8, cy)))
 
 def home2():
-    m = Map()
-    far(m, [(20, 40, 260, 120), (1180, 420, 100, 80)])
+    m = Map(32)
+    m.far_city()
     # roads, lanes and crossings
     m.add('w', rect(0, 430, 1280, 80), rect(560, 0, 70, 430), rect(560, 510, 70, 490), rect(900, 510, 50, 330))
     m.add('l', line((10, 470), (550, 470)), line((640, 470), (1270, 470)), line((595, 10), (595, 420)), line((595, 520), (595, 990)))
@@ -371,14 +426,25 @@ def home2():
     for cx, cy in ((1030, 680), (1210, 680), (1030, 880), (1210, 880)):
         plus(m, cx, cy, 62, 26)
     m.add('d', line((960, 582), (1270, 582)), line((960, 782), (1270, 782)))
+    # street lamps, bus stop, plaza planters and benches, basketball court
+    m.lamps(20, 438, 540, 438, 52); m.lamps(650, 438, 1260, 438, 61); m.lamps(20, 502, 540, 502, 52); m.lamps(650, 502, 1260, 502, 61)
+    m.obj(rect(380, 433, 70, 8)); m.add('or', line((380, 437), (450, 437)))
+    m.planters(712, 150, 712, 260, 55); m.planters(1100, 360, 1220, 360, 60)
+    for x in (860, 900, 1000, 1040):
+        m.holes(rect(x, 352, 20, 7))
+    m.add('t', rect(258, 676, 60, 34), line((288, 676), (288, 710)), rect(462, 676, 60, 34), line((492, 676), (492, 710)))
+    m.obj(rect(1110, 640, 20, 20), rect(1110, 700, 20, 20)); m.add('or', ring(1120, 650, 5), ring(1120, 710, 5))
     return m
 
 # ===================== Home: the ship =====================
 def home3():
-    m = Map()
+    m = Map(33)
     m.add('v', rect(0, 0, 1280, 1000))
-    for y, x0, x1 in ((80, 80, 400), (130, 500, 900), (60, 940, 1220), (220, 60, 260), (250, 1000, 1240), (720, 1060, 1260), (980, 300, 900)):
-        m.add('vw', line((x0, y), (x1, y)))
+    R = m.rng
+    for _ in range(70):
+        x = R.uniform(0, 1240); y = R.uniform(0, 1000); L = R.uniform(30, 160)
+        if 300 < y < 690 and 100 < x < 1220: continue
+        m.add('vw', line((round(x, 1), round(y, 1)), (round(x + L, 1), round(y, 1))))
     hull = [(120, 370), (200, 320), (900, 320), (1060, 380), (1200, 495), (1060, 610), (900, 670), (200, 670), (120, 620)]
     m.add('w', poly(hull))
     m.add('t', poly([(140, 378), (208, 338), (896, 338), (1050, 394), (1176, 495), (1050, 596), (896, 652), (208, 652), (140, 612)]))
@@ -395,11 +461,11 @@ def home3():
     for y in (410, 515):
         m.holes(rect(680, y, 100, 72)); m.add('r', rect(688, y + 8, 84, 56), line((730, y + 8), (730, y + 64)))
     for x, y in ((830, 420), (830, 570), (650, 495)):
-        m.holes(circ(x, y, 16)); m.add('r', ring(x, y, 7))
+        m.obj(circ(x, y, 16)); m.add('or', ring(x, y, 7))
     # foredeck: gun mount, anchor winches and chains
     m.holes(circ(960, 495, 34)); m.dome(960, 495, 34, 8)
     for y in (465, 525):
-        m.holes(circ(1060, y, 14)); m.add('r', ring(1060, y, 6))
+        m.obj(circ(1060, y, 14)); m.add('or', ring(1060, y, 6))
         m.add('d', line((1074, y), (1150, 495)))
     for x in range(880, 1031, 30):
         m.add('t', line((x, 350), (x, 440)), line((x, 550), (x, 640)))
@@ -409,11 +475,22 @@ def home3():
     m.add('w', rect(500, 670, 60, 120), rect(0, 790, 1280, 120))
     m.steps(530, 674, 530, 786, 60, '5 5')
     m.add('t', line((0, 800), (1280, 800)), line((0, 900), (1280, 900)))
-    m.add('l', line((0, 860), (1280, 860)))
+    m.add('l', line((0, 845), (1280, 845)))
     for x in (140, 360, 760, 980, 1180):
         m.holes(circ(x, 820, 10))
     m.add('t', line((140, 812), (230, 662)), line((360, 812), (300, 670)), line((760, 812), (820, 668)), line((980, 812), (950, 660)))
     m.flat(860, 920, 260, 70, 8, 5, 1); m.flat(120, 920, 260, 70, 8, 5, 1)
+    # containers on the quay, crane rails, deck vents, buoys
+    for k, x in enumerate(range(640, 1240, 46)):
+        if 740 < x < 790: continue
+        y = 862 + (k % 2) * 4
+        m.obj(rect(x, y, 40, 18)); m.add('or', line((x + 10, y), (x + 10, y + 18)), line((x + 20, y), (x + 20, y + 18)), line((x + 30, y), (x + 30, y + 18)))
+    m.add('t', line((0, 880), (620, 880)))
+    for x, y in ((640, 380), (640, 610), (800, 495), (240, 360), (240, 630)):
+        m.holes(rect(x - 6, y - 6, 12, 12))
+    m.add('d', poly([(150, 380), (205, 348), (895, 348), (1045, 404), (1160, 495), (1045, 586), (895, 642), (205, 642), (150, 610)]))
+    for x, y in ((90, 260), (1180, 230), (1220, 740)):
+        m.add('b', circ(x, y, 9)); m.add('r', ring(x, y, 4))
     return m
 
 MAPS = {'n1': norilsk1, 'n2': norilsk2, 'm1': moscow1, 'm2': moscow2, 's1': home1, 's2': home2, 's3': home3}
