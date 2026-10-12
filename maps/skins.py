@@ -3,6 +3,8 @@ markers) dressed in three different skins for the white-night / travel /
 Russia concept.
 
 python3 skins.py <skin> <image-base> <out.html>
+  The live widget (../star-rail-map.html) is the kremlin skin, built with
+  image-base https://cdn.jsdelivr.net/gh/ryuksohyeon-stack/log@<sha>/maps/kremlin/
   skin: journal | transit | hud
   image-base: URL prefix the maps are loaded from (ends with '/')
 """
