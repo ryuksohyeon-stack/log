@@ -411,6 +411,131 @@ SKINS['aurora'] = dict(
 ''',
     narrow='.mb{left:3%;top:3%;width:94%}.hd,.tr{left:5%}.fs{left:5%;top:auto;bottom:6%;width:3.2em;height:7.5em}.fs p{justify-content:flex-end}.zc{left:auto;right:6%;translate:none}.hl{margin:.8em;translate:none}')
 
+# ---- fourth batch: more layouts -------------------------------------------
+ZOOMBTN = ('.zm:before{content:"−"}.zp:before{content:"+"}.zm:before,.zp:before{grid-area:1/1}'
+           '.zm label,.zp label{grid-area:1/1;place-items:center}')
+
+# 12. Metro signage: full-width map, places as a strip of numbered line
+#     badges under it, dark-blue wayfinding panels.
+SKINS['metro'] = dict(
+    head='',
+    css='''
+.hw{background:#fff;color:#14213d;font-family:Pretendard,sans-serif}
+.hv{aspect-ratio:1.28}.mb{width:100%;background:#eef1f5}
+.hd{position:absolute;left:2.5%;top:3%;z-index:4;display:flex;align-items:center;gap:.6em;padding:.5em 1em .5em .55em;border-radius:.4em;background:#0b2f6b;color:#fff;font-size:1.1em;font-weight:700}
+.hd:before{content:"";width:1.1em;height:1.1em;border:.28em solid #fff;border-radius:50%}
+.tr{position:absolute;right:2.5%;top:3%;z-index:4;display:flex;align-items:center;gap:.45em;padding:.35em .8em;border:2px solid #0b2f6b;border-radius:.4em;background:#fff;font-weight:800}
+.tr i{width:.6em;height:.6em;background:#0b2f6b}
+.fs{position:absolute;left:2.5%;bottom:4%;z-index:4;width:4em;height:9em}
+.fs p{display:flex;flex-direction:column;justify-content:flex-end;gap:.3em}
+.fs label{display:grid;place-items:center;height:2.2em;border:2px solid #0b2f6b;border-radius:1.1em;background:#fff;font-size:.85em;font-weight:800;color:#0b2f6b}
+.fs :checked+label{background:#0b2f6b;color:#fff}
+.zc{position:absolute;right:2.5%;bottom:4%;z-index:4;display:flex;flex-direction:column-reverse;align-items:center;gap:.3em;padding:.3em;border-radius:.4em;background:#0b2f6b}
+.zm,.zp{display:grid;place-items:center;width:1.8em;height:1.8em;color:#3a5a92;font-weight:800}
+.zm label,.zp label{width:1.8em;height:1.8em;border-radius:.3em;background:#fff;color:#0b2f6b}
+.zc b{flex-direction:column-reverse;align-items:center;height:4.4em}
+.zc b label{width:.35em;height:.35em;border-radius:50%;background:#3a5a92}
+.zc b:after{left:50%;bottom:calc(var(--zi)/3*(100% - .7em));width:.7em;height:.7em;margin-left:-.35em;border-radius:50%;background:#fff}
+.hl{position:static;display:flex;flex-wrap:wrap;align-items:center;gap:.5em;padding:.9em 2.5%;background:#0b2f6b;color:#fff}
+.hl>b{display:none}
+.hl p{margin-left:.4em;font-size:.68em;font-weight:700;letter-spacing:.1em;color:#9db4dd}
+.hl label{display:flex;align-items:center;gap:.5em;padding:.4em .9em .4em .4em;border-radius:2em;background:#123d85;font-weight:600}
+.hl label:before{display:grid;place-items:center;width:1.6em;height:1.6em;border-radius:50%;font-size:.85em;font-weight:800;color:#fff}
+[for=q1]:before{content:"1";background:#e4312b}[for=q2]:before{content:"2";background:#3fae5a}[for=q3]:before{content:"3";background:#2f7de1}[for=q4]:before{content:"4";background:#f08c2a}
+.hl :checked+label{background:#fff;color:#0b2f6b}
+''' + ZOOMBTN,
+    narrow='.hl{padding:.8em}')
+
+# 13. Soft UI: map pressed into a soft panel, controls as raised buttons
+#     floating on it, places on a bottom sheet.
+SKINS['soft'] = dict(
+    head='',
+    css='''
+.hw{background:#e7eaf0;color:#3a4256;font-family:Pretendard,sans-serif}
+.hv{aspect-ratio:1.28}
+.mb{left:2.5%;top:2.5%;width:95%;border-radius:1.4em;background:#e0e4ea;box-shadow:inset .3em .3em .8em #c5cad3,inset -.3em -.3em .8em #fff}
+.hd,.tr,.fs p,.zc,.hl{background:#e7eaf0;box-shadow:.35em .35em .8em #c5cad3,-.35em -.35em .8em #fff}
+.hd{position:absolute;left:5%;top:5%;z-index:4;padding:.6em 1em;border-radius:1em;font-size:1.1em;font-weight:700}
+.hd:before{content:var(--co);display:block;font-size:.58em;font-weight:500;color:#9aa1b2}
+.tr{position:absolute;left:5%;top:calc(5% + 4.6em);z-index:4;display:flex;align-items:center;gap:.45em;padding:.4em .9em;border-radius:2em;font-size:.9em;font-weight:700}
+.tr i{width:.6em;height:.6em;border-radius:50%;background:#9a8cd8}
+.fs{position:absolute;right:5%;top:5%;z-index:4;width:4.4em;height:10em}
+.fs p{bottom:auto;display:flex;flex-direction:column;gap:.3em;padding:.35em;border-radius:1em}
+.fs label{padding:.5em 0;border-radius:.7em;text-align:center;font-size:.85em;font-weight:700;color:#9aa1b2}
+.fs :checked+label{box-shadow:inset .2em .2em .5em #c5cad3,inset -.2em -.2em .5em #fff;color:#7a6cc4}
+.zc{position:absolute;right:5%;top:47%;z-index:4;display:flex;flex-direction:column-reverse;align-items:center;gap:.35em;padding:.4em;border-radius:1.4em}
+.zm,.zp{display:grid;place-items:center;width:1.9em;height:1.9em;color:#c5cad3;font-weight:700}
+.zm label,.zp label{width:1.9em;height:1.9em;border-radius:50%;color:#7a6cc4;background:#e7eaf0;box-shadow:.15em .15em .4em #c5cad3,-.15em -.15em .4em #fff}
+.zc b{flex-direction:column-reverse;align-items:center;height:4.4em}
+.zc b label{width:.35em;height:.35em;border-radius:50%;background:#cfd4dc}
+.zc b:after{left:50%;bottom:calc(var(--zi)/3*(100% - .7em));width:.7em;height:.7em;margin-left:-.35em;border-radius:50%;background:#9a8cd8}
+.hl{left:5%;right:5%;bottom:5%;display:flex;flex-wrap:wrap;align-items:center;gap:.5em;padding:.7em 1em;border-radius:1.2em}
+.hl>b{display:none}
+.hl p{font-size:.68em;font-weight:700;letter-spacing:.08em;color:#9a8cd8}
+.hl label{padding:.55em 1em;border-radius:.8em;font-weight:600;color:#5b6377}
+.hl :checked+label{box-shadow:inset .2em .2em .5em #c5cad3,inset -.2em -.2em .5em #fff;color:#7a6cc4}
+''' + ZOOMBTN,
+    narrow='.mb{left:3%;top:3%;width:94%}.hl{position:static;margin:.6em .8em 1em}')
+
+# 14. White-night sunset: the place name large in a left column with the
+#     list under it, map on the right, peach-to-lilac accent on plum.
+SKINS['sunset'] = dict(
+    head='',
+    css='''
+.hw{background:linear-gradient(160deg,#2b1c37,#1c152e);color:#f6e9f0;font-family:Pretendard,sans-serif}
+.mb{left:30%;top:50%;width:68%;translate:0 -50%;border-radius:1em;background:#2a1d38;box-shadow:0 0 0 1px #4a3658}
+.hd{position:absolute;left:2.5%;top:6%;width:26%;z-index:4;font-size:1.7em;font-weight:800;line-height:1.2}
+.hd:before{content:var(--co);display:block;margin-bottom:.4em;font-size:.36em;font-weight:600;letter-spacing:.1em;color:#f3a58f}
+.tr{position:absolute;left:2.5%;top:calc(6% + 5.2em);z-index:4;display:flex;align-items:center;gap:.45em;font-weight:700}
+.tr i{width:.6em;height:.6em;border-radius:50%;background:linear-gradient(135deg,#ff9a6b,#a77bf3)}
+.tr:after{content:"BANNERS";font-size:.6em;letter-spacing:.14em;color:#a98fb3}
+.fs{position:absolute;left:31.5%;bottom:6%;z-index:4;width:20em;height:2.4em}
+.fs p{inset:auto auto 0 0;display:flex;gap:.2em;padding:.25em;border-radius:2em;background:#1c152ee6;border:1px solid #4a3658}
+.fs label{padding:.35em .9em;border-radius:2em;font-size:.85em;font-weight:600;color:#c3a9c9}
+.fs :checked+label{background:linear-gradient(90deg,#ff9a6b,#f06d9a);color:#fff}
+.zc{position:absolute;left:96.5%;bottom:6%;translate:-100%;z-index:4;display:flex;flex-direction:column-reverse;align-items:center;gap:.3em;padding:.3em;border-radius:2em;background:#1c152ee6;border:1px solid #4a3658}
+.zm,.zp{display:grid;place-items:center;width:1.7em;height:1.7em;color:#4a3658;font-weight:700}
+.zm label,.zp label{width:1.7em;height:1.7em;border-radius:50%;background:#3a2a48;color:#f6e9f0}
+.zc b{flex-direction:column-reverse;align-items:center;height:4.4em}
+.zc b label{width:.3em;height:.3em;border-radius:50%;background:#4a3658}
+.zc b:after{left:50%;bottom:calc(var(--zi)/3*(100% - .65em));width:.65em;height:.65em;margin-left:-.325em;border-radius:50%;background:linear-gradient(135deg,#ff9a6b,#a77bf3)}
+.hl{left:2.5%;top:38%;width:25%}
+.hl>b{display:none}
+.hl p{padding:.7em 0 .3em;font-size:.68em;font-weight:700;letter-spacing:.1em;color:#a98fb3}
+.hl label{display:block;margin-bottom:.25em;padding:.6em .8em;border-radius:.6em;color:#e3cfdb}
+.hl :checked+label{background:linear-gradient(90deg,#ff9a6b,#f06d9a 55%,#a77bf3);color:#fff}
+''' + ZOOMBTN,
+    narrow='.mb{left:3%;top:3%;width:94%}.hd{left:5%;top:5%;width:auto;padding:.3em .6em;border-radius:.5em;background:#1c152ee6;font-size:1.1em}.hd:before{display:none}.tr{left:5%;top:auto;bottom:16%}.fs{left:5%}.zc{left:auto;right:5%;translate:none}.hl{margin:.8em}')
+
+# 15. Sage toolbar: a title bar above the map, a toolbar below it with the
+#     floors on the left, the places in the middle and the zoom on the right.
+SKINS['sage'] = dict(
+    head='',
+    css='''
+.hw{background:#f4f6f4;color:#2f3a35;font-family:Pretendard,sans-serif}
+.hv{aspect-ratio:1.28;margin:3.4em 0 3.8em}.mb{width:100%;background:#e1e7e3}
+.hd{position:absolute;left:2.5%;top:-2.6em;z-index:4;display:flex;align-items:baseline;gap:.6em;font-size:1.15em;font-weight:800}
+.hd:before{content:var(--co);order:1;font-size:.55em;font-weight:500;color:#7f948a}
+.tr{position:absolute;right:2.5%;top:-2.6em;z-index:4;display:flex;align-items:center;gap:.45em;padding:.3em .8em;border-radius:2em;background:#e3ebe6;font-size:.9em;font-weight:700}
+.tr i{width:.6em;height:.6em;border-radius:50%;background:#5f9a86}
+.fs{position:absolute;left:2.5%;bottom:-3.1em;z-index:4;width:20em;height:2.4em}
+.fs p{inset:auto auto 0 0;display:flex;gap:.15em;padding:.2em;border-radius:.6em;background:#e3ebe6}
+.fs label{padding:.35em .8em;border-radius:.45em;font-size:.85em;font-weight:600;color:#6f857b}
+.fs :checked+label{background:#fff;color:#2f3a35;box-shadow:0 .1em .3em #2f3a3522}
+.zc{position:absolute;right:2.5%;bottom:-3.1em;z-index:4;display:flex;align-items:center;gap:.4em;padding:.2em .3em;border-radius:.6em;background:#e3ebe6}
+.zm,.zp{display:grid;place-items:center;width:1.6em;height:1.6em;color:#b9cbc0;font-weight:700}
+.zm label,.zp label{width:1.6em;height:1.6em;border-radius:.4em;background:#fff;color:#2f3a35}
+.zc b{width:5em;height:1em;align-items:center;background:linear-gradient(#c9d6ce 0 0) 50%/100% .2em no-repeat}
+.zc b label{width:.3em;height:.3em;border-radius:50%;background:#a9bfb3}
+.zc b:after{top:50%;left:calc(var(--zi)/3*(100% - .7em));width:.7em;height:.7em;margin-top:-.35em;border-radius:50%;background:#5f9a86}
+.hl{left:24%;right:24%;bottom:.6em;display:flex;justify-content:center;align-items:center;gap:.3em}
+.hl>b{display:none}
+.hl p{margin:0 .2em 0 .6em;font-size:.65em;font-weight:700;color:#5f9a86}
+.hl label{padding:.45em .7em;border-radius:.5em;font-size:.9em;font-weight:600;color:#6f857b;white-space:nowrap}
+.hl :checked+label{background:#2f3a35;color:#fff}
+''' + ZOOMBTN,
+    narrow='.hl{position:static;flex-wrap:wrap;padding:0 .8em .9em}')
+
 def markup(skin, base):
     def floors(name, layers):
         o = ''

@@ -49,6 +49,19 @@ PALETTES = {
     'aurora': dict(f='#13262f', fs='#172f38', fr='#11222a', v='#0e2939', vw='#143549', b='#1a3540', b2='#16303a', rim='#21414d',
                 r='#1d3a45', rk='#22434f', rks='#183540', w='#2f5a63', ws='#3e6f79', wsw=2, w2='#244a52', curb='#36676f', t='#3b6b75',
                 s='#4f8590', d='#7de3b8', o='#21414d', os='#3e6f79', blur=.4, shadow=None),
+    # fourth batch: metro signage, soft UI, white-night sunset, sage
+    'metro': dict(f='#e6eaf0', fs='#edf0f4', fr='#dde2e9', v='#c9dcf0', vw='#b6cfe9', b='#f8f9fb', b2='#eef1f5', rim='#ffffff', bs='#b8c3d3', bsw=1.4,
+                r='#dde2ea', rk='#eceff3', rks='#d0d6df', w='#d6e3f5', ws='#0b2f6b', wsw=2, w2='#bccde6', curb='#d6e3f5', t='#bdcde4',
+                s='#0b2f6b', d='#e4312b', o='#f8f9fb', os='#0b2f6b', blur=0, shadow=None),
+    'soft': dict(f='#dde1e8', fs='#e3e6ec', fr='#d6dbe3', v='#cbd9ea', vw='#bccee3', b='#e9ecf1', b2='#e2e6ec', rim='#f4f6f9',
+                r='#d6dbe3', rk='#e4e8ee', rks='#d0d5dd', w='#f7f8fa', ws='#d3d8e0', wsw=3, w2='#eceff3', curb='#f7f8fa', t='#e8ebf0',
+                s='#d3d8e0', d='#9a8cd8', o='#e9ecf1', os='#cfd4dc', blur=.6, shadow='#8a94a840'),
+    'sunset': dict(f='#2a1d38', fs='#31223f', fr='#271a33', v='#23304f', vw='#2c3b5e', b='#382848', b2='#32233f', rim='#443254',
+                r='#33243f', rk='#3f2e4f', rks='#2f2139', w='#f3b7a7', ws='#ffd0c2', wsw=1.5, w2='#c98fa6', curb='#f8c7b9', t='#e8a796',
+                s='#ffd6ca', d='#a77bf3', o='#382848', os='#c98fa6', blur=.4, shadow=None),
+    'sage': dict(f='#e1e7e3', fs='#e8ede9', fr='#d8dfda', v='#cfe1e6', vw='#bdd4db', b='#eef2ef', b2='#e5ebe7', rim='#f7f9f8', bs='#c4d0c8', bsw=1.2,
+                r='#d6ded9', rk='#e5ebe7', rks='#ccd6cf', w='#ffffff', ws='#a9bfb3', wsw=2.4, w2='#e8eeea', curb='#ffffff', t='#e4eae6',
+                s='#b9cbc0', d='#5f9a86', o='#eef2ef', os='#a9bfb3', blur=.5, shadow='#56706330'),
 }
 
 def style(p):
