@@ -439,9 +439,9 @@ SKINS['kremlin'] = dict(
               ('.mb::-webkit-scrollbar{display:none}\n', ''), ('.mi:after{content:"";position:absolute;left:50%;top:50%;width:1px;height:1px;scroll-snap-align:center}\n', ''), ('width:72%;aspect-ratio:1.28;', 'width:77%;height:100%;'), ('width:25.5%', 'width:20%'), ('padding:.5em 1.1em;', 'padding:.5em .9em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'),
               ('width:calc(var(--zm)*100%)', 'width:var(--w0);top:calc(var(--vh)/2 - var(--w0)/2.56)')],
     css=HSR_FS + '''
-.hw{background:#efe5e5;color:#2a1416;font-family:Pretendard,sans-serif}
-.mb,.mi{background:#dcc7c8}
-.hm:has(#q1:checked,#q2:checked):has(#n1:checked) .mb{background:linear-gradient(#dcc7c8 50%,#bccad8 0)}.hm:has(#q4:checked):has(#s3:checked) .mb{background:#bccad8}
+.hw{--F:#dcc7c8;--V:#bccad8;background:#efe5e5;color:#2a1416;font-family:Pretendard,sans-serif}
+.mb,.mi{background:var(--F)}
+.hm:has(#q1:checked,#q2:checked):has(#n1:checked) .mb{background:linear-gradient(var(--F) 50%,var(--V) 0)}.hm:has(#q4:checked):has(#s3:checked) .mb{background:var(--V)}
 .hd{position:absolute;left:2.5%;top:3.5%;z-index:4;padding-left:1.5em;background:radial-gradient(circle at .5em .6em,#0000 .13em,#222 .15em .4em,#0000 .42em),conic-gradient(from -30deg at 50% 100%,#222 60deg,#0000 0) .1em .8em/.8em .6em no-repeat;color:#555;font-size:1.15em;font-weight:500}
 .hd:before{content:"Навигация";display:block;color:#222;font-size:.62em;font-weight:700}
 .tr{position:absolute;left:2.5%;top:calc(3.5% + 3.3em);z-index:4;display:flex;align-items:center;gap:.6em;padding:.35em .8em .35em 1em;border-radius:2em;background:#2b2b2bd9;color:#eee}
@@ -683,7 +683,8 @@ def markup(skin, base):
         o = ''
         for fid, key in layers:
             mk = ''.join('<i%s style=--x:%d;--y:%d>%s</i>' % ((' class="%s"' if ' ' in m[3] else ' class=%s') % m[3] if len(m) > 3 else '', round(m[1] / 12.8), round(m[2] / 10), m[0]) for m in MARKERS[key])
-            o += '<div class=z><img src=%s%s.svg>%s</div>' % (base, key, mk)
+            nt = SKINS[skin].get('night') if name == 'n' else None
+            o += '<div class=z><img src=%s%s.svg>%s%s</div>' % (base, key, '<img class=pd src=%s%s%s.svg>' % (base, key, nt) if nt else '', mk)
         return o
     def fsel(cls, name, items):
         return '<p class=%s>%s</p>' % (cls, ''.join('<input type=radio name=%s id=%s%s><label for=%s>%s</label>' % (name, i, ' checked' if k == 0 else '', i, lab) for k, (i, lab) in enumerate(items)))
