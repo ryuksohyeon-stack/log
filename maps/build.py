@@ -388,9 +388,14 @@ def home3():
 MAPS = {'n1': norilsk1, 'n2': norilsk2, 'm1': moscow1, 'm2': moscow2, 's1': home1, 's2': home2, 's3': home3}
 
 if __name__ == '__main__':
+    # python3 build.py [--theme NAME] [--out DIR] [n1 n2 ...]
     here = os.path.dirname(os.path.abspath(__file__))
+    args = sys.argv[1:]; theme = 'hsr'; out = here
+    if '--theme' in args: i = args.index('--theme'); theme = args[i + 1]; del args[i:i + 2]
+    if '--out' in args: i = args.index('--out'); out = args[i + 1]; del args[i:i + 2]
+    os.makedirs(out, exist_ok=True)
     for k, f in MAPS.items():
-        if len(sys.argv) > 1 and k not in sys.argv[1:]: continue
-        s = f().svg()
-        open(os.path.join(here, k + '.svg'), 'w').write(s)
-        print(k, len(s))
+        if args and k not in args: continue
+        s = f().svg(theme)
+        open(os.path.join(out, k + '.svg'), 'w').write(s)
+        print(theme, k, len(s))

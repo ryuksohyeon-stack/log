@@ -8,35 +8,51 @@ drawn in the building layers and cut out of the walkable path."""
 import math, random
 from pl import P, rect, rr, cham, ngon, circ, poly, line, ring, reverse, fillet
 
-# Palette sampled from the in-game maps: background #d0d0d0, walkable #3c3c3c,
-# soft low-contrast blocks for everything you cannot walk on.
-STYLE = (
-    '.f{fill:#c9c9c9;stroke:#d3d3d3;stroke-width:2}.fr{fill:none;stroke:#c1c1c1;stroke-width:1.5}'
-    '.v{fill:#dedede}.vw{fill:none;stroke:#cfcfcf;stroke-width:2;stroke-linecap:round}'
-    '.b{fill:#d8d8d8}.b2{fill:#c6c6c6}'
-    '.r,.or{fill:none;stroke:#b9b9b9;stroke-width:1.6}.rk{fill:#c3c3c3;stroke:#b8b8b8;stroke-width:1}'
-    '.w{fill:#3c3c3c}.w2{fill:#6e6e6e}'
-    '.t{fill:none;stroke:#4a4a4a;stroke-width:2}.tk{fill:#444;stroke:#4c4c4c;stroke-width:1.2}'
-    '.s{fill:none;stroke:#8e8e8e;stroke-dasharray:4 4}'
-    '.d{fill:none;stroke:#9a9a9a;stroke-width:3.5;stroke-linecap:round;stroke-dasharray:0 11}'
-    '.l{fill:none;stroke:#555;stroke-width:3;stroke-dasharray:22 18}'
-    '.o{fill:#cfcfcf;stroke:#e2e2e2;stroke-width:1.5}'
-)
+# Palettes. "hsr" is the grey game-map look; the others are the draft
+# themes (white-night travel journal, transit board, polar explorer HUD).
+PALETTES = {
+    'hsr': dict(f='#c9c9c9', fs='#d3d3d3', fr='#c1c1c1', v='#dedede', vw='#cfcfcf', b='#d8d8d8', b2='#c6c6c6', rim='#e6e6e6',
+                r='#b9b9b9', rk='#c3c3c3', rks='#b8b8b8', w='#3c3c3c', w2='#6e6e6e', curb='#474747', t='#4a4a4a',
+                s='#8e8e8e', d='#9a9a9a', o='#cfcfcf', os='#e2e2e2', blur=.9, shadow=None),
+    'journal': dict(f='#e4e1ec', fs='#ebe8f1', fr='#d9d5e4', v='#cfe0ee', vw='#bdd3e7', b='#fdfcff', b2='#f2f0f8', rim='#ffffff',
+                r='#dcd7e8', rk='#ebe8f3', rks='#d8d3e5', w='#8a8db8', w2='#b9bbd8', curb='#999cc4', t='#9da0c8',
+                s='#e3e4f3', d='#e08aa0', o='#fdfcff', os='#d3cfe2', blur=.6, shadow='#6f62a040'),
+    'transit': dict(f='#e6e8ec', fs='#eceef1', fr='#dde0e6', v='#cfe3f3', vw='#bdd6ec', b='#ffffff', b2='#f2f3f6', rim='#ffffff',
+                r='#e0e3e9', rk='#eceef2', rks='#dcdfe5', w='#2f333c', w2='#8a909c', curb='#3b4049', t='#40454f',
+                s='#b8bdc6', d='#d63a3a', o='#ffffff', os='#c5c9d1', blur=0, shadow=None),
+    'hud': dict(f='#d2dce5', fs='#dae3eb', fr='#c8d3dd', v='#b8d1e5', vw='#a7c4dc', b='#f5f9fc', b2='#e5ecf2', rim='#ffffff',
+                r='#cdd9e3', rk='#dbe4ec', rks='#c9d5df', w='#45576c', w2='#8397ac', curb='#596c82', t='#5b6e83',
+                s='#a8bbcc', d='#2fb4d8', o='#f5f9fc', os='#b3c4d3', blur=.5, shadow='#3a5a7a30'),
+}
 
-DEFS = (
-    '<defs>'
-    # faint inner line along the edge of the walkable area
-    '<filter id="e"><feMorphology in="SourceAlpha" operator="erode" radius="8" result="a"/>'
-    '<feMorphology in="SourceAlpha" operator="erode" radius="10" result="b"/>'
-    '<feComposite in="a" in2="b" operator="out" result="c"/><feFlood flood-color="#474747"/><feComposite in2="c" operator="in"/></filter>'
-    # light rim just inside every block
-    '<filter id="eb"><feMorphology in="SourceAlpha" operator="erode" radius="2" result="a"/>'
-    '<feMorphology in="SourceAlpha" operator="erode" radius="4.5" result="b"/>'
-    '<feComposite in="a" in2="b" operator="out" result="c"/><feFlood flood-color="#e6e6e6"/><feComposite in2="c" operator="in"/></filter>'
-    # roof texture is softened like the rendered top-down view in game
-    '<filter id="sb"><feGaussianBlur stdDeviation="0.9"/></filter>'
-    '</defs>'
-)
+def style(p):
+    return (
+        '.f{fill:%(f)s;stroke:%(fs)s;stroke-width:2}.fr{fill:none;stroke:%(fr)s;stroke-width:1.5}'
+        '.v{fill:%(v)s}.vw{fill:none;stroke:%(vw)s;stroke-width:2;stroke-linecap:round}'
+        '.b{fill:%(b)s}.b2{fill:%(b2)s}'
+        '.r,.or{fill:none;stroke:%(r)s;stroke-width:1.6}.rk{fill:%(rk)s;stroke:%(rks)s;stroke-width:1}'
+        '.w{fill:%(w)s}.w2{fill:%(w2)s}'
+        '.t{fill:none;stroke:%(t)s;stroke-width:2}.tk{fill:%(w)s;stroke:%(t)s;stroke-width:1.2}'
+        '.s{fill:none;stroke:%(s)s;stroke-dasharray:4 4}'
+        '.d{fill:none;stroke:%(d)s;stroke-width:3.5;stroke-linecap:round;stroke-dasharray:0 11}'
+        '.l{fill:none;stroke:%(t)s;stroke-width:3;stroke-dasharray:22 18}'
+        '.o{fill:%(o)s;stroke:%(os)s;stroke-width:1.5}' % p)
+
+def defs(p):
+    return (
+        '<defs>'
+        # faint inner line along the edge of the walkable area
+        '<filter id="e"><feMorphology in="SourceAlpha" operator="erode" radius="8" result="a"/>'
+        '<feMorphology in="SourceAlpha" operator="erode" radius="10" result="b"/>'
+        '<feComposite in="a" in2="b" operator="out" result="c"/><feFlood flood-color="%(curb)s"/><feComposite in2="c" operator="in"/></filter>'
+        # light rim just inside every block
+        '<filter id="eb"><feMorphology in="SourceAlpha" operator="erode" radius="2" result="a"/>'
+        '<feMorphology in="SourceAlpha" operator="erode" radius="4.5" result="b"/>'
+        '<feComposite in="a" in2="b" operator="out" result="c"/><feFlood flood-color="%(rim)s"/><feComposite in2="c" operator="in"/></filter>'
+        # roof texture is softened like a rendered top-down view
+        '<filter id="sb"><feGaussianBlur stdDeviation="%(blur)s"/></filter>'
+        + ('<filter id="sh"><feDropShadow dx="0" dy="5" stdDeviation="4" flood-color="%(shadow)s"/></filter>' if p['shadow'] else '')
+        + '</defs>') % p
 
 class Map:
     def __init__(s, seed=1):
@@ -217,13 +233,14 @@ class Map:
                 s.obj(sh); continue
             s.add('b', sh); s.add('w', reverse(sh))
     # ---- output -------------------------------------------------------
-    def svg(s):
-        o = ['<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 1000" preserveAspectRatio="none"><style>%s</style>%s' % (STYLE, DEFS)]
+    def svg(s, theme='hsr'):
+        p = PALETTES[theme]
+        o = ['<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 1000" preserveAspectRatio="none"><style>%s</style>%s' % (style(p), defs(p))]
         if s.L['f']: o.append('<path class="f" d="%s"/>' % P(*s.L['f']))
         if s.L['fr']: o.append('<path class="fr" filter="url(#sb)" d="%s"/>' % P(*s.L['fr']))
         for k in ('v', 'vw'):
             if s.L[k]: o.append('<path class="%s" d="%s"/>' % (k, P(*s.L[k])))
-        o.append('<g id="B">' + ''.join('<path class="%s" d="%s"/>' % (k, P(*s.L[k])) for k in ('b', 'b2') if s.L[k]) + '</g>')
+        o.append('<g id="B"%s>' % (' filter="url(#sh)"' if p['shadow'] else '') + ''.join('<path class="%s" d="%s"/>' % (k, P(*s.L[k])) for k in ('b', 'b2') if s.L[k]) + '</g>')
         o.append('<use href="#B" filter="url(#eb)"/>')
         o.append('<g filter="url(#sb)">' + ''.join('<path class="%s" d="%s"/>' % (k, P(*s.L[k])) for k in ('r', 'rk') if s.L[k]) + '</g>')
         if s.L['w2']: o.append('<path class="w2" d="%s"/>' % P(*s.L['w2']))
