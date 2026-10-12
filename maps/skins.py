@@ -54,14 +54,15 @@ BASE = '''
 '''
 NARROW = '@container (max-width:560px){.hv{aspect-ratio:auto;height:calc(100cqi/1.28)}.mb{left:0;top:0;width:100%;translate:none}.hl{position:static;width:auto;padding:.6em}{SK}}'
 
-# Star Rail floor buttons, stacked low on the left with the upper floor on top.
+# Star Rail floor capsule: one grey pill low on the left, upper floor on top,
+# the current floor a white oval with a cyan pointer.
 HSR_FS = '''
-.fs{position:absolute;left:2.5%;bottom:5%;z-index:4;width:4.2em;height:12em}
-.fs p{top:auto;display:flex;flex-direction:column;gap:.55em}
-.fs label{position:relative;padding:.3em;border-radius:1.4em;background:#fffa;box-shadow:0 0 0 1px #0001;color:#444;font-size:.9em;line-height:1.2;text-align:center}
-.fs label:before{content:"Этаж";display:block;font-size:.7em}
-.fs :checked+label{background:#fafafa;color:#222;box-shadow:0 .1em .4em #0003}
-.fs :checked+label:after{content:"";position:absolute;left:50%;top:-.5em;margin-left:-.3em;border:.3em solid #0000;border-top:.4em solid #3cc8e0;border-bottom:0}
+.fs{position:absolute;left:2.5%;bottom:5%;z-index:4;width:3.8em;height:14em}
+.fs p{top:auto;display:flex;flex-direction:column;gap:.1em;padding:.25em;border-radius:2em;background:#3a3a3ab8}
+.fs label{position:relative;padding:.75em 0 .45em;border-radius:2em;color:#f2f2f2;font-size:.85em;line-height:1.15;text-align:center}
+.fs label:before{content:"Этаж";display:block;font-size:.8em}
+.fs :checked+label{background:#fff;color:#333}
+.fs :checked+label:after{content:"";position:absolute;left:50%;top:.2em;margin-left:-.3em;border:.3em solid #0000;border-top:.4em solid #36c6e0;border-bottom:0}
 '''
 
 # ---------------------------------------------------------------- skins --
@@ -420,24 +421,33 @@ SKINS['sage'] = dict(
     narrow='.tr,.zc{right:2.5%}')
 
 # ---- fifth batch ---------------------------------------------------------
-# 16. Kremlin red: white walkways ruled in deep red, red title band, square
-#     outlined controls.
+# 16. Kremlin red: white walkways ruled in deep red on rose blocks. Taller
+#     3:2 frame (the map fills it and pans sideways), Star Rail navigation
+#     title, quest button and treasure pill, zoom under the place list.
 SKINS['kremlin'] = dict(
+    deco='<u></u>',
+    base_sub=[('aspect-ratio:16/9', 'aspect-ratio:3/2'), ('width:72%;aspect-ratio:1.28;', 'width:72%;height:100%;'),
+              ('width:calc(var(--zm)*100%);aspect-ratio', 'width:calc(var(--zm)*85.33cqi);aspect-ratio')],
     css=HSR_FS + '''
 .hw{background:#efe5e5;color:#2a1416;font-family:Pretendard,sans-serif}
 .mb{background:#dcc7c8}
-.hd{position:absolute;left:2.5%;top:3.5%;z-index:4;padding:.5em 1em;background:#8c1724;color:#fff;font-size:1.1em;font-weight:800}
-.tr,.zc{background:#fff;border:1px solid #8c1724}
-.tr{position:absolute;left:2.5%;top:calc(3.5% + 3.2em);z-index:4;display:flex;align-items:center;gap:.45em;padding:.3em .9em;color:#8c1724;font-weight:800}
-.tr i{width:.55em;height:.55em;rotate:45deg;background:#8c1724}
-.zc{position:absolute;left:70%;bottom:5%;translate:-100%;z-index:4;display:flex;align-items:center;gap:.4em;padding:.3em .4em}
+.hd{position:absolute;left:2.5%;top:3.5%;z-index:4;padding-left:1.5em;background:radial-gradient(circle at .5em .6em,#0000 .13em,#222 .15em .4em,#0000 .42em),conic-gradient(from -30deg at 50% 100%,#222 60deg,#0000 0) .1em .8em/.8em .6em no-repeat;color:#555;font-size:1.15em;font-weight:500}
+.hd:before{content:"Навигация";display:block;color:#222;font-size:.62em;font-weight:700}
+.tr,.tr u{background:#2b2b2bd9;border-radius:2em}
+.tr{position:absolute;left:calc(2.5% + 3.3em);top:calc(3.5% + 3.3em);z-index:4;display:flex;align-items:center;gap:.6em;padding:.35em .8em .35em 1em;color:#eee}
+.tr i{width:1.4em;height:1.1em;border-radius:.4em .4em .1em .1em;background:linear-gradient(90deg,#0000 40%,#fbe3a0 0 60%,#0000 0) 0 40%/100% 30% no-repeat,linear-gradient(#0000 42%,#6b3f14 0 54%,#0000 0),#e3b04f}
+.tr:after{content:"▾";margin-left:1.6em}
+.tr u{position:absolute;right:calc(100% + .45em);top:0;width:2.7em;height:100%}
+.tr u:before{content:"";position:absolute;inset:.4em 1em;border:.13em solid #ddd;border-radius:.15em}
+.tr u:after{content:"!";position:absolute;right:-.3em;top:-.5em;width:1.1em;border-radius:50%;background:#e5484d;color:#fff;font:700 .75em/1.1em sans-serif;text-align:center}
+.zc{position:absolute;right:1.5%;bottom:4%;z-index:4;display:flex;align-items:center;gap:.4em;padding:.3em .4em;background:#fff;border:1px solid #8c1724}
 .zm,.zp{width:1.5em;height:1.5em;color:#d9b3b7}
 .zm label,.zp label{background:#8c1724;color:#fff}
 .zc b{width:5em;height:1em;align-items:center;background:linear-gradient(#8c1724 0 0) 50%/100% 1px no-repeat}
 .zc b label{width:.35em;height:.35em;background:#d9b3b7}
-.zc b:after{top:50%;left:calc(var(--zi)/3*(100% - .6em));width:.6em;height:.6em;margin-top:-.3em;rotate:45deg;background:#8c1724}
+.zc b:after{top:.2em;left:calc(var(--zi)*(100% - .6em)/3);width:.6em;height:.6em;rotate:45deg;background:#8c1724}
 ''',
-    narrow='.zc{left:auto;right:3%;translate:none}')
+    narrow='.mi{width:calc(var(--zm)*100%)}.zc{right:3%}')
 
 # 17. Taiga: deep forest map with pale birch walkways, floors up in the
 #     map's corner, zoom low on the left, leaf-shaped accents.
@@ -662,7 +672,7 @@ def markup(skin, base):
         '<div class=mn>' + floors('n', [('n1', 'n1'), ('n2', 'n2')]) + '</div>'
         '<div class=mm>' + floors('m', [('m1', 'm1'), ('m2', 'm2')]) + '</div>'
         '<div class=ms>' + floors('s', [('s1', 's1'), ('s2', 's2'), ('s3', 's3')]) + '</div>'
-        '</div></div><h4 class=hd></h4><div class=tr><i></i><b></b></div>'
+        '</div></div><h4 class=hd></h4><div class=tr>' + SKINS[skin].get('deco', '') + '<i></i><b></b></div>'
         '<div class=fs>' + fsel('fn', 'n', [('n1', '1'), ('n2', 'B1')]) + fsel('fm', 'm', [('m1', '1'), ('m2', 'B1')]) +
         fsel('fx', 's', [('s1', '센가물'), ('s2', '현대물'), ('s3', '바다')]) + '</div>'
         '<div class=zc><span class=zm>' + zl((1, 2, 3), '−') + '</span><b>' + zl((1, 2, 3, 4), '') + '</b><span class=zp>' + zl((2, 3, 4), '+') + '</span></div></div>'
@@ -673,7 +683,11 @@ def markup(skin, base):
         '<input type=radio name=q id=q4><label for=q4>소중한 이들과 만남</label></div></div>')
 
 def build(skin, base):
-    css = (BASE + SKINS[skin]['css']).replace('\n', '') + NARROW.replace('{SK}', SKINS[skin]['narrow'])
+    bcss = BASE
+    for a, b in SKINS[skin].get('base_sub', ()):
+        assert bcss.count(a) == 1, a
+        bcss = bcss.replace(a, b)
+    css = (bcss + SKINS[skin]['css']).replace('\n', '') + NARROW.replace('{SK}', SKINS[skin]['narrow'])
     return '<div class=hm><style>' + css + '</style>' + markup(skin, base) + '</div>'
 
 if __name__ == '__main__':
