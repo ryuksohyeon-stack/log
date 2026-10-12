@@ -3,8 +3,11 @@ markers) dressed in three different skins for the white-night / travel /
 Russia concept.
 
 python3 skins.py <skin> <image-base> <out.html>
-  The live widget (../star-rail-map.html) is the kremlin skin, built with
-  image-base https://cdn.jsdelivr.net/gh/ryuksohyeon-stack/log@<sha>/maps/kremlin/
+  The widgets in use are ../star-rail-map.html (kremlin) and
+  ../star-rail-map-mono.html (mono), built with image-base
+  https://cdn.jsdelivr.net/gh/ryuksohyeon-stack/log@<sha>/maps/<skin>/
+  Banner pins are markers with class "p" ("p x" once exchanged); the treasure
+  counter shows exchanged / all pins on the floor being shown.
   skin: journal | transit | hud
   image-base: URL prefix the maps are loaded from (ends with '/')
 """
