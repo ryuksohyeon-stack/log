@@ -1,0 +1,62 @@
+/* ▼ star rail map (스타레일 지도 위젯) ▼ */
+.srm{container-type:inline-size;word-break:keep-all}.srm *{margin:0;box-sizing:border-box}.srm input{display:none}
+.srm .hw{counter-reset:pt px;position:relative;overflow:clip;font-size:clamp(9px,1.2cqi,14px);--F:#dcc7c8;--V:#bccad8;--v:77cqi;--vh:66.67cqi;--w0:77cqi;background:#efe5e5;color:#2a1416}
+.srm:has(#q1:checked) .hw{--nm:"노릴스크 · 극야";--F:#161c2e;--V:#0c1222;background:#0f1424}.srm:has(#q2:checked) .hw{--nm:"노릴스크 · 백야"}.srm:has(#q3:checked) .hw{--nm:"모스크바의 거리"}.srm:has(#q4:checked) .hw{--nm:"보금자리 · 센가물"}.srm:has(#q5:checked) .hw{--nm:"보금자리 · 현대물"}.srm:has(#q6:checked) .hw{--nm:"보금자리 · 바다"}.srm:has(#q7:checked) .hw{--nm:"보금자리 · 폐도시";--F:#d6d2ce;--V:#b7c0c6}
+.srm .hv{position:relative;aspect-ratio:3/2}
+.srm .mb{position:absolute;inset:0 23% 0 0;overflow:clip}
+.srm .mi{position:relative;width:var(--w0);top:calc(var(--vh)/2 - var(--w0)/2.56);aspect-ratio:1.28;translate:var(--f);--f:clamp(2.6% + 15em - var(--x) - (1 + var(--s))*1e4px,clamp(var(--v) - 100%,var(--v)/2 - var(--x),0px),var(--v) - 2.6% - 15em - var(--x) + (1 - var(--s))*1e4px)}
+.srm .mb,.srm .mi{background:var(--F)}
+.srm:has(.A:checked):has(#n1:checked) .mb{background:linear-gradient(var(--F) 50%,var(--V) 0)}.srm:has(#q6:checked) .mb{background:var(--V)}
+.srm .mi>div,.srm .fs p{position:absolute;inset:0;display:none}
+.srm:has(.A:checked) .mn,.srm:has(#q3:checked) .mm,.srm:has(#q4:checked) .ma,.srm:has(#q5:checked) .mo,.srm:has(#q6:checked) .mq,.srm:has(#q7:checked) .mr{display:grid}
+.srm .z{position:absolute;inset:0;--o:0;z-index:var(--o);opacity:max(.13,var(--o));transition:opacity .4s;pointer-events:none;background:0 0/100% 100% no-repeat}
+.srm:has(#n1:checked) .n1,.srm:has(#n2:checked) .n2,.srm:has(#m1:checked) .m1,.srm:has(#m2:checked) .m2,.srm .s1,.srm:has(#o2:checked) .o2,.srm:has(#s2:checked) .s2,.srm .s3,.srm:has(#r1:checked) .r1,.srm:has(#r2:checked) .r2{--o:1;--d:block}
+.srm .n1{background-image:url(//cdn.jsdelivr.net/gh/ryuksohyeon-stack/log@971e0fa/k/n1.svg)}.srm .n2{background-image:url(//cdn.jsdelivr.net/gh/ryuksohyeon-stack/log@971e0fa/k/n2.svg)}.srm .m1{background-image:url(//cdn.jsdelivr.net/gh/ryuksohyeon-stack/log@971e0fa/k/m1.svg)}.srm .m2{background-image:url(//cdn.jsdelivr.net/gh/ryuksohyeon-stack/log@971e0fa/k/m2.svg)}.srm .s1{background-image:url(//cdn.jsdelivr.net/gh/ryuksohyeon-stack/log@971e0fa/k/s1.svg)}.srm .o2{background-image:url(//cdn.jsdelivr.net/gh/ryuksohyeon-stack/log@971e0fa/k/o2.svg)}.srm .s2{background-image:url(//cdn.jsdelivr.net/gh/ryuksohyeon-stack/log@971e0fa/k/s2.svg)}.srm .s3{background-image:url(//cdn.jsdelivr.net/gh/ryuksohyeon-stack/log@971e0fa/k/s3.svg)}.srm .r1{background-image:url(//cdn.jsdelivr.net/gh/ryuksohyeon-stack/log@971e0fa/k/r1.svg)}.srm .r2{background-image:url(//cdn.jsdelivr.net/gh/ryuksohyeon-stack/log@971e0fa/k/r2.svg)}
+.srm .n1,.srm .n2{background-size:200% 100%}.srm:has(#q1:checked) .z{background-position:100% 0}
+.srm .p{position:absolute;left:var(--x);top:var(--y);width:4%;aspect-ratio:1;translate:-50% -50%;z-index:3;display:var(--d,none);pointer-events:auto;cursor:pointer;counter-increment:pt}.srm .p.x{counter-increment:pt px}
+.srm .p:before{content:"";position:absolute;inset:-.5em}
+.srm .p:has(:checked){background:url(//cdn.jsdelivr.net/gh/ryuksohyeon-stack/log@971e0fa/k/on.svg) 0/1000%}
+.srm .c1:has(:checked){background-position:11.11%}.srm .c2:has(:checked){background-position:22.22%}.srm .c3:has(:checked){background-position:33.33%}.srm .c4:has(:checked){background-position:44.44%}.srm .c5:has(:checked){background-position:55.56%}.srm .c6:has(:checked){background-position:66.67%}.srm .c7:has(:checked){background-position:77.78%}.srm .c8:has(:checked){background-position:88.89%}.srm .c9:has(:checked){background-position:100%}
+.srm .p a{display:none;position:absolute;left:calc(50% + var(--s)*(50% + .6em));top:50%;translate:calc(var(--s)*50% - 50%) -50%;padding:.2em;border-radius:.3em;background:#fff;box-shadow:0 .2em .6em #0006}
+.srm .p :checked+a{display:block}.srm .p img{display:block;max-width:13em}.srm .p b{display:block;padding:.1em .3em .25em;font-size:.75em;color:#555}
+.srm .hd:after{content:var(--nm)}.srm .tr b:after{content:counter(px) " / " counter(pt)}
+.srm .hl{position:absolute;top:4%;right:1.5%;width:20%;z-index:5}
+.srm .hl>b{display:block;margin-bottom:.9em;padding:.5em .9em;white-space:nowrap;overflow:clip;text-overflow:ellipsis;border-radius:2em;background:#3a3a3a;color:#eee;font-weight:500}
+.srm .hl p{padding:.3em .8em;background:#c4c4c4;color:#555;font-size:.85em}
+.srm .hl label{display:block;padding:.75em 1em;border-bottom:1px solid #ddd;background:#f4f4f4;color:#333}
+.srm .hl label:before{content:"✦ ";font-size:.7em}
+.srm .hl :has(>:checked){background:#1d1d1d;color:#fff}
+.srm .hl :has(>:checked):after{content:"▼";float:right;color:#36d2e6;font-size:.75em}
+.srm .fs{position:absolute;left:2.5%;bottom:5%;z-index:4;width:3.8em;height:14em}
+.srm .fs p{top:auto;gap:.1em;padding:.25em;border-radius:2em;background:#3a3a3ab8}
+.srm .fs label{position:relative;padding:.75em 0 .45em;border-radius:2em;color:#f2f2f2;font-size:.85em;line-height:1.15;text-align:center}
+.srm .fs label:before{content:"Этаж";display:block;font-size:.8em}
+.srm .fs :has(>:checked){background:#fff;color:#333}
+.srm .fs :has(>:checked):after{content:"▼";position:absolute;inset:-.1em 0 auto;color:#36c6e0;font-size:.6em}
+.srm .hd{position:absolute;left:2.5%;top:3.5%;z-index:4;padding-left:1.5em;background:radial-gradient(circle at .5em .6em,#0000 .13em,#222 .15em .4em,#0000 .42em),conic-gradient(from -30deg at 50% 100%,#222 60deg,#0000 0) .1em .8em/.8em .6em no-repeat;color:#555;font-size:1.15em;font-weight:500}
+.srm .hd:before{content:"Навигация";display:block;color:#222;font-size:.62em;font-weight:700}
+.srm .tr{position:absolute;left:2.5%;top:calc(3.5% + 3.3em);z-index:4;display:flex;align-items:center;gap:.6em;padding:.35em .8em .35em 1em;border-radius:2em;background:#2b2b2bd9;color:#eee}
+.srm .tr i{width:1.4em;height:1.1em;border-radius:.4em .4em .1em .1em;background:linear-gradient(90deg,#0000 40%,#fbe3a0 0 60%,#0000 0) 0 40%/100% 30% no-repeat,linear-gradient(#0000 42%,#6b3f14 0 54%,#0000 0),#e3b04f}
+.srm .tr:after{content:"▾";margin-left:1.6em}
+.srm .pn,.srm .zc{display:none}
+@supports (timeline-scope:none){
+.srm .hw{timeline-scope:--tx,--ty,--zt}
+.srm .pn,.srm .zg{position:absolute;inset:0;overflow:scroll;scrollbar-width:none;overscroll-behavior:contain;animation:srm-k1 .6s}
+.srm .pn{display:block;touch-action:pan-x pan-y;scroll-timeline:--tx x,--ty y}
+.srm .pn:before{content:"";display:block;width:200%;height:200%}
+.srm .pn:after{content:"";position:absolute;left:100%;top:100%;padding:.5px;scroll-snap-align:center}
+.srm .mi{top:0;pointer-events:none;animation:srm-zw linear both,var(--t,srm-tx) linear both,var(--t,srm-ty) linear both;animation-timeline:--zt,--tx,--ty;transform:translateY(clamp(min(var(--vh) - 100%,var(--vh)/2 - 50%),var(--vh)/2 - var(--y),max(0px,var(--vh)/2 - 50%)))}
+.srm .zc{display:grid;align-content:space-between;justify-items:center;position:absolute;right:1.5%;bottom:4%;z-index:4;width:2.2em;height:9em;border:1px solid #8c1724;background:linear-gradient(#d9b3b7 0 0) 50%/1px 60% no-repeat #fff;color:#8c1724;font-weight:700}
+.srm .zc:before{content:"+"}.srm .zc:after{content:"−"}
+.srm .zg{touch-action:pan-y;scroll-timeline:--zt y}
+.srm .zg i{display:block;height:400%}
+.srm .zc u{position:absolute;left:50%;top:calc(100% - 2.1em);padding:.3em;margin:-.3em;rotate:45deg;background:#8c1724;pointer-events:none;animation:srm-zk linear both;animation-timeline:--zt}
+}
+@keyframes srm-k1{from,to{scroll-snap-type:both mandatory}}
+@keyframes srm-zw{to{width:calc(var(--w0)*3)}}
+@keyframes srm-tx{to{translate:calc(var(--v) - 100%)}}
+@keyframes srm-ty{from{transform:translateY(max(0px,var(--vh)/2 - 50%))}to{transform:translateY(min(var(--vh) - 100%,var(--vh)/2 - 50%))}}
+@keyframes srm-zk{to{top:2.1em}}
+.srm:has(#q1:checked) .hd,.srm:has(#q1:checked) .zc{filter:invert(1) hue-rotate(180deg)}
+@container (max-width:560px){.srm .hv{aspect-ratio:auto;height:calc(100cqi/1.28)}.srm .mb{right:0}.srm .hl{position:static;width:auto;padding:.6em}.srm .hw{--v:100cqi;--vh:78.13cqi;--w0:100cqi}.srm .zc{right:3%;width:34px;height:130px}}
+/* ▲ star rail map ▲ */
