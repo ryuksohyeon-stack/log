@@ -76,14 +76,14 @@ PINS = {'n1': [('APT', 128, 700, 'milan', '404호')],     # the panel block at N
 # selector gets that prefix, a bare :has(#q1:checked) means "the widget has q1 checked".
 # An open banner (focus rules below) stops the scroll-driven pan (--t:n) and puts the map at
 # .mi's --f / translateY: its pin centred, clamped to the map's edges, then moved just enough
-# that the banner (up to 14em wide, on side --s) is inside the view.
+# that the banner (up to 15em out, on side --s) is inside the view.
 CSS = '''
 .srm{container-type:inline-size;word-break:keep-all}.srm *{margin:0;box-sizing:border-box}.srm input{display:none}
 .hw{counter-reset:pt px;position:relative;overflow:clip;font-size:clamp(9px,1.2cqi,14px);--F:#dcc7c8;--V:#bccad8;--v:77cqi;--vh:66.67cqi;--w0:77cqi;background:#efe5e5;color:#2a1416}
 {NAMES}
 .hv{position:relative;aspect-ratio:3/2}
 .mb{position:absolute;left:0;top:0;width:77%;height:100%;overflow:clip}
-.mi{position:relative;width:var(--w0);top:calc(var(--vh)/2 - var(--w0)/2.56);aspect-ratio:1.28;translate:var(--f);--f:clamp(2.6% + 14em - var(--x) - (1 + var(--s))*1e4px,clamp(var(--v) - 100%,var(--v)/2 - var(--x),0px),var(--v) - 2.6% - 14em - var(--x) + (1 - var(--s))*1e4px)}
+.mi{position:relative;width:var(--w0);top:calc(var(--vh)/2 - var(--w0)/2.56);aspect-ratio:1.28;translate:var(--f);--f:clamp(2.6% + 15em - var(--x) - (1 + var(--s))*1e4px,clamp(var(--v) - 100%,var(--v)/2 - var(--x),0px),var(--v) - 2.6% - 15em - var(--x) + (1 - var(--s))*1e4px)}
 .mb,.mi{background:var(--F)}
 :has(.A:checked):has(#n1:checked) .mb{background:linear-gradient(var(--F) 50%,var(--V) 0)}:has(#q6:checked) .mb{background:var(--V)}
 .mi>div,.fs p{position:absolute;inset:0;display:none}
@@ -92,7 +92,7 @@ CSS = '''
 {ACTIVE}{--o:1;--d:block}
 .z>img{position:absolute;z-index:var(--o);width:100%;height:100%;object-fit:cover;object-position:0;opacity:max(.13,var(--o));transition:opacity .4s}
 :has(#q1:checked) .z>img{object-position:100%}
-.p{position:absolute;left:var(--x);top:var(--y);width:3.6%;aspect-ratio:3/4;translate:-50% -50%;z-index:3;border-radius:.3em;display:var(--d,none);pointer-events:auto;cursor:pointer;counter-increment:pt}.p.x{counter-increment:pt px}.o{aspect-ratio:1;border-radius:50%}.p:has(:checked){box-shadow:0 0 0 .15em #7fe3f0,0 0 .5em #7fe3f0}
+.p{position:absolute;left:var(--x);top:var(--y);width:max(3.6%,2.4em);aspect-ratio:3/4;translate:-50% -50%;z-index:3;border-radius:.3em;display:var(--d,none);pointer-events:auto;cursor:pointer;counter-increment:pt}.p.x{counter-increment:pt px}.o{aspect-ratio:1;border-radius:50%}.p:has(:checked){box-shadow:0 0 0 .15em #7fe3f0,0 0 .5em #7fe3f0}
 .p a{display:none;position:absolute;left:calc(50% + var(--s)*72%);top:50%;translate:calc(var(--s)*50% - 50%) -50%;padding:.2em;border-radius:.3em;background:#fff;box-shadow:0 .2em .6em #0006}
 :checked+a{display:block}.p img{display:block;max-width:13em}.p b{display:block;padding:.1em .3em .25em;font-size:.75em;color:#555}
 .hd:after{content:var(--nm)}.tr b:after{content:counter(px) " / " counter(pt)}
