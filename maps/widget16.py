@@ -5,7 +5,27 @@ python3 widget16.py --local <out.html>                -> preview using ../k/ on 
 
 Maps come from k/ (maps/kremlin with the shop markers drawn in by bake.py).
 Edit REGIONS, FLOORS and PINS below; everything else follows."""
-import os, sys
+import os, sys, json, urllib.request
+
+def banner_of(h):
+    """The image luvlog itself shows for @h in a banner list ("러브로그 홈 걸기"): the home's
+    banner image, else its card image. Read from the public pages/<h> record; None if missing."""
+    url = 'https://firestore.googleapis.com/v1/projects/lovelog-cc579/databases/(default)/documents/pages/' + h
+    def val(v):
+        k, x = next(iter(v.items()))
+        if k == 'mapValue': return {a: val(b) for a, b in x.get('fields', {}).items()}
+        if k == 'arrayValue': return [val(b) for b in x.get('values', [])]
+        return x
+    try:
+        d = {a: val(b) for a, b in json.load(urllib.request.urlopen(url, timeout=20)).get('fields', {}).items()}
+    except Exception as e:
+        print('banner lookup failed for', h, e); return None
+    m = d.get('modes') or {}
+    pick = lambda k: d.get(k) or ((m.get('a') or {}).get('snap') or {}).get(k) or ((m.get('b') or {}).get('snap') or {}).get(k) or ''
+    hero = next((o for o in d.get('heroImgs') or [] if isinstance(o, dict) and o.get('img')), {})
+    for v in (pick('bannerImg'), pick('cardImg'), hero.get('img'), d.get('heroImg')):
+        if isinstance(v, str) and v.startswith('https://'): return v
+    return None
 
 # list entries: (radio id, list label, title shown top left, map box)
 GROUPS = [
@@ -20,8 +40,10 @@ GROUPS = [
 FLOORS = {'mn': [('n1', '1'), ('n2', 'B1')], 'mm': [('m1', '1'), ('m2', 'B1')],
           's1': [('s1', '')], 's2': [('s2', '')], 's3': [('s3', '')]}
 NIGHT = {'n1', 'n2'}          # these also get a polar-night map, <name>a.svg
-# banner pins: map file -> (number, x, y in the 1280x1000 map, exchanged?, link, banner image)
-PINS = {'s1': [(1, 640, 790, True, 'https://luvlog.me/milan', 'b1.svg')]}
+# banner pins: map file -> (number, x, y in the 1280x1000 map, exchanged?, luvlog handle)
+# The pin links to luvlog.me/<handle>; its image is that home's own banner, looked up
+# when the widget is built (see banner_of), so re-run the build to pick up new banners.
+PINS = {'s1': [(1, 640, 790, True, 'milan')]}
 
 CSS = '''
 .hm{container-type:inline-size;word-break:keep-all}.hm *{margin:0;box-sizing:border-box}.hm input{display:none}
@@ -88,6 +110,8 @@ CSS = '''
 '''
 NIGHT_HW = ';--F:#161c2e;--V:#0c1222;background:#0f1424'   # polar night colours, added to q1's rule
 
+BANNERS = {}
+
 def build(base):
     items = [it for _, its in GROUPS for it in its]
     boxes = list(dict.fromkeys(it[3] for it in items))
@@ -105,10 +129,11 @@ def build(base):
 
     def pins(f):
         o = ''
-        for n, x, y, ex, link, img in PINS.get(f, []):
+        for n, x, y, ex, h in PINS.get(f, []):
             pos = 'style=--x:%d;--y:%d' % (round(x / 12.8), round(y / 10))
-            o += ('<input type=checkbox id=b%d><label for=b%d class=%s %s>%d</label><a class=bn href=%s target=_blank %s><img src=%s%s></a>'
-                  % (n, n, '"p x"' if ex else 'p', pos, n, link, pos, base, img))
+            img = BANNERS.setdefault(h, banner_of(h)) or base + 'b1.svg'
+            o += ('<input type=checkbox id=b%d><label for=b%d class=%s %s>%d</label><a class=bn href=https://luvlog.me/%s target=_blank %s><img src=%s></a>'
+                  % (n, n, '"p x"' if ex else 'p', pos, n, h, pos, img.replace('&', '&amp;')))
         return o
     maps = ''.join('<div class=%s>%s</div>' % (b, ''.join(
         '<div class=z><img src=%s%s.svg>%s%s</div>' % (base, f, '<img class=pd src=%s%sa.svg>' % (base, f) if f in NIGHT else '', pins(f))
