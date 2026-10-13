@@ -4,7 +4,7 @@
 .srm:has(#q1:checked) .hw{--nm:"노릴스크 · 극야";--F:#161c2e;--V:#0c1222;background:#0f1424}.srm:has(#q2:checked) .hw{--nm:"노릴스크 · 백야"}.srm:has(#q3:checked) .hw{--nm:"모스크바의 거리"}.srm:has(#q4:checked) .hw{--nm:"보금자리 · 센가물"}.srm:has(#q5:checked) .hw{--nm:"보금자리 · 현대물"}.srm:has(#q6:checked) .hw{--nm:"보금자리 · 바다"}.srm:has(#q7:checked) .hw{--nm:"보금자리 · 폐도시";--F:#d6d2ce;--V:#b7c0c6}
 .srm .hv{position:relative;aspect-ratio:3/2}
 .srm .mb{position:absolute;inset:0 23% 0 0;overflow:clip}
-.srm .mi{position:relative;width:var(--w0);top:calc(var(--vh)/2 - var(--w0)/2.56);aspect-ratio:1.28;translate:var(--f);--f:clamp(2.6% + 15em - var(--x) - (1 + var(--s))*1e4px,clamp(var(--v) - 100%,var(--v)/2 - var(--x),0px),var(--v) - 2.6% - 15em - var(--x) + (1 - var(--s))*1e4px)}
+.srm .mi{position:relative;width:var(--w0);aspect-ratio:1.28;translate:var(--f);transform:translateY(var(--g,max(0px,var(--vh)/2 - 50%)));--f:clamp(2.6% + 15em - var(--x) - (1 + var(--s))*1e4px,clamp(var(--v) - 100%,var(--v)/2 - var(--x),0px),var(--v) - 2.6% - 15em - var(--x) + (1 - var(--s))*1e4px);--g:clamp(3.6em - var(--y),clamp(min(var(--vh) - 100%,var(--vh)/2 - 50%),var(--vh)/2 - var(--y),max(0px,var(--vh)/2 - 50%)),var(--vh) - 3.6em - var(--y))}
 .srm .mb,.srm .mi{background:var(--F)}
 .srm:has(.A:checked):has(#n1:checked) .mb{background:linear-gradient(var(--F) 50%,var(--V) 0)}.srm:has(#q6:checked) .mb{background:var(--V)}
 .srm .mi>div,.srm .fs p{position:absolute;inset:0;display:none}
@@ -45,7 +45,7 @@
 .srm .pn{display:block;touch-action:pan-x pan-y;scroll-timeline:--tx x,--ty y}
 .srm .pn:before{content:"";display:block;width:200%;height:200%}
 .srm .pn:after{content:"";position:absolute;left:100%;top:100%;padding:.5px;scroll-snap-align:center}
-.srm .mi{top:0;pointer-events:none;animation:srm-zw linear both,var(--t,srm-tx) linear both,var(--t,srm-ty) linear both;animation-timeline:--zt,--tx,--ty;transform:translateY(clamp(min(var(--vh) - 100%,var(--vh)/2 - 50%),var(--vh)/2 - var(--y),max(0px,var(--vh)/2 - 50%)))}
+.srm .mi{pointer-events:none;animation:srm-zw linear both,var(--t,srm-tx) linear both,var(--t,srm-ty) linear both;animation-timeline:--zt,--tx,--ty}
 .srm .zc{display:grid;align-content:space-between;justify-items:center;position:absolute;right:1.5%;bottom:4%;z-index:4;width:2.2em;height:9em;border:1px solid #8c1724;background:linear-gradient(#d9b3b7 0 0) 50%/1px 60% no-repeat #fff;color:#8c1724;font-weight:700}
 .srm .zc:before{content:"+"}.srm .zc:after{content:"−"}
 .srm .zg{touch-action:pan-y;scroll-timeline:--zt y}
@@ -57,6 +57,18 @@
 @keyframes srm-tx{to{translate:calc(var(--v) - 100%)}}
 @keyframes srm-ty{from{transform:translateY(max(0px,var(--vh)/2 - 50%))}to{transform:translateY(min(var(--vh) - 100%,var(--vh)/2 - 50%))}}
 @keyframes srm-zk{to{top:2.1em}}
+@keyframes srm-zkx{to{left:calc(100% - 2.1em)}}
 .srm:has(#q1:checked) .hd,.srm:has(#q1:checked) .zc{filter:invert(1) hue-rotate(180deg)}
-@container (max-width:560px){.srm .hv{aspect-ratio:auto;height:calc(100cqi/1.28)}.srm .mb{right:0}.srm .hl{position:static;width:auto;padding:.6em}.srm .hw{--v:100cqi;--vh:78.13cqi;--w0:100cqi}.srm .zc{right:3%;width:34px;height:130px}}
+@container (max-width:560px){
+.srm .hw{--v:100cqi;--vh:78.13cqi;--w0:100cqi}
+.srm .hv{aspect-ratio:auto;height:calc(100cqi/1.28 + 6.4em)}
+.srm .mb{inset:3.4em 0 3em}
+.srm .hd{top:.55em;left:3%}.srm .tr{top:.75em;left:auto;right:3%}
+.srm .fs{top:auto;bottom:.3em;left:3%;width:auto;height:2.4em}.srm .fs p{position:static;grid-auto-flow:column;padding:.15em}
+.srm .fs label{padding:.3em .9em .2em;font-size:.8em}
+.srm .zc{top:auto;bottom:.5em;right:3%;width:42%;height:2em;grid-auto-flow:column;align-content:center;justify-content:space-between;padding:0 .7em;background-size:72% 1px}
+.srm .zc:before{content:"−"}.srm .zc:after{content:"+"}
+.srm .zg{touch-action:pan-x;scroll-timeline:--zt x}.srm .zg i{height:100%;width:400%}
+.srm .zc u{top:50%;left:2.1em;animation-name:srm-zkx}
+.srm .hl{position:static;width:auto;padding:.6em}}
 /* ▲ star rail map ▲ */
