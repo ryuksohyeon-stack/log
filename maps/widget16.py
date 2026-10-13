@@ -69,10 +69,20 @@ HOST = 'vasilic'    # the luvlog home this widget sits on
 # banner links to luvlog.me/<handle>. When the widget is built, luvlog's public record for
 # that home gives its banner image, and whether its banner list carries HOST back (맞배너).
 # Re-run the build to pick up changed banners.
-PINS = {'n1': [('APT', 128, 700, 'milan', '404호')],     # the panel block at Norilsk's south-west corner
-        's3': [('1', 1139, 500, 'legion', '')],          # the ship's bow
-        'r1': [('1', 384, 400, 'pixelatedkisses', '')],  # the round plaza
-        's2': [('1', 128, 760, 'aiden', '')]}            # the L-shaped block
+PINS = {'n1': [('APT', 128, 700, 'milan', '404호')],      # the panel block at Norilsk's south-west corner
+        's1': [('1', 243.2, 360, 'karma', ''),            # the west hall
+               ('2', 729.6, 200, 'meltaway', '')],        # beside the north gate
+        's2': [('1', 128, 760, 'aiden', ''),              # the L-shaped block
+               ('2', 896, 950, '915', ''),                # the sandwich shop's terrace
+               ('3', 384, 130, 'chajaehyeon', ''),        # the concert hall's stage
+               ('4', 422.4, 260, 'koyubin', '')],         # the concert hall's seats
+        'o2': [('1', 1164.8, 190, '574839', '')],         # the seat between the head and the 대리
+        's3': [('1', 1139, 500, 'legion', ''),            # the ship's bow
+               ('2', 281.6, 370, 'stray', ''),            # the deck by the lifeboats
+               ('3', 192, 590, 'johann', '')],            # by the helipad
+        'r1': [('1', 384, 400, 'pixelatedkisses', ''),    # the round plaza
+               ('2', 665.6, 100, 'raymond', '')],         # the crane yard
+        'r2': [('1', 486.4, 400, 'woojaegyeong', '')]}    # the platform
 # extra colours per list entry: polar night is dark, the abandoned town ash grey
 EXTRA = {'q1': ';--F:#161c2e;--V:#0c1222;background:#0f1424', 'q7': ';--F:#d6d2ce;--V:#b7c0c6'}
 
