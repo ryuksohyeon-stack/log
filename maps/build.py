@@ -26,6 +26,16 @@ def inlay(m, cx, cy, rings=(), spokes=0, r0=0, r1=0, rot=0):
 def pillars(m, pts, size=16):
     for x, y in pts: m.holes(rect(x - size / 2, y - size / 2, size, size))
 
+def arc(cx, cy, r, a0, a1, n=24):
+    """Open arc (degrees, 0 = east, 90 = south) as a polyline, for seat rows and rails."""
+    return line(*[pt(cx, cy, r, math.radians(a0 + (a1 - a0) * k / n)) for k in range(n + 1)])
+
+def sector(cx, cy, r0, r1, a0, a1, n=32):
+    """Ring sector between radii r0 and r1 and angles a0..a1 (degrees)."""
+    outer = [pt(cx, cy, r1, math.radians(a0 + (a1 - a0) * k / n)) for k in range(n + 1)]
+    inner = [pt(cx, cy, r0, math.radians(a1 - (a1 - a0) * k / n)) for k in range(n + 1)]
+    return poly(outer + inner)
+
 # ===================== Norilsk, street level =====================
 def norilsk1():
     m = Map(11)
@@ -314,9 +324,7 @@ def home2():
     pillars(m, [(712 + k * 40, 112) for k in range(3)] + [(1122, y) for y in range(122, 360, 50)], 22)
     m.add('t', rect(696, 76, 528, 298), line((950, 320), (950, 386)))
     m.wr(1170, 150, 110, 40)
-    # cafe with a terrace a step down
-    m.hip(300, 200, 220, 150)
-    m.add('w2', rect(300, 350, 220, 80)); m.steps(410, 352, 410, 428, 160, '4 6')
+    concert_hall(m)
     # school, schoolyard and track
     m.add('b', poly([(110, 550), (530, 550), (530, 640), (220, 640), (220, 790), (110, 790)]))
     m.add('r', poly([(122, 562), (518, 562), (518, 628), (208, 628), (208, 778), (122, 778)]))
@@ -326,18 +334,72 @@ def home2():
     m.holes(circ(390, 810, 96, ry=66))
     m.add('r', ring(390, 810, 26), line((390, 744), (390, 876)), rect(294, 780, 26, 60), rect(460, 780, 26, 60))
     m.add('t', ring(390, 810, 114, 84), ring(390, 810, 130, 100), rect(258, 676, 60, 34), rect(462, 676, 60, 34))
-    # convenience store, parking deck a level down, apartment towers
+    # convenience store, parking deck a level down, sandwich shop, apartment towers
     m.flat(650, 540, 140, 90, 8); m.add('r', line((650, 560), (790, 560)))
     for x in range(656, 790, 16): m.add('r', line((x, 540), (x, 560)))
     m.wr(680, 510, 80, 30)
-    m.add('w2', rect(650, 660, 230, 220))
-    for x in range(666, 870, 28): m.add('t', line((x, 670), (x, 740)), line((x, 800), (x, 870)))
+    m.add('w2', rect(650, 660, 230, 190))
+    for x in range(666, 870, 28): m.add('t', line((x, 670), (x, 740)), line((x, 784), (x, 842)))
+    sandwich_shop(m)
     m.steps(765, 642, 765, 662, 80)
     m.wr(725, 630, 80, 30)
     m.wr(950, 560, 330, 44); m.wr(950, 760, 330, 44); m.wr(1100, 604, 40, 156)
     for cx, cy in ((1030, 680), (1210, 680), (1030, 880), (1210, 880)):
         plus(m, cx, cy, 62, 26)
     m.add('d', line((960, 582), (1270, 582)), line((960, 782), (1270, 782)))
+    m.auto_fillets(16)
+    return m
+
+def concert_hall(m):
+    """The quarter's concert hall, shared by orchestras, ballet and the piano competition:
+    a deep stage with wings and a dock behind, the orchestra pit, a horseshoe of seat rows
+    with boxes along the walls, and a foyer with twin stairs opening onto the street.
+    The piano marker stands at (295, 112)."""
+    cx, cy = 295, 182                                            # middle of the stage front
+    m.add('b', rect(48, 20, 494, 396)); m.add('r', rect(56, 28, 478, 380))
+    m.add('w2', rect(134, 36, 322, 34))                           # scene dock behind the stage
+    m.add('w', rect(150, 66, 290, 116))                           # stage
+    m.add('w2', rect(96, 76, 54, 96), rect(440, 76, 54, 96))       # wings
+    for y in (98, 126, 154): m.add('t', line((162, y), (428, y)))   # dance-floor marks
+    m.add('l', line((295, 72), (295, 176)))
+    m.add('w2', poly([pt(cx, cy, 120, math.radians(a)) for a in range(0, 181, 10)]))   # pit
+    m.add('w', sector(cx, cy, 44, 214, 8, 172, 36))               # auditorium
+    m.add('w2', sector(cx, cy, 0, 42, 0, 180, 12))                # pit floor
+    for r in range(58, 206, 12):                                  # seat rows, two aisles
+        for a0, a1 in ((14, 62), (68, 112), (118, 166)): m.add('t', arc(cx, cy, r, a0, a1, 10))
+    for a in range(16, 170, 16):                                  # boxes along the wall
+        m.add('w2', sector(cx, cy, 216, 236, a - 6, a + 6, 3))
+    m.add('w', rect(92, 350, 406, 52))                            # foyer
+    m.steps(150, 356, 150, 398, 40); m.steps(440, 356, 440, 398, 40)   # stairs up to the boxes
+    pillars(m, [(212 + 57 * k, 388) for k in range(4)], 12)
+    m.add('w', rect(190, 400, 210, 32)); m.steps(295, 404, 295, 428, 190)
+
+def sandwich_shop(m):
+    """Corner sandwich shop with a few tables out on the pavement. Marker at (735, 905)."""
+    m.flat(660, 868, 150, 74, 8)
+    m.add('w2', rect(660, 942, 150, 40))
+    for x in (684, 724, 764, 798): m.holes(circ(x, 962, 8))
+
+# ===================== Home: the company, 2nd floor =====================
+def company2():
+    """The company's 2nd floor over its plaza block: an office floor round an atrium open to
+    the lobby below, meeting rooms, the director's office, desk rows, a lounge, the lift and
+    stairs. No city backdrop, so the street level shows faintly through (the widget keeps the
+    other floor at low opacity underneath)."""
+    m = Map(33)
+    m.add('w', cham(690, 70, 540, 310, 26))                      # floor plate
+    m.add('b2', rr(880, 150, 150, 120, 20)); m.add('t', rr(868, 138, 174, 144, 28))   # atrium + rail
+    for x in (712, 778):                                         # meeting rooms
+        m.add('w2', rect(x, 88, 58, 64)); m.add('tk', rr(x + 14, 106, 30, 28, 10))
+    m.add('w2', rect(1078, 88, 134, 96)); m.add('tk', rect(1106, 110, 72, 26)); m.holes(circ(1142, 152, 7))  # director
+    for y in range(184, 330, 30):                                # west desks
+        for x in (712, 772): m.holes(rect(x, y, 48, 12))
+    for y in range(210, 350, 30):                                # east desks
+        for x in (1062, 1118, 1174): m.holes(rect(x, y, 42, 12))
+    m.add('w2', rect(878, 300, 60, 62)); m.add('t', line((884, 306), (932, 356)), line((932, 306), (884, 356)))   # lift
+    m.add('w2', rect(952, 300, 44, 62)); m.steps(974, 304, 974, 358, 36)                                       # stairs
+    for cx, cy in ((724, 352), (770, 344), (816, 354)): m.holes(circ(cx, cy, 11))   # lounge
+    pillars(m, [(856, 122), (1054, 122), (856, 292), (1054, 292)], 16)
     m.auto_fillets(16)
     return m
 
@@ -495,7 +557,8 @@ def ruins2():
     m.auto_fillets(12)
     return m
 
-MAPS = {'n1': norilsk1, 'n2': norilsk2, 'm1': moscow1, 'm2': moscow2, 's1': home1, 's2': home2, 's3': home3, 'r1': ruins1, 'r2': ruins2}
+MAPS = {'n1': norilsk1, 'n2': norilsk2, 'm1': moscow1, 'm2': moscow2, 's1': home1, 's2': home2, 'o2': company2, 's3': home3,
+        'r1': ruins1, 'r2': ruins2}
 
 if __name__ == '__main__':
     # python3 build.py [--theme NAME] [--out DIR] [n1 n2 ...]

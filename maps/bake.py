@@ -32,6 +32,27 @@ def apartment(x, y):
             d += 'M%g %gh5v5h-5z' % (x - 10.5 + 8 * c, y - 16 + 8 * r)
     return d
 
+def piano(x, y):
+    """A grand piano seen from above, keyboard at the bottom: the straight bass side on the
+    left, the bentside curving in to the rounded tail, black keys cut out of the keyboard."""
+    d = ('M%g %gL%g %gC%g %g %g %g %g %gC%g %g %g %g %g %gC%g %g %g %g %g %gL%g %gZ'
+         % (x - 15, y + 12, x - 15, y - 13, x - 15, y - 20, x - 9, y - 22, x - 4, y - 22,
+            x + 3, y - 22, x + 5, y - 13, x + 9, y - 7, x + 13, y - 1, x + 15, y + 2, x + 15, y + 7, x + 15, y + 12))
+    d += 'M%g %gh34v8h-34z' % (x - 17, y + 12)
+    for k in (-12.5, -9, -3.5, 0, 3.5, 9, 12.5):
+        d += 'M%g %gh2.4v4.4h-2.4z' % (x + k - 1.2, y + 12.6)
+    return d
+
+def sandwich(x, y):
+    """A filled roll seen from the side: domed top bun with seeds, a wavy lettuce edge, the
+    filling and the bottom bun, the gaps cut out so the dark rim shows through."""
+    d = 'M%g %gC%g %g %g %g %g %gL%g %gZ' % (x - 20, y - 1, x - 20, y - 14, x + 20, y - 14, x + 20, y - 1, x - 20, y - 1)
+    for k in (-9, 0, 9): d += 'M%g %gl2 -1.4l2 1.4l-2 1.4z' % (x + k - 2, y - 7)
+    d += 'M%g %g' % (x - 21, y + 1) + 'q1.75 3 3.5 0' * 12 + 'v4h-42z'
+    d += 'M%g %gh42v4h-42z' % (x - 21, y + 6.5)
+    d += 'M%g %gh40c0 4 -3 6 -6 6h-28c-3 0 -6 -2 -6 -6z' % (x - 20, y + 12.5)
+    return d
+
 ON = '#ff4b1f'      # red-orange: a selected banner spot (on.svg)
 
 def number(n, x, y, shut, fill='#fff'):
@@ -53,6 +74,8 @@ def bake(svg, marks, closed, size):
         shut = len(m) > 3 and m[3] == closed
         if m[0][0] == '#':    # numbered banner spot, '#1'
             out.append(number(m[0][1:], m[1], m[2], shut))
+        elif m[0] in ('PNO', 'SDW'):   # drawn: the concert hall's grand piano, the sandwich shop
+            out.append('<path fill="#000" fill-rule="evenodd" filter="url(#m%s)" d="%s"/>' % ('c' if shut else 'o', (piano if m[0] == 'PNO' else sandwich)(m[1], m[2])))
         elif m[0] == 'APT':     # drawn, not an emoji: banner pins sit on these
             out.append('<path fill="#000" fill-rule="evenodd" filter="url(#m%s)" d="%s"/>' % ('c' if shut else 'o', apartment(m[1], m[2])))
         else:

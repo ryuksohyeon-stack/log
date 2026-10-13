@@ -3,5 +3,6 @@ maps in maps/kremlin/ with the shop markers and numbered banner spots drawn in
 (python3 maps/bake.py maps/kremlin k 34; r1 and r2 come from
 python3 maps/build.py --theme ash), plus b1.svg, a stand-in banner.
 n1 and n2 hold both Norilsk palettes side by side, white night on the left and
-polar night on the right; the widget shows one half with object-position.
+polar night on the right; the widget shows one half. o2 is the modern quarter's
+2nd floor (the company). on.svg holds the picked markers in red-orange.
 They sit in a short folder so the widget's image links stay short.
