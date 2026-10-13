@@ -6,7 +6,8 @@ python3 bake.py <src dir> <out dir> [size]
   maps side by side: on the left the white night (polar-night-only shops
   closed), on the right the polar-night map n1a/n2a (white-night-only shops
   closed). Widget 16 shows one half with object-position, which saves it an
-  <img> per floor.
+  <img> per floor. Also writes on.svg, the banner spots in red-orange as they
+  look when picked.
 
 The look copies the HTML markers: the emoji as a gold silhouette with a dark
 rim and a soft drop shadow; closed shops grey."""
@@ -31,13 +32,15 @@ def apartment(x, y):
             d += 'M%g %gh5v5h-5z' % (x - 10.5 + 8 * c, y - 16 + 8 * r)
     return d
 
-def number(n, x, y, shut):
+ON = '#ff4b1f'      # red-orange: a selected banner spot (on.svg)
+
+def number(n, x, y, shut, fill='#fff'):
     """A numbered banner spot in the Star Rail map-guide style: a bold white numeral
     (Pretendard Bold) with a thin dark outline, straight on the map, the same size on every
     map. A closed spot is grey."""
     k, gap = 28 / 1468, 70                # numeral height 28, 1468 font units tall
     w = [D[c][0] for c in n]; at = -(sum(w) + gap * (len(n) - 1)) / 2
-    o = '<g fill="%s" stroke="#1f1f1f" stroke-width="%g" stroke-linejoin="round" paint-order="stroke">' % ('#9b9b9b' if shut else '#fff', 4.4 / k)
+    o = '<g fill="%s" stroke="#1f1f1f" stroke-width="%g" stroke-linejoin="round" paint-order="stroke">' % ('#9b9b9b' if shut else fill, 4.4 / k)
     for c, cw in zip(n, w):
         o += '<path transform="translate(%g %g) scale(%g)" d="%s"/>' % (x + (at + cw / 2) * k, y, k, D[c][1])
         at += cw + gap
@@ -55,6 +58,17 @@ def bake(svg, marks, closed, size):
         else:
             out.append('<text x="%d" y="%d" filter="url(#m%s)">%s</text>' % (m[1], m[2], 'c' if shut else 'o', m[0]))
     return svg.replace('</svg>', ''.join(out) + '</g></svg>')
+
+def selected():
+    """on.svg, the banner spots as they look when picked, red-orange: cell 0 the apartment,
+    cells 1-9 the numerals. Each cell is a pin's 4%-wide tap square (51.2 map units) centred
+    on the marker, so widget 16 lays a cell over the drawn marker as the pin's background."""
+    c = 51.2
+    o = ['<svg xmlns="http://www.w3.org/2000/svg" width="%g" height="%g" viewBox="0 0 %g %g">' % (10 * c, c, 10 * c, c),
+         FILTER % ('r', '#1a1a1a', ON),
+         '<path fill="#000" fill-rule="evenodd" filter="url(#mr)" d="%s"/>' % apartment(c / 2, c / 2)]
+    o += [number(str(k), c * k + c / 2, c / 2, False, ON) for k in range(1, 10)]
+    return ''.join(o) + '</svg>'
 
 def pair(day, night):
     """Both Norilsk palettes in one 2560x1000 file, the polar night on the right. The polar
@@ -78,3 +92,4 @@ if __name__ == '__main__':
         else:
             out = bake(read(key), marks, None, size)
         open(os.path.join(dst, key + '.svg'), 'w').write(out); print(key)
+    open(os.path.join(dst, 'on.svg'), 'w').write(selected()); print('on')
