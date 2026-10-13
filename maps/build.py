@@ -385,7 +385,117 @@ def home3():
     m.flat(860, 920, 260, 70, 8, 5, 1); m.flat(120, 920, 260, 70, 8, 5, 1)
     return m
 
-MAPS = {'n1': norilsk1, 'n2': norilsk2, 'm1': moscow1, 'm2': moscow2, 's1': home1, 's2': home2, 's3': home3}
+# ===================== Abandoned mining town =====================
+def rubble(m, cx, cy, n, spread, size, seed=0):
+    """Loose rubble: small jagged slabs scattered around a point."""
+    R = m.rng
+    for _ in range(n):
+        x = cx + R.uniform(-spread, spread); y = cy + R.uniform(-spread * .6, spread * .6); r = R.uniform(size * .5, size)
+        k = R.randint(4, 6); a0 = R.uniform(0, 6.3)
+        m.add('b2', poly([(round(x + r * R.uniform(.6, 1) * math.cos(a0 + 2 * math.pi * j / k), 1),
+                           round(y + r * R.uniform(.6, 1) * math.sin(a0 + 2 * math.pi * j / k), 1)) for j in range(k)]))
+
+def ruins1():
+    m = Map(41)
+    m.far_city(gap=20)
+    # frozen river on the east side, the bridge broken in the middle
+    m.add('v', poly([(1030, 0), (1150, 0), (1160, 300), (1145, 620), (1170, 1000), (1040, 1000), (1020, 640), (1040, 300)]))
+    m.add('vw', line((1060, 120), (1120, 140)), line((1050, 260), (1130, 250)), line((1045, 720), (1135, 735)), line((1060, 880), (1150, 870)))
+    # square with the toppled statue
+    m.add('w', ngon(330, 475, 150, 8))
+    m.holes(rect(298, 443, 64, 64)); m.add('r', rect(308, 453, 44, 44))
+    m.holes(jag(250, 560, [(0, 0), (70, -18), (96, -8), (100, 10), (64, 22), (10, 20)]))
+    inlay(m, 330, 475, (110, 128), 8, 60, 110)
+    # the avenue to the bridge, half blocked where the road caved in
+    m.wr(470, 440, 570, 70); m.wr(1150, 440, 130, 70)
+    m.holes(jag(700, 470, [(0, 0), (40, -24), (90, -20), (110, 10), (80, 40), (20, 38)]),
+            jag(830, 445, [(0, 0), (30, 0), (40, 20), (10, 30)]))
+    m.add('w', rect(1040, 450, 40, 50), rect(1110, 450, 40, 50))
+    m.add('w2', rect(1080, 466, 30, 18)); m.add('t', line((1086, 466), (1086, 484)), line((1095, 466), (1095, 484)), line((1104, 466), (1104, 484)))
+    # streets north and south of the square
+    m.wr(300, 0, 60, 330); m.wr(300, 620, 60, 260)
+    # radio station on its yard, mast lying across it
+    m.add('w', cham(430, 70, 270, 210, 24)); m.wr(545, 280, 50, 160)
+    m.holes(rect(540, 130, 60, 60)); m.add('r', rect(548, 138, 44, 44), line((548, 138), (592, 182)), line((592, 138), (548, 182)))
+    m.holes(poly([(604, 170), (690, 238), (682, 248), (596, 180)]))
+    m.add('r', line((612, 182), (676, 232)))
+    # panel blocks: standing, cracked, and one fallen into a heap
+    m.flat(40, 60, 220, 110, 10, 6, 2); m.flat(760, 70, 240, 110, 10, 6, 2)
+    m.add('b2', poly([(760, 250), (1000, 250), (1000, 300), (960, 330), (930, 300), (880, 360), (760, 360)]))
+    m.add('r', line((770, 262), (990, 262)), line((800, 262), (800, 350)), line((850, 262), (850, 350)))
+    rubble(m, 930, 360, 9, 70, 18)
+    m.flat(40, 230, 220, 90, 10, 6, 1)
+    rubble(m, 210, 330, 5, 40, 12)
+    # school with its yard, the gym roof gone
+    m.court(40, 600, 230, 210, 100, 660, 110, 90)
+    m.add('w', rect(100, 660, 110, 90)); m.wr(270, 690, 30, 40)
+    rubble(m, 150, 700, 4, 30, 10)
+    # metro entrance going down, the shelter tent beside it
+    m.add('w2', cham(430, 580, 160, 110, 16)); m.steps(510, 600, 510, 670, 90, '4 6')
+    m.wr(470, 510, 60, 70)
+    m.add('w', cham(620, 600, 190, 120, 20)); m.wr(700, 510, 40, 90)
+    m.holes(ngon(715, 660, 30, 6)); m.add('r', ngon(715, 660, 18, 6))
+    m.flat(840, 560, 160, 110, 10, 4, 2)
+    # rail yard along the bottom with wagons left on the track
+    m.wr(80, 880, 950, 70); m.add('t', line((90, 902), (1020, 902)), line((90, 928), (1020, 928)))
+    for x in (160, 330, 500, 760):
+        m.holes(rect(x, 890, 120, 50)); m.add('r', rect(x + 8, 898, 104, 34), line((x + 60, 898), (x + 60, 932)))
+    # mine headframe on the far bank
+    m.add('w', cham(1170, 600, 100, 240, 16)); m.wr(1200, 510, 40, 90)
+    m.holes(rect(1190, 650, 60, 60)); m.add('r', rect(1198, 658, 44, 44), line((1198, 658), (1242, 702)), line((1242, 658), (1198, 702)))
+    m.flat(1170, 100, 100, 160, 8, 1, 3)
+    # cracks across the paving, more rubble where walls came down
+    m.add('t', line((240, 400), (285, 430), (270, 470), (300, 500)), line((380, 560), (410, 530), (400, 500)),
+          line((560, 455), (600, 470), (630, 455), (660, 475)), line((900, 495), (940, 470), (980, 490)), line((310, 760), (340, 790), (325, 830)),
+          line((470, 120), (520, 150), (500, 200)), line((640, 950), (670, 920), (700, 940)))
+    rubble(m, 760, 480, 6, 40, 12); rubble(m, 120, 830, 5, 50, 12); rubble(m, 1010, 430, 4, 30, 10); rubble(m, 700, 760, 4, 40, 10)
+    for cx, cy in ((420, 260), (1100, 300), (640, 830), (980, 700), (60, 470)):
+        rubble(m, cx, cy, 5, 45, 16)
+    # cars burnt out on the avenue, scrub in the empty lots
+    for x in (520, 900, 980): m.obj(rect(x, 452, 34, 18))
+    R = m.rng
+    for _ in range(26):
+        m.add('or', ring(round(R.uniform(380, 1000), 1), round(R.uniform(330, 860), 1), round(R.uniform(5, 11), 1)))
+    m.auto_fillets(12)
+    return m
+
+def ruins2():
+    m = Map(42)
+    m.far_rock(70)
+    # station hall: island platform between two track tunnels
+    m.add('w', cham(330, 410, 620, 120, 20))
+    pillars(m, [(x, y) for x in range(390, 900, 60) for y in (440, 500)], 16)
+    m.add('t', rect(350, 425, 580, 90))
+    m.wr(0, 350, 1280, 44); m.wr(0, 546, 1000, 44)
+    for y in (360, 384, 556, 580): m.add('t', line((10, y), (1270 if y < 500 else 990, y)))
+    m.wr(470, 394, 40, 16); m.wr(770, 394, 40, 16); m.wr(470, 530, 40, 16); m.wr(770, 530, 40, 16)
+    # the lower tunnel floods past the pump room
+    m.add('v', poly([(1000, 530), (1280, 520), (1280, 610), (1000, 600)]))
+    m.add('vw', line((1030, 560), (1100, 566)), line((1150, 556), (1250, 562)))
+    # stairs up to the surface
+    m.add('w2', cham(590, 200, 100, 110, 14)); m.steps(640, 214, 640, 300, 80, '4 6'); m.wr(615, 310, 50, 40)
+    # shelter: bunk rooms off a corridor
+    m.add('w', cham(60, 110, 300, 200, 20)); m.wr(180, 310, 50, 40)
+    for x in (90, 150, 210, 270):
+        m.holes(rect(x, 140, 40, 70)); m.add('r', line((x, 175), (x + 40, 175)))
+    m.holes(rect(110, 250, 200, 22))
+    # store rooms to the south-west
+    m.wr(180, 590, 50, 120)
+    m.add('w', cham(60, 710, 300, 180, 20))
+    for x in (90, 160, 230, 290):
+        for y in (740, 810): m.holes(rect(x, y, 44, 44)); m.add('r', line((x, y), (x + 44, y + 44)))
+    # pump room, half under water
+    m.add('w', cham(1040, 160, 200, 150, 18)); m.wr(1110, 310, 50, 40)
+    m.holes(circ(1100, 230, 30), circ(1180, 230, 30)); m.add('r', ring(1100, 230, 16), ring(1180, 230, 16))
+    # a drift going south, ending in a collapse
+    m.wr(760, 590, 50, 230); m.add('w', poly([(740, 820), (900, 830), (1000, 900), (960, 960), (780, 950)]))
+    m.holes(jag(900, 880, [(0, 0), (60, -10), (90, 30), (70, 70), (10, 60)]), jag(820, 900, [(0, 0), (30, -8), (36, 16)]))
+    rubble(m, 1010, 930, 7, 50, 16)
+    m.add('d', line((785, 600), (785, 810)))
+    m.auto_fillets(12)
+    return m
+
+MAPS = {'n1': norilsk1, 'n2': norilsk2, 'm1': moscow1, 'm2': moscow2, 's1': home1, 's2': home2, 's3': home3, 'r1': ruins1, 'r2': ruins2}
 
 if __name__ == '__main__':
     # python3 build.py [--theme NAME] [--out DIR] [n1 n2 ...]

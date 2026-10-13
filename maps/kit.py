@@ -85,6 +85,10 @@ PALETTES = {
     'polar_aurora': dict(f='#0c171c', fs='#0f1c22', fr='#0a1418', v='#071116', vw='#0f2230', b='#132a32', b2='#10242b', rim='#1c3a44',
                 r='#183440', rk='#1c3a44', rks='#14303a', w='#1d3a44', ws='#4fe3b5', wsw=2.6, w2='#17313a', curb='#2a5260', t='#2e5866',
                 s='#4fe3b5', d='#8af5ff', o='#132a32', os='#2e6b6a', blur=.4, shadow=None),
+    # ash and rust, for the abandoned town draft
+    'ash': dict(f='#d6d2ce', fs='#dcd8d4', fr='#ccc7c2', v='#b7c0c6', vw='#a3aeb5', b='#aaa39c', b2='#9d958e', rim='#bdb6b0',
+                r='#8f8780', rk='#a59e97', rks='#857d76', w='#f1efec', ws='#6b3a2c', wsw=2.6, w2='#ddd8d3', curb='#e2ddd8', t='#d3cdc7',
+                s='#7a3b2e', d='#7a3b2e', o='#aaa39c', os='#857d76', blur=.4, shadow='#3b2a2240'),
     'gzhel': dict(f='#eef2f8', fs='#f2f5fa', fr='#e3e9f2', v='#d5e1f0', vw='#c2d3ea', b='#dbe4f2', b2='#cfdaee', rim='#eaf0f8',
                 r='#bccbe3', rk='#d6e0f0', rks='#b3c4df', w='#ffffff', ws='#1f4fa3', wsw=2.6, w2='#e9eff8', curb='#c9d6ec', t='#d3def0',
                 s='#7d97c6', d='#1f4fa3', o='#dbe4f2', os='#9fb3d6', blur=.4, shadow='#1f4fa31f'),
