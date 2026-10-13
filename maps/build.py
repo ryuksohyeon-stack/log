@@ -375,10 +375,11 @@ def concert_hall(m):
     m.add('w', rect(190, 400, 210, 32)); m.steps(295, 404, 295, 428, 190)
 
 def sandwich_shop(m):
-    """Corner sandwich shop with tables out on a long terrace. Marker at (735, 905)."""
+    """Corner sandwich shop with tables out on its terrace, room left in front of the door for
+    a banner pin at (742.4, 960). Marker at (735, 905)."""
     m.flat(660, 868, 150, 74, 8)
-    m.add('w2', rect(660, 942, 262, 40))
-    for x in (684, 724, 764, 798, 838): m.holes(circ(x, 962, 8))
+    m.add('w2', rect(660, 942, 150, 40))
+    for x in (682, 708, 778, 800): m.holes(circ(x, 962, 7))
 
 # ===================== Home: the company, 2nd floor =====================
 def desk_island(m, x0, y, n, head):

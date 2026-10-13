@@ -94,15 +94,16 @@ def selected():
     return ''.join(o) + '</svg>'
 
 def pair(day, night):
-    """Both Norilsk palettes in one 2560x1000 file, the polar night on the right. The polar
-    half's ids are renamed and its style rules scoped to #P so the palettes don't collide."""
+    """Both Norilsk palettes in one file, the polar night on the right. The polar half's ids
+    are renamed and its style rules scoped to #P so the palettes don't collide."""
+    x0, y0, w, h = map(float, re.search(r'viewBox="([^"]+)"', day).group(1).split())
     inner = lambda s: s[s.index('>') + 1:s.rindex('</svg>')]
     n = re.sub(r'(id="|url\(#|href="#)(\w+)', r'\1p\2', inner(night))
     n = re.sub(r'<style>(.*?)</style>', lambda m: '<style>' + re.sub(r'([^{}]+)\{', lambda r: ','.join(
         '#P ' + x for x in r.group(1).split(',')) + '{', m.group(1)) + '</style>', n, flags=re.S)
-    half = '<svg %swidth="1280" height="1000" viewBox="0 0 1280 1000" preserveAspectRatio="none">%s</svg>'
-    return ('<svg xmlns="http://www.w3.org/2000/svg" width="2560" height="1000" viewBox="0 0 2560 1000">'
-            + half % ('', inner(day)) + half % ('id="P" x="1280" ', n) + '</svg>')
+    half = '<svg %%sx="%%g" y="%%g" width="%g" height="%g" viewBox="%g %g %g %g" preserveAspectRatio="none">%%s</svg>' % (w, h, x0, y0, w, h)
+    return ('<svg xmlns="http://www.w3.org/2000/svg" width="%g" height="%g" viewBox="%g %g %g %g">' % (2 * w, h, x0, y0, 2 * w, h)
+            + half % ('', x0, y0, inner(day)) + half % ('id="P" ', x0 + w, y0, n) + '</svg>')
 
 if __name__ == '__main__':
     src, dst = sys.argv[1:3]; size = float(sys.argv[3]) if len(sys.argv) > 3 else 34

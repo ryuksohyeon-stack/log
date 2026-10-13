@@ -139,6 +139,33 @@ def defs(p):
         + ('<filter id="sh"><feDropShadow dx="0" dy="5" stdDeviation="4" flood-color="%(shadow)s"/></filter>' if p['shadow'] else '')
         + '</defs>') % p
 
+EX, EY = 320, 250    # apron: the map runs on this far past the 1280x1000 core on every side,
+                      # so panning past the core (or a banner by its edge) still shows map
+
+def apron_bits(sh):
+    """Pieces that carry a shape on past the canvas edge without touching the core: for a closed
+    straight-edged shape, a block outward from every side that lies along a canvas edge (out to
+    the apron's corner where the side reaches a canvas corner); for an open line, a straight
+    run outward from an end that sits on an edge."""
+    if any(c[0] == 'A' for c in sh): return []
+    pts = [c[1] for c in sh if c[0] in 'ML']; out = []
+    lo = lambda v, a: -a if v <= 0 else v
+    hi = lambda v, n, a: n + a if v >= n else v
+    if sh[-1][0] == 'Z':
+        for (x0, y0), (x1, y1) in zip(pts, pts[1:] + pts[:1]):
+            ya, yb = sorted((y0, y1)); xa, xb = sorted((x0, x1))
+            if x0 == x1 == 0 and yb > ya: out.append(rect(-EX, lo(ya, EY), EX, hi(yb, 1000, EY) - lo(ya, EY)))
+            if x0 == x1 == 1280 and yb > ya: out.append(rect(1280, lo(ya, EY), EX, hi(yb, 1000, EY) - lo(ya, EY)))
+            if y0 == y1 == 0 and xb > xa: out.append(rect(lo(xa, EX), -EY, hi(xb, 1280, EX) - lo(xa, EX), EY))
+            if y0 == y1 == 1000 and xb > xa: out.append(rect(lo(xa, EX), 1000, hi(xb, 1280, EX) - lo(xa, EX), EY))
+    else:
+        for x, y in (pts[0], pts[-1]):
+            if x <= 0: out.append(line((-EX, y), (x, y)))
+            if x >= 1280: out.append(line((x, y), (1280 + EX, y)))
+            if y <= 0: out.append(line((x, -EY), (x, y)))
+            if y >= 1000: out.append(line((x, y), (x, 1000 + EY)))
+    return out
+
 class Map:
     def __init__(s, seed=1):
         s.L = {k: [] for k in ('f', 'fr', 'v', 'vw', 'b', 'b2', 'r', 'rk', 'w2', 'w', 't', 'tk', 'l', 'o', 'or', 'd')}
@@ -182,25 +209,76 @@ class Map:
         for sh in shapes: s.L[layer].append(sh)
     # ---- background ---------------------------------------------------
     def far_city(s, cell=(104, 84), gap=14):
-        """Faint surrounding city filling the whole canvas behind the map."""
-        cw, ch = cell; R = s.rng
-        for gy in range(-1, int(1000 / ch) + 1):
-            for gx in range(-1, int(1280 / cw) + 1):
+        """Faint surrounding city behind the map, apron included, drawn the way Star Rail draws
+        the town around a walkable area: street blocks of uneven size (some joined into one
+        big block), each parted into a few buildings with roof detail (an inner roof edge, a
+        ridge, rooftop boxes, a courtyard), and the odd open lot. gap widens the streets."""
+        cw, ch = cell
+        R = s.rng     # the draws the earlier brick backdrop made from the map's stream, made
+        for gy in range(-1, int(1000 / ch) + 1):       # again and thrown away, so the rest of
+            for gx in range(-1, int(1280 / cw) + 1):   # the map, drawn after this, keeps its layout
                 if R.random() < .12: continue
-                x = gx * cw + R.uniform(0, 6) + (gy % 2) * cw * .35; y = gy * ch + R.uniform(0, 6)
-                w = cw - gap - R.uniform(0, 26); h = ch - gap - R.uniform(0, 20)
-                if R.random() < .35:     # split block
-                    w2 = w * R.uniform(.35, .6)
-                    for bx, bw in ((x, w2 - 6), (x + w2 + 6, w - w2 - 6)):
-                        s.add('f', rect(bx, y, bw, h)); s.add('fr', rect(bx + 6, y + 6, bw - 12, h - 12))
-                else:
-                    s.add('f', rect(x, y, w, h)); s.add('fr', rect(x + 7, y + 7, w - 14, h - 14))
-                    if R.random() < .4: s.add('fr', line((x + 7, y + h / 2), (x + w - 7, y + h / 2)))
+                for a in (6, 6, 26, 20): R.uniform(0, a)
+                if R.random() < .35: R.uniform(.35, .6)
+                else: R.random()
+        B = random.Random(hash(R.getstate()) & 0xffffffff)
+        def cuts(a, b, lo, hi):
+            c = [a]
+            while c[-1] < b: c.append(c[-1] + B.uniform(lo, hi))
+            return c
+        xs, ys = cuts(-EX - 60, 1280 + EX, 170, 300), cuts(-EY - 60, 1000 + EY, 140, 230)
+        sx = [B.uniform(18, 28) + gap - 14 for _ in xs]; sy = [B.uniform(18, 28) + gap - 14 for _ in ys]
+        used = set()
+        for j in range(len(ys) - 1):
+            for i in range(len(xs) - 1):
+                if (i, j) in used: continue
+                di = 2 if i + 2 < len(xs) and (i + 1, j) not in used and B.random() < .22 else 1
+                dj = 2 if di == 1 and j + 2 < len(ys) and B.random() < .18 else 1
+                used.update((i + a, j + b) for a in range(di) for b in range(dj))
+                x0, x1 = xs[i] + sx[i] / 2, xs[i + di] - sx[i + di] / 2
+                y0, y1 = ys[j] + sy[j] / 2, ys[j + dj] - sy[j + dj] / 2
+                for lot in s._lots(B, x0, y0, x1 - x0, y1 - y0, 0): s._building(B, *lot)
+    def _lots(s, B, x, y, w, h, d):
+        """A block parted into building lots, 8 apart."""
+        if d < 3 and max(w, h) > 120 and B.random() < (.92 if d == 0 else .55):
+            if w >= h:
+                k = w * B.uniform(.35, .65); return s._lots(B, x, y, k - 4, h, d + 1) + s._lots(B, x + k + 4, y, w - k - 4, h, d + 1)
+            k = h * B.uniform(.35, .65); return s._lots(B, x, y, w, k - 4, d + 1) + s._lots(B, x, y + k + 4, w, h - k - 4, d + 1)
+        return [(x, y, w, h)]
+    def _building(s, B, x, y, w, h):
+        """One backdrop building on its lot: a plain or L-shaped roof with its inner edge, and
+        a ridge, rooftop boxes or a courtyard; now and then the lot is left open."""
+        if w < 26 or h < 26 or B.random() < .08: return
+        r = lambda *v: tuple(round(t, 1) for t in v)
+        def ell(x, y, w, h, c, cx, cy):      # the rectangle with corner c (0 NW, 1 NE, 2 SE, 3 SW) cut cx by cy
+            p = [[(x, y + cy), (x + cx, y + cy), (x + cx, y)], [(x + w - cx, y), (x + w - cx, y + cy), (x + w, y + cy)],
+                 [(x + w, y + h - cy), (x + w - cx, y + h - cy), (x + w - cx, y + h)], [(x + cx, y + h), (x + cx, y + h - cy), (x, y + h - cy)]]
+            q = [[(x, y)], [(x + w, y)], [(x + w, y + h)], [(x, y + h)]]; q[c] = p[c]
+            return poly([r(*t) for k in q for t in k])
+        if w > 70 and h > 70 and B.random() < .25:     # L-shaped: one corner cut away
+            c, cx, cy = B.randrange(4), w * B.uniform(.35, .55), h * B.uniform(.35, .55)
+            s.add('f', ell(x, y, w, h, c, cx, cy)); s.add('fr', ell(x + 6, y + 6, w - 12, h - 12, c, cx, cy))
+            return
+        s.add('f', rect(*r(x, y, w, h)))
+        s.add('fr', rect(*r(x + 6, y + 6, w - 12, h - 12)))
+        k = B.random()
+        if w > 100 and h > 90 and k < .35:              # courtyard
+            s.add('fr', rect(*r(x + w * .3, y + h * .3, w * .4, h * .4)))
+        elif k < .7:                                    # ridge along the long side
+            s.add('fr', line(r(x + 6, y + h / 2), r(x + w - 6, y + h / 2)) if w >= h else line(r(x + w / 2, y + 6), r(x + w / 2, y + h - 6)))
+        for _ in range(B.choice((0, 0, 1, 2)) if w > 50 and h > 44 else 0):   # rooftop boxes
+            bw, bh = B.uniform(12, 22), B.uniform(10, 18)
+            s.add('fr', rect(*r(B.uniform(x + 12, x + w - 12 - bw), B.uniform(y + 12, y + h - 12 - bh), bw, bh)))
     def far_rock(s, n=60):
-        """Faint rock masses for underground floors."""
-        R = s.rng
-        for _ in range(n):
-            cx, cy = R.uniform(0, 1280), R.uniform(0, 1000); r = R.uniform(40, 110)
+        """Faint rock masses for underground floors, the apron's from their own random stream."""
+        A = random.Random(hash(s.rng.getstate()) & 0xffffffff)
+        def spot(R, apron):
+            while True:
+                if not apron: return R.uniform(0, 1280), R.uniform(0, 1000)
+                x, y = R.uniform(-EX, 1280 + EX), R.uniform(-EY, 1000 + EY)
+                if not (-112 <= x <= 1392 and -112 <= y <= 1112): return x, y   # clear of the core
+        for R, apron in [(s.rng, False)] * n + [(A, True)] * int(n * 1.25):
+            cx, cy = spot(R, apron); r = R.uniform(40, 110)
             k = R.randint(5, 7); a0 = R.uniform(0, 6.3)
             pts = [(round(cx + r * R.uniform(.6, 1) * math.cos(a0 + 2 * math.pi * j / k), 1),
                     round(cy + r * R.uniform(.6, 1) * math.sin(a0 + 2 * math.pi * j / k), 1)) for j in range(k)]
@@ -320,7 +398,8 @@ class Map:
     # ---- output -------------------------------------------------------
     def svg(s, theme='hsr'):
         p = PALETTES[theme]
-        o = ['<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 1000" preserveAspectRatio="none"><style>%s</style>%s' % (style(p), defs(p))]
+        for k in ('v', 'vw', 'w', 'w2', 't', 'l', 'd'): s.L[k] = s.L[k] + [b for sh in s.L[k] for b in apron_bits(sh)]
+        o = ['<svg xmlns="http://www.w3.org/2000/svg" viewBox="%d %d %d %d" preserveAspectRatio="none"><style>%s</style>%s' % (-EX, -EY, 1280 + 2 * EX, 1000 + 2 * EY, style(p), defs(p))]
         if s.L['f']: o.append('<path class="f" d="%s"/>' % P(*s.L['f']))
         if s.L['fr']: o.append('<path class="fr" filter="url(#sb)" d="%s"/>' % P(*s.L['fr']))
         for k in ('v', 'vw'):
