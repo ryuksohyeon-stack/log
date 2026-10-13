@@ -579,6 +579,14 @@ def ruins2():
     m.holes(jag(900, 880, [(0, 0), (60, -10), (90, 30), (70, 70), (10, 60)]), jag(820, 900, [(0, 0), (30, -8), (36, 16)]))
     rubble(m, 1010, 930, 7, 50, 16)
     m.add('d', line((785, 600), (785, 810)))
+    # basement rooms B12 and B13: two rooms off a short corridor, reached from the upper tunnel
+    m.wr(720, 252, 292, 40); m.wr(846, 292, 40, 58)
+    for x in (722, 877):
+        m.add('w', cham(x, 92, 135, 148, 12)); m.wr(x + 52, 238, 30, 16)          # room and its door
+        m.holes(rect(x + 14, 152, 36, 70)); m.add('r', line((x + 14, 168), (x + 50, 168)))   # bed and pillow
+        m.holes(rect(x + 97, 146, 24, 44)); m.obj(circ(x + 83, 168, 7))          # desk against the wall, stool
+        m.holes(rect(x + 97, 198, 24, 26))                                       # locker
+    m.add('d', line((866, 300), (866, 342)))
     m.auto_fillets(12)
     return m
 

@@ -67,11 +67,27 @@ def number(n, x, y, shut, fill='#fff'):
         at += cw + gap
     return o + '</g>'
 
+# a capital B in the numerals' units and proportions (drawn here, not from the font), for room numbers
+B = (1120, 'M-560 -734L140 -734Q470 -734 470 -390Q470 -120 250 -38Q560 30 560 330Q560 734 160 734L-560 734Z'
+           'M-270 -484L90 -484Q180 -484 180 -330Q180 -170 90 -170L-270 -170ZM-270 84L140 84Q270 84 270 284Q270 484 140 484L-270 484Z')
+
+def plate(text, x, y):
+    """A room-number plate (B12): cream letters on a dark brown plate, centred on x, y."""
+    k, gap = 24 / 1468, 90
+    g = [B if c == 'B' else D[c] for c in text]; w = sum(c[0] for c in g) + gap * (len(g) - 1)
+    o = '<rect x="%g" y="%g" width="%g" height="%g" rx="5" fill="#6b3a2c"/><g fill="#f1efec" fill-rule="evenodd">' % (x - w * k / 2 - 9, y - 19, w * k + 18, 38)
+    at = -w / 2
+    for cw, d in g:
+        o += '<path transform="translate(%g %g) scale(%g)" d="%s"/>' % (x + (at + cw / 2) * k, y, k, d); at += cw + gap
+    return o + '</g>'
+
 def bake(svg, marks, closed, size):
     out = [FILTER % ('o', '#1a1a1a', '#f1cd84'), FILTER % ('c', '#131313', '#9b9b9b'),
            '<g font-family="sans-serif" font-size="%g" text-anchor="middle" dominant-baseline="central">' % size]
     for m in marks:
         shut = len(m) > 3 and m[3] == closed
+        if m[0][:2] == 'R:':   # room-number plate, 'R:B12'
+            out.append(plate(m[0][2:], m[1], m[2])); continue
         if m[0][0] == '#':    # numbered banner spot, '#1'
             out.append(number(m[0][1:], m[1], m[2], shut))
         elif m[0] in ('PNO', 'SDW'):   # drawn: the concert hall's grand piano, the sandwich shop
