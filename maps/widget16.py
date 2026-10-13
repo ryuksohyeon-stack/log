@@ -52,7 +52,7 @@ HOST = 'vasilic'    # the luvlog home this widget sits on
 # The pin links to luvlog.me/<handle>. When the widget is built, luvlog's public record for
 # that home gives its banner image, and whether its banner list carries HOST back (맞배너).
 # Re-run the build to pick up changed banners.
-PINS = {'n1': [('🏢', 130, 705, 'milan', '404호')]}    # the panel block at Norilsk's south-west corner
+PINS = {'n1': [('🏙', 130, 705, 'milan', '404호')]}    # the panel block at Norilsk's south-west corner
 
 # The root class is .srm because luvlog's own page CSS styles .hm (display:flex).
 # CSS is written for luvlog's widget renderer: it rewrites every selector as
