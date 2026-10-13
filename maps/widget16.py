@@ -21,7 +21,7 @@ FLOORS = {'mn': [('n1', '1'), ('n2', 'B1')], 'mm': [('m1', '1'), ('m2', 'B1')],
           's1': [('s1', '')], 's2': [('s2', '')], 's3': [('s3', '')]}
 NIGHT = {'n1', 'n2'}          # these also get a polar-night map, <name>a.svg
 # banner pins: map file -> (number, x, y in the 1280x1000 map, exchanged?, link, banner image)
-PINS = {'s1': [(1, 640, 790, True, 'https://luvlog.me', 'b1.svg')]}
+PINS = {'s1': [(1, 640, 790, True, 'https://luvlog.me/milan', 'b1.svg')]}
 
 CSS = '''
 .hm{container-type:inline-size;word-break:keep-all}.hm *{margin:0;box-sizing:border-box}.hm input{display:none}
