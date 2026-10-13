@@ -166,7 +166,7 @@ def build(base):
             px, py, side = round(x / 12.8), round(y / 10), 1 if x >= 640 else -1
             if h not in BANNERS: BANNERS[h] = luvlog(h); print('@%s: banner %s, 맞배너 %s' % (h, 'found' if BANNERS[h][0] else 'missing', BANNERS[h][1]))
             img, ex = BANNERS[h]; img = (img or base + 'b1.svg').replace('https://', '//')
-            cls = ' '.join(['p'] + ['n' + mark] * (mark != 'APT') + ['x'] * ex)
+            cls = ' '.join(['p'] + ['c' + mark] * (mark != 'APT') + ['x'] * ex)
             if mark != 'APT': picked.add(int(mark))
             o += ('<label class=%s style=--x:%d%%;--y:%d%%;--s:%d><input type=checkbox id=b%d><a href=//luvlog.me/%s>%s<img src=%s></a></label>'
                   % ('"%s"' % cls if ' ' in cls else cls, px, py, side, n, h, '<b>%s</b>' % cap if cap else '', img))
@@ -182,7 +182,7 @@ def build(base):
     html = ('<div class=hw><div class=hv><div class=zc><b class=zg><i></i></b><u></u></div><div class=mb><b class=pn></b><div class=mi>' + maps +
             '</div></div><b class=hd></b><div class=tr><i></i><b></b></div><div class=fs>' + floors + '</div></div>'
             '<div class=hl><b>✦ Карта звёздного пути ›</b>' + lst + '</div></div>')
-    focus += ''.join('.n%d:has(:checked){background-position:%.3g%%}' % (k, k / .09) for k in sorted(picked))
+    focus += ''.join('.c%d:has(:checked){background-position:%.3g%%}' % (k, k / .09) for k in sorted(picked))
     return '<div class=srm><style>' + css + focus + '</style>' + html + '</div>'
 
 if __name__ == '__main__':
