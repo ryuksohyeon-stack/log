@@ -16,10 +16,15 @@ def luvlog(h):
         if k == 'mapValue': return {a: val(b) for a, b in x.get('fields', {}).items()}
         if k == 'arrayValue': return [val(b) for b in x.get('values', [])]
         return x
+    get = lambda u: {a: val(b) for a, b in json.load(urllib.request.urlopen(u, timeout=20)).get('fields', {}).items()}
     try:
-        d = {a: val(b) for a, b in json.load(urllib.request.urlopen(url, timeout=20)).get('fields', {}).items()}
-    except Exception as e:
-        print('luvlog lookup failed for', h, e); return None, False
+        d = get(url)
+    except Exception as e:     # a locked home: only its card (banner, image) is public, not its lists
+        try:
+            c = get(url.replace('/pages/', '/cards/')); print('@%s is locked: banner from its card, 맞배너 unknown' % h)
+            return c.get('banner') or c.get('img'), False
+        except Exception:
+            print('luvlog lookup failed for', h, e); return None, False
     m = d.get('modes') or {}
     pick = lambda k: d.get(k) or ((m.get('a') or {}).get('snap') or {}).get(k) or ((m.get('b') or {}).get('snap') or {}).get(k) or ''
     hero = next((o for o in d.get('heroImgs') or [] if isinstance(o, dict) and o.get('img')), {})
@@ -45,54 +50,65 @@ GROUPS = [
 # map boxes: floors as (map file, floor label); one floor means no floor buttons
 FLOORS = {'mn': [('n1', '1'), ('n2', 'B1')], 'mm': [('m1', '1'), ('m2', 'B1')],
           's1': [('s1', '')], 's2': [('s2', '')], 's3': [('s3', '')], 'mr': [('r1', '1'), ('r2', 'B1')]}
-NIGHT = {'n1', 'n2'}          # these also get a polar-night map, <name>a.svg
+# n1 and n2 hold the white-night map on the left and the polar-night map on the right
+# (bake.py); polar night shows the right half
 HOST = 'vasilic'    # the luvlog home this widget sits on
 # banner pins: map file -> (mark, x, y in the 1280x1000 map, luvlog handle, caption)
-# The pin is an invisible tap area over an 'APT' marker drawn into the map (widget.MARKERS,
-# bake.py); tapping it rings the marker and opens the banner beside it, on that floor only.
-# The pin links to luvlog.me/<handle>. When the widget is built, luvlog's public record for
-# that home gives its banner image, and whether its banner list carries HOST back (맞배너).
-# Re-run the build to pick up changed banners.
-PINS = {'n1': [('APT', 130, 705, 'milan', '404호')]}    # the panel block at Norilsk's south-west corner
+# The pin is an invisible tap area over a marker drawn into the map (widget.MARKERS, bake.py):
+# 'APT' the apartment block, '1', '2'... the numbered gold discs (numbers start at 1 on each
+# map). Keep x, y on whole percents (x a multiple of 12.8, y of 10) so the tap ring sits on
+# the drawn marker. Tapping it rings the marker and opens the banner beside it, on that floor
+# only: to the left for a pin on the left half of the map, else to the right; the map pans so
+# the whole banner is in view. The banner links to luvlog.me/<handle>. When the widget is
+# built, luvlog's public record for that home gives its banner image, and whether its banner
+# list carries HOST back (맞배너). Re-run the build to pick up changed banners.
+PINS = {'n1': [('APT', 128, 700, 'milan', '404호')],     # the panel block at Norilsk's south-west corner
+        's3': [('1', 1139, 500, 'legion', '')],          # the ship's bow
+        'r1': [('1', 384, 400, 'pixelatedkisses', '')],  # the round plaza
+        's2': [('1', 128, 760, 'aiden', '')]}            # the L-shaped block
 
 # The root class is .srm because luvlog's own page CSS styles .hm (display:flex).
 # CSS is written for luvlog's widget renderer: it rewrites every selector as
 # ".<widget> <selector>" (splitting lists at commas), and puts a widget into a sandboxed
 # frame where links can't open when its CSS has overflow:hidden, html/body rules,
 # vh heights or position:fixed. So: overflow:clip, no commas inside :has()/:is(), and
-# each keyframe starts with a throwaway `:root{};` that soaks up the prefix.
+# each keyframe starts with a throwaway `:root{};` that soaks up the prefix. Since every
+# selector gets that prefix, a bare :has(#q1:checked) means "the widget has q1 checked".
+# An open banner (focus rules below) stops the scroll-driven pan (--t:n) and puts the map at
+# .mi's --f / translateY: its pin centred, clamped to the map's edges, then moved just enough
+# that the banner (up to 14em wide, on side --s) is inside the view.
 CSS = '''
 .srm{container-type:inline-size;word-break:keep-all}.srm *{margin:0;box-sizing:border-box}.srm input{display:none}
 .hw{counter-reset:pt px;position:relative;overflow:clip;font-size:clamp(9px,1.2cqi,14px);--F:#dcc7c8;--V:#bccad8;--v:77cqi;--vh:66.67cqi;--w0:77cqi;background:#efe5e5;color:#2a1416}
 {NAMES}
 .hv{position:relative;aspect-ratio:3/2}
 .mb{position:absolute;left:0;top:0;width:77%;height:100%;overflow:clip}
-.mi{position:relative;width:var(--w0);top:calc(var(--vh)/2 - var(--w0)/2.56);aspect-ratio:1.28}
+.mi{position:relative;width:var(--w0);top:calc(var(--vh)/2 - var(--w0)/2.56);aspect-ratio:1.28;translate:var(--f);--f:clamp(2.6% + 14em - var(--x) - (1 + var(--s))*1e4px,clamp(var(--v) - 100%,var(--v)/2 - var(--x),0px),var(--v) - 2.6% - 14em - var(--x) + (1 - var(--s))*1e4px)}
 .mb,.mi{background:var(--F)}
-.srm:has(#q1:checked):has(#n1:checked) .mb,.srm:has(#q2:checked):has(#n1:checked) .mb{background:linear-gradient(var(--F) 50%,var(--V) 0)}.srm:has(#q6:checked) .mb{background:var(--V)}
-.mi>div,.fs p{position:absolute;inset:0;visibility:hidden}
-{SHOW}{visibility:visible;--c:pt;--e:pt px}
+:has(.A:checked):has(#n1:checked) .mb{background:linear-gradient(var(--F) 50%,var(--V) 0)}:has(#q6:checked) .mb{background:var(--V)}
+.mi>div,.fs p{position:absolute;inset:0;display:none}
+{SHOW}{display:grid}
 .z{position:absolute;inset:0;--o:0;pointer-events:none}
-{ACTIVE}{--o:1;--pe:auto;pointer-events:auto;--a:var(--c);--b:var(--e)}
-.z>img{position:absolute;z-index:var(--o);width:100%;height:100%;opacity:max(.13,var(--o));transition:opacity .4s}
-.p{counter-increment:var(--a)}.p.x{counter-increment:var(--b)}
-.p{position:absolute;left:calc(var(--x)*1%);top:calc(var(--y)*1%);width:3.6%;aspect-ratio:3/4;translate:-50% -55%;z-index:3;border-radius:.3em;pointer-events:var(--pe,none);cursor:pointer}:checked+.p{box-shadow:0 0 0 .15em #7fe3f0,0 0 .5em #7fe3f0}
-.bn{display:none;position:absolute;left:calc(var(--x)*1% + 2.6%);top:calc(var(--y)*1%);translate:0 -50%;z-index:6;padding:.2em;border-radius:.3em;background:#fff;box-shadow:0 .2em .6em #0006;opacity:var(--o);pointer-events:var(--pe,none)}
-:checked+.p+.bn{display:block}.bn img{display:block;max-width:13em}.bn b{display:block;padding:.1em .3em .25em;font-size:.75em;color:#555}
+{ACTIVE}{--o:1;--d:block}
+.z>img{position:absolute;z-index:var(--o);width:100%;height:100%;object-fit:cover;object-position:0;opacity:max(.13,var(--o));transition:opacity .4s}
+:has(#q1:checked) .z>img{object-position:100%}
+.p{position:absolute;left:var(--x);top:var(--y);width:3.6%;aspect-ratio:3/4;translate:-50% -50%;z-index:3;border-radius:.3em;display:var(--d,none);pointer-events:auto;cursor:pointer;counter-increment:pt}.p.x{counter-increment:pt px}.o{aspect-ratio:1;border-radius:50%}.p:has(:checked){box-shadow:0 0 0 .15em #7fe3f0,0 0 .5em #7fe3f0}
+.p a{display:none;position:absolute;left:calc(50% + var(--s)*72%);top:50%;translate:calc(var(--s)*50% - 50%) -50%;padding:.2em;border-radius:.3em;background:#fff;box-shadow:0 .2em .6em #0006}
+:checked+a{display:block}.p img{display:block;max-width:13em}.p b{display:block;padding:.1em .3em .25em;font-size:.75em;color:#555}
 .hd:after{content:var(--nm)}.tr b:after{content:counter(px) " / " counter(pt)}
 .hl{position:absolute;top:4%;right:1.5%;width:20%;z-index:5}
 .hl>b{display:block;margin-bottom:.9em;padding:.5em .9em;white-space:nowrap;overflow:clip;text-overflow:ellipsis;border-radius:2em;background:#3a3a3a;color:#eee;font-weight:500}
 .hl p{padding:.3em .8em;background:#c4c4c4;color:#555;font-size:.85em}
 .hl label{display:block;padding:.75em 1em;border-bottom:1px solid #ddd;background:#f4f4f4;color:#333}
 .hl label:before{content:"✦ ";font-size:.7em}
-.hl :checked+label{background:#1d1d1d;color:#fff}
-.hl :checked+label:after{content:"▼";float:right;color:#36d2e6;font-size:.75em}
+.hl :has(>:checked){background:#1d1d1d;color:#fff}
+.hl :has(>:checked):after{content:"▼";float:right;color:#36d2e6;font-size:.75em}
 .fs{position:absolute;left:2.5%;bottom:5%;z-index:4;width:3.8em;height:14em}
-.fs p{top:auto;display:flex;flex-direction:column;gap:.1em;padding:.25em;border-radius:2em;background:#3a3a3ab8}
+.fs p{top:auto;gap:.1em;padding:.25em;border-radius:2em;background:#3a3a3ab8}
 .fs label{position:relative;padding:.75em 0 .45em;border-radius:2em;color:#f2f2f2;font-size:.85em;line-height:1.15;text-align:center}
 .fs label:before{content:"Этаж";display:block;font-size:.8em}
-.fs :checked+label{background:#fff;color:#333}
-.fs :checked+label:after{content:"▼";position:absolute;inset:-.1em 0 auto;color:#36c6e0;font-size:.6em}
+.fs :has(>:checked){background:#fff;color:#333}
+.fs :has(>:checked):after{content:"▼";position:absolute;inset:-.1em 0 auto;color:#36c6e0;font-size:.6em}
 .hd{position:absolute;left:2.5%;top:3.5%;z-index:4;padding-left:1.5em;background:radial-gradient(circle at .5em .6em,#0000 .13em,#222 .15em .4em,#0000 .42em),conic-gradient(from -30deg at 50% 100%,#222 60deg,#0000 0) .1em .8em/.8em .6em no-repeat;color:#555;font-size:1.15em;font-weight:500}
 .hd:before{content:"Навигация";display:block;color:#222;font-size:.62em;font-weight:700}
 .tr{position:absolute;left:2.5%;top:calc(3.5% + 3.3em);z-index:4;display:flex;align-items:center;gap:.6em;padding:.35em .8em .35em 1em;border-radius:2em;background:#2b2b2bd9;color:#eee}
@@ -105,21 +121,19 @@ CSS = '''
 .pn{display:block;touch-action:pan-x pan-y;scroll-timeline:--tx x,--ty y}
 .pn:before{content:"";display:block;width:200%;height:200%}
 .pn:after{content:"";position:absolute;left:100%;top:100%;width:1px;height:1px;scroll-snap-align:center}
-.mi{top:0;pointer-events:none;animation:zw linear both,tx linear both,ty linear both;animation-timeline:--zt,--tx,--ty}
-.z{pointer-events:none!important}
-.zc{display:flex;flex-direction:column;justify-content:space-between;align-items:center;position:absolute;right:1.5%;bottom:4%;z-index:4;width:2.2em;height:9em;border:1px solid #8c1724;background:linear-gradient(#d9b3b7 0 0) 50%/1px 60% no-repeat #fff;color:#8c1724;font-weight:700}
+.mi{top:0;pointer-events:none;animation:zw linear both,var(--t,tx) linear both,var(--t,ty) linear both;animation-timeline:--zt,--tx,--ty;transform:translateY(clamp(min(var(--vh) - 100%,var(--vh)/2 - 50%),var(--vh)/2 - var(--y),max(0px,var(--vh)/2 - 50%)))}
+.zc{display:grid;align-content:space-between;justify-items:center;position:absolute;right:1.5%;bottom:4%;z-index:4;width:2.2em;height:9em;border:1px solid #8c1724;background:linear-gradient(#d9b3b7 0 0) 50%/1px 60% no-repeat #fff;color:#8c1724;font-weight:700}
 .zc:before{content:"+"}.zc:after{content:"−"}
 .zg{touch-action:pan-y;scroll-timeline:--zt y}
 .zg i{display:block;height:400%}
-.zc u{position:absolute;left:50%;top:calc(100% - 2.1em);width:.6em;height:.6em;margin:-.3em;rotate:45deg;background:#8c1724;pointer-events:none;animation:zk linear both;animation-timeline:--zt}
+.zc u{position:absolute;left:50%;top:calc(100% - 2.1em);padding:.3em;margin:-.3em;rotate:45deg;background:#8c1724;pointer-events:none;animation:zk linear both;animation-timeline:--zt}
 }
 @keyframes k1{from,to{:root{};scroll-snap-type:both mandatory}}
 @keyframes zw{to{:root{};width:calc(var(--w0)*3)}}
-@keyframes tx{from{:root{};translate:max(0px,calc(var(--v)/2 - 50%))}to{:root{};translate:min(calc(var(--v) - 100%),calc(var(--v)/2 - 50%))}}
-@keyframes ty{from{:root{};transform:translateY(max(0px,calc(var(--vh)/2 - 50%)))}to{:root{};transform:translateY(min(calc(var(--vh) - 100%),calc(var(--vh)/2 - 50%)))}}
+@keyframes tx{to{:root{};translate:calc(var(--v) - 100%)}}
+@keyframes ty{from{:root{};transform:translateY(max(0px,var(--vh)/2 - 50%))}to{:root{};transform:translateY(min(var(--vh) - 100%,var(--vh)/2 - 50%))}}
 @keyframes zk{to{:root{};top:2.1em}}
-.srm:not(:has(#q1:checked)) .pd,.srm:has(#q1:checked) .z>img:not(.pd){display:none}
-.srm:has(#q1:checked) .hd,.srm:has(#q1:checked) .zc{filter:invert(1) hue-rotate(180deg)}
+:has(#q1:checked) .hd,:has(#q1:checked) .zc{filter:invert(1) hue-rotate(180deg)}
 @container (max-width:560px){.hv{aspect-ratio:auto;height:calc(100cqi/1.28)}.mb{width:100%}.hl{position:static;width:auto;padding:.6em}.hw{--v:100cqi;--vh:78.13cqi;--w0:100cqi}.zc{right:3%;width:34px;height:130px}}
 '''
 # extra colours per list entry: polar night is dark, the abandoned town ash grey
@@ -132,39 +146,40 @@ def build(base):
     items = [it for _, its in GROUPS for it in its]
     boxes = list(dict.fromkeys(it[3] for it in items))
     qs = lambda box: [it[0] for it in items if it[3] == box]
-    names = ''.join('.srm:has(#%s:checked) .hw{--nm:"%s"%s}' % (q, t, EXTRA.get(q, '')) for q, _, t, _ in items)
-    show, active = [], []
-    for b in boxes:
-        fl = FLOORS[b]
-        if len(fl) > 1:
-            show += ['.srm:has(#%s:checked) .%s' % (q, b) for q in qs(b)]
-            active += ['.hw:has(#%s:checked) .%s>:nth-child(%d)' % (f, b, k + 1) for k, (f, _) in enumerate(fl)]
-        else:
-            show += ['.srm:has(#%s:checked) .%s' % (q, b) for q in qs(b)]; active.append('.%s>*' % b)
+    names = ''.join(':has(#%s:checked) .hw{--nm:"%s"%s}' % (q, t, EXTRA.get(q, '')) for q, _, t, _ in items)
+    # a box shown for several list entries (Norilsk: polar night, white night) gets a class on
+    # those radios, so one :has(.A:checked) stands for all of them
+    grp = {b: 'ABCDEFG'[k] for k, b in enumerate(b for b in boxes if len(qs(b)) > 1)}
+    reg = lambda b: ':has(%s:checked)' % ('.' + grp[b] if b in grp else '#' + qs(b)[0])
+    show = [reg(b) + ' .' + b for b in boxes]
+    active = [':has(#%s:checked) .%s' % (f, f) if len(FLOORS[b]) > 1 else '.%s>*' % b for b in boxes for f, _ in FLOORS[b]]
+    focus = ''     # per open banner: the map pans to it (see .mi --f), only while its floor is shown
     css = CSS.replace('{NAMES}', names).replace('{SHOW}', ','.join(show)).replace('{ACTIVE}', ','.join(active)).replace('\n', '')
 
-    def pins(f):
+    def pins(b, f):
+        nonlocal focus
         o = ''
         for mark, x, y, h, cap in PINS.get(f, []):
             n = PIN_IDS.setdefault((f, mark, x, y), len(PIN_IDS) + 1)
-            pos = 'style=--x:%d;--y:%d' % (round(x / 12.8), round(y / 10))
+            px, py, side = round(x / 12.8), round(y / 10), 1 if x >= 640 else -1
             if h not in BANNERS: BANNERS[h] = luvlog(h); print('@%s: banner %s, 맞배너 %s' % (h, 'found' if BANNERS[h][0] else 'missing', BANNERS[h][1]))
-            img, ex = BANNERS[h]; img = img or base + 'b1.svg'
-            cls = ' '.join(['p'] + ['x'] * ex)
-            o += ('<input type=checkbox id=b%d><label for=b%d class=%s %s></label><a class=bn href=https://luvlog.me/%s target=_blank %s>%s<img src=%s></a>'
-                  % (n, n, '"%s"' % cls if ' ' in cls else cls, pos, h, pos, '<b>%s</b>' % cap if cap else '', img.replace('&', '&amp;')))
+            img, ex = BANNERS[h]; img = (img or base + 'b1.svg').replace('https://', '//')
+            cls = ' '.join(['p'] + ['o'] * (mark != 'APT') + ['x'] * ex)
+            o += ('<label class=%s style=--x:%d%%;--y:%d%%;--s:%d><input type=checkbox id=b%d><a href=//luvlog.me/%s>%s<img src=%s></a></label>'
+                  % ('"%s"' % cls if ' ' in cls else cls, px, py, side, n, h, '<b>%s</b>' % cap if cap else '', img))
+            focus += '%s%s:has(#b%d:checked) .mi{--x:%d%%;--y:%d%%;--s:%d;--t:n}' % (reg(b), ':has(#%s:checked)' % f if len(FLOORS[b]) > 1 else '', n, px, py, side)
         return o
     maps = ''.join('<div class=%s>%s</div>' % (b, ''.join(
-        '<div class=z><img src=%s%s.svg>%s%s</div>' % (base, f, '<img class=pd src=%s%sa.svg>' % (base, f) if f in NIGHT else '', pins(f))
+        '<div class=%s><img src=%s%s.svg>%s</div>' % ('"z %s"' % f if len(FLOORS[b]) > 1 else 'z', base, f, pins(b, f))
         for f, _ in FLOORS[b])) for b in boxes)
-    floors = ''.join('<p class=%s>%s</p>' % (b, ''.join('<input type=radio name=%s id=%s%s><label for=%s>%s</label>' % (b, f, ' checked' if k == 0 else '', f, lab)
+    floors = ''.join('<p class=%s>%s</p>' % (b, ''.join('<label><input type=radio name=%s id=%s%s>%s</label>' % (b, f, ' checked' if k == 0 else '', lab)
                      for k, (f, lab) in enumerate(FLOORS[b]))) for b in boxes if len(FLOORS[b]) > 1)
-    lst = ''.join('<p>◈ %s</p>%s' % (g, ''.join('<input type=radio name=q id=%s%s><label for=%s>%s</label>' % (q, ' checked' if q == 'q1' else '', q, lab)
-                  for q, lab, _, _ in its)) for g, its in GROUPS)
+    lst = ''.join('<p>◈ %s</p>%s' % (g, ''.join('<label><input type=radio name=q id=%s%s%s>%s</label>' % (
+                  q, ' class=' + grp[b] if b in grp else '', ' checked' if q == 'q1' else '', lab) for q, lab, _, b in its)) for g, its in GROUPS)
     html = ('<div class=hw><div class=hv><div class=zc><b class=zg><i></i></b><u></u></div><div class=mb><b class=pn></b><div class=mi>' + maps +
-            '</div></div><h4 class=hd></h4><div class=tr><i></i><b></b></div><div class=fs>' + floors + '</div></div>'
+            '</div></div><b class=hd></b><div class=tr><i></i><b></b></div><div class=fs>' + floors + '</div></div>'
             '<div class=hl><b>✦ Карта звёздного пути ›</b>' + lst + '</div></div>')
-    return '<div class=srm><style>' + css + '</style>' + html + '</div>'
+    return '<div class=srm><style>' + css + focus + '</style>' + html + '</div>'
 
 if __name__ == '__main__':
     here = os.path.dirname(os.path.abspath(__file__))
