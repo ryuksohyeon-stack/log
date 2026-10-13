@@ -141,6 +141,7 @@ CSS = '''
 .srm .tr{position:absolute;left:2.5%;top:calc(3.5% + 3.3em);z-index:4;display:flex;align-items:center;gap:.6em;padding:.35em .8em .35em 1em;border-radius:2em;background:#2b2b2bd9;color:#eee}
 .srm .tr i{width:1.4em;height:1.1em;border-radius:.4em .4em .1em .1em;background:linear-gradient(90deg,#0000 40%,#fbe3a0 0 60%,#0000 0) 0 40%/100% 30% no-repeat,linear-gradient(#0000 42%,#6b3f14 0 54%,#0000 0),#e3b04f}
 .srm .tr:after{content:"▾";margin-left:1.6em}
+.srm .hd,.srm .tr,.srm .fs{pointer-events:none}.srm .fs label{pointer-events:auto}
 .srm .pn,.srm .zc{display:none}
 @supports (timeline-scope:none){
 .srm .hw{timeline-scope:--tx,--ty,--zt;animation:srm-z linear both;animation-timeline:--zt}
