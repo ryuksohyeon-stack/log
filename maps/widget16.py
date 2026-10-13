@@ -73,7 +73,7 @@ PINS = {'n1': [('APT', 128, 700, 'milan', '404호')],      # the panel block at 
         's1': [('1', 243.2, 360, 'karma', ''),            # the west hall
                ('2', 729.6, 200, 'meltaway', '')],        # beside the north gate
         's2': [('1', 128, 760, 'aiden', ''),              # the L-shaped block
-               ('2', 896, 950, '915', ''),                # the sandwich shop's terrace
+               ('2', 742.4, 960, '915', ''),             # in front of the sandwich shop
                ('3', 384, 130, 'chajaehyeon', ''),        # the concert hall's stage
                ('4', 422.4, 260, 'koyubin', '')],         # the concert hall's seats
         'o2': [('1', 1164.8, 190, '574839', '')],         # the seat between the head and the 대리
@@ -88,30 +88,40 @@ EXTRA = {'q1': ';--F:#161c2e;--V:#0c1222;background:#0f1424', 'q7': ';--F:#d6d2c
 
 # The design, for 꾸미기 CSS. It is page-wide there, so every rule starts at .srm (the root
 # class is .srm because luvlog's page CSS styles .hm) and keyframes are named srm-*.
-# An open banner (the per-pin rules in the widget) stops the scroll-driven pan (--t:n) and
-# puts the map at .mi's --f / translateY: its pin centred, clamped to the map's edges, then
-# moved just enough that the banner (up to 15em out, on side --s) is inside the view.
+# Panning: .pn is an invisible scroller over the map; its scroll progress moves the map (.mi)
+# from 25% past one edge to 25% past the other, so the map's apron (bake.py, kit.EX/EY) can
+# be dragged into view. On phones the scroller is as long as the map's travel, so the map
+# follows the finger. Zoom (desktop) is the registered --z, 0..1, from the zoom bar.
+# An open banner moves the view to itself once: from the map's focus --fx, --fy, --fs (see
+# SNAPS) .pn works out --sx, --sy, the scroll that centres the pin and its banner, and puts
+# its snap lines there (:before across, :after down: one per axis, each running the scroller's
+# whole length, so Chrome always counts it as in view); ticking the pin starts a short
+# animation that switches snapping on, so the scroller jumps there, and then lets go, so the
+# map can still be dragged. Without scroll-driven animations (older Safari, Firefox) the
+# map does not pan; the focus then shifts it statically (--f, --g) so the banner is in view.
 CSS = '''
+@property --z{syntax:"<number>";inherits:true;initial-value:0}
 .srm{container-type:inline-size;word-break:keep-all}.srm *{margin:0;box-sizing:border-box}.srm input{display:none}
-.srm .hw{counter-reset:pt px;position:relative;overflow:clip;font-size:clamp(9px,1.2cqi,14px);--F:#dcc7c8;--V:#bccad8;--v:77cqi;--vh:66.67cqi;--w0:77cqi;background:#efe5e5;color:#2a1416}
+.srm .hw{counter-reset:pt px;position:relative;overflow:clip;font-size:clamp(9px,1.2cqi,14px);--F:#dcc7c8;--V:#bccad8;--v:77cqi;--vh:66.67cqi;--r:.8658;--k:1;--bw:13em;background:#efe5e5;color:#2a1416}
 {NAMES}
 .srm .hv{position:relative;aspect-ratio:3/2}
-.srm .mb{position:absolute;inset:0 23% 0 0;overflow:clip}
-.srm .mi{position:relative;width:var(--w0);aspect-ratio:1.28;translate:var(--f);transform:translateY(var(--g,max(0px,var(--vh)/2 - 50%)));--f:clamp(2.6% + 15em - var(--x) - (1 + var(--s))*1e4px,clamp(var(--v) - 100%,var(--v)/2 - var(--x),0px),var(--v) - 2.6% - 15em - var(--x) + (1 - var(--s))*1e4px);--g:clamp(3.6em - var(--y),clamp(min(var(--vh) - 100%,var(--vh)/2 - 50%),var(--vh)/2 - var(--y),max(0px,var(--vh)/2 - 50%)),var(--vh) - 3.6em - var(--y))}
+.srm .mb{position:absolute;inset:0 23% 0 0;overflow:clip;--kz:calc(var(--k)*(1 + 2*var(--z,0)));--fx:{FX};--fy:{FY};--fs:{FS}}
+.srm .mi{position:relative;width:calc(var(--v)*var(--k)*(1 + 2*var(--z,0)));aspect-ratio:1.28;translate:var(--f);transform:translateY(var(--g,max(0px,var(--vh)/2 - 50%)));--f:clamp(2.6% + var(--bw) + 2em - var(--fx)*100% - (1 + var(--fs))*1e4px,clamp(var(--v) - 125%,var(--v)/2 - var(--fx)*100%,25%),var(--v) - 2.6% - var(--bw) - 2em - var(--fx)*100% + (1 - var(--fs))*1e4px);--g:clamp(3.6em - var(--fy)*100%,clamp(var(--vh) - 125%,var(--vh)/2 - var(--fy)*100%,25%),var(--vh) - 3.6em - var(--fy)*100%)}
 .srm .mb,.srm .mi{background:var(--F)}
 .srm:has(.A:checked):has(#n1:checked) .mb{background:linear-gradient(var(--F) 50%,var(--V) 0)}.srm:has(#q6:checked) .mb{background:var(--V)}
 .srm .mi>div,.srm .fs p{position:absolute;inset:0;display:none}
 {SHOW}{display:grid}
-.srm .z{position:absolute;inset:0;--o:0;z-index:var(--o);opacity:max(.13,var(--o));transition:opacity .4s;pointer-events:none;background:0 0/100% 100% no-repeat}
+.srm .z{position:absolute;inset:0;--o:0;z-index:var(--o);opacity:max(.13,var(--o));transition:opacity .4s;pointer-events:none}
+.srm .z:before{content:"";position:absolute;inset:-25%;background:var(--m) 0 0/100% 100% no-repeat}
 {ACTIVE}{--o:1;--d:block}
 {MAPS}
-{PAIRS}{background-size:200% 100%}.srm:has(#q1:checked) .z{background-position:100% 0}
+{PAIRS}{background-size:200% 100%}.srm:has(#q1:checked) .z:before{background-position:100% 0}
 .srm .p{position:absolute;left:var(--x);top:var(--y);width:4%;aspect-ratio:1;translate:-50% -50%;z-index:3;display:var(--d,none);pointer-events:auto;cursor:pointer;counter-increment:pt}.srm .p.x{counter-increment:pt px}
 .srm .p:before{content:"";position:absolute;inset:-.5em}
 .srm .p:has(:checked){background:url({BASE}on.svg) 0/1000%}
 {PICKED}
 .srm .p a{display:none;position:absolute;left:calc(50% + var(--s)*(50% + .6em));top:50%;translate:calc(var(--s)*50% - 50%) -50%;padding:.2em;border-radius:.3em;background:#fff;box-shadow:0 .2em .6em #0006}
-.srm .p :checked+a{display:block}.srm .p img{display:block;max-width:13em}.srm .p b{display:block;padding:.1em .3em .25em;font-size:.75em;color:#555}
+.srm .p :checked+a{display:block}.srm .p img{display:block;max-width:var(--bw)}.srm .p b{display:block;padding:.1em .3em .25em;font-size:.75em;color:#555}
 .srm .hd:after{content:var(--nm)}.srm .tr b:after{content:counter(px) " / " counter(pt)}
 .srm .hl{position:absolute;top:4%;right:1.5%;width:20%;z-index:5}
 .srm .hl>b{display:block;margin-bottom:.9em;padding:.5em .9em;white-space:nowrap;overflow:clip;text-overflow:ellipsis;border-radius:2em;background:#3a3a3a;color:#eee;font-weight:500}
@@ -133,38 +143,48 @@ CSS = '''
 .srm .tr:after{content:"▾";margin-left:1.6em}
 .srm .pn,.srm .zc{display:none}
 @supports (timeline-scope:none){
-.srm .hw{timeline-scope:--tx,--ty,--zt}
-.srm .pn,.srm .zg{position:absolute;inset:0;overflow:scroll;scrollbar-width:none;overscroll-behavior:contain;animation:srm-k1 .6s}
-.srm .pn{display:block;touch-action:pan-x pan-y;scroll-timeline:--tx x,--ty y}
-.srm .pn:before{content:"";display:block;width:200%;height:200%}
-.srm .pn:after{content:"";position:absolute;left:100%;top:100%;padding:.5px;scroll-snap-align:center}
-.srm .mi{pointer-events:none;animation:srm-zw linear both,var(--t,srm-tx) linear both,var(--t,srm-ty) linear both;animation-timeline:--zt,--tx,--ty}
+.srm .hw{timeline-scope:--tx,--ty,--zt;animation:srm-z linear both;animation-timeline:--zt}
+.srm .pn,.srm .zg{position:absolute;inset:0;overflow:scroll;scrollbar-width:none;overscroll-behavior:contain}
+.srm .pn{display:block;touch-action:pan-x pan-y;scroll-timeline:--tx x,--ty y;animation:{SLOTS};--cw:calc(2*var(--v));--ch:calc(2*var(--vh));--sx:clamp(0px,(var(--v)*(var(--kz)*(.25 + var(--fx) + .02*var(--fs)) - .5) + (var(--bw)/2 + .8em)*var(--fs))/(var(--kz)*1.5 - 1),var(--v));--sy:clamp(0px,var(--r)*var(--v)*(var(--kz)*(.25 + var(--fy))/1.28 - var(--r)/2)/(var(--kz)*1.5/1.28 - var(--r)),var(--vh))}
+.srm .pn:before,.srm .pn:after{content:"";position:absolute;left:0;top:0;width:1px;height:1px}
+.srm .pn:before{left:calc(var(--sx) + var(--v)/2);height:var(--ch);scroll-snap-align:none center}
+.srm .pn:after{top:calc(var(--sy) + var(--vh)/2);width:var(--cw);scroll-snap-align:center none}
+.srm .mi{pointer-events:none;animation:srm-tx linear both,srm-ty linear both;animation-timeline:--tx,--ty}
 .srm .zc{display:grid;align-content:space-between;justify-items:center;position:absolute;right:1.5%;bottom:4%;z-index:4;width:2.2em;height:9em;border:1px solid #8c1724;background:linear-gradient(#d9b3b7 0 0) 50%/1px 60% no-repeat #fff;color:#8c1724;font-weight:700}
 .srm .zc:before{content:"+"}.srm .zc:after{content:"−"}
-.srm .zg{touch-action:pan-y;scroll-timeline:--zt y}
+.srm .zg{touch-action:pan-y;scroll-timeline:--zt y;animation:srm-k1 .6s}
 .srm .zg i{display:block;height:400%}
 .srm .zc u{position:absolute;left:50%;top:calc(100% - 2.1em);padding:.3em;margin:-.3em;rotate:45deg;background:#8c1724;pointer-events:none;animation:srm-zk linear both;animation-timeline:--zt}
 }
+{SNAPS}
 @keyframes srm-k1{from,to{scroll-snap-type:both mandatory}}
-@keyframes srm-zw{to{width:calc(var(--w0)*3)}}
-@keyframes srm-tx{to{translate:calc(var(--v) - 100%)}}
-@keyframes srm-ty{from{transform:translateY(max(0px,var(--vh)/2 - 50%))}to{transform:translateY(min(var(--vh) - 100%,var(--vh)/2 - 50%))}}
+@keyframes srm-z{to{--z:1}}
+@keyframes srm-tx{from{translate:25%}to{translate:calc(var(--v) - 125%)}}
+@keyframes srm-ty{from{transform:translateY(25%)}to{transform:translateY(calc(var(--vh) - 125%))}}
 @keyframes srm-zk{to{top:2.1em}}
-@keyframes srm-zkx{to{left:calc(100% - 2.1em)}}
 .srm:has(#q1:checked) .hd,.srm:has(#q1:checked) .zc{filter:invert(1) hue-rotate(180deg)}
 @container (max-width:560px){
-.srm .hw{--v:100cqi;--vh:78.13cqi;--w0:100cqi}
-.srm .hv{aspect-ratio:auto;height:calc(100cqi/1.28 + 6.4em)}
-.srm .mb{inset:3.4em 0 3em}
-.srm .hd{top:.55em;left:3%}.srm .tr{top:.75em;left:auto;right:3%}
-.srm .fs{top:auto;bottom:.3em;left:3%;width:auto;height:2.4em}.srm .fs p{position:static;grid-auto-flow:column;padding:.15em}
-.srm .fs label{padding:.3em .9em .2em;font-size:.8em}
-.srm .zc{top:auto;bottom:.5em;right:3%;width:42%;height:2em;grid-auto-flow:column;align-content:center;justify-content:space-between;padding:0 .7em;background-size:72% 1px}
-.srm .zc:before{content:"−"}.srm .zc:after{content:"+"}
-.srm .zg{touch-action:pan-x;scroll-timeline:--zt x}.srm .zg i{height:100%;width:400%}
-.srm .zc u{top:50%;left:2.1em;animation-name:srm-zkx}
-.srm .hl{position:static;width:auto;padding:.6em}}
+.srm .hw{--v:100cqi;--vh:calc(100cqi/1.28);--bw:11em}
+.srm .hv{aspect-ratio:1.28}.srm .mb{inset:0}.srm .zc{display:none}
+.srm .hl{position:static;width:auto;padding:.6em 0}}
+@supports (timeline-scope:none){@container (max-width:560px){
+.srm .hw{--k:1.28;--vh:100cqi}.srm .hv{aspect-ratio:1}
+.srm .pn{--cw:calc(1.5*var(--k)*var(--v));--ch:calc(1.5*var(--k)*var(--v)/1.28);--sx:clamp(0px,var(--v)*(var(--k)*(.25 + var(--fx) + .02*var(--fs)) - .5) + (var(--bw)/2 + .8em)*var(--fs),var(--v)*(1.5*var(--k) - 1));--sy:clamp(0px,var(--v)*var(--k)*(.25 + var(--fy))/1.28 - var(--vh)/2,var(--v)*var(--k)*1.5/1.28 - var(--vh))}}}
 '''
+# Pins b1..b40. The widget sets --xN, --yN, --sN (the pin's place and banner side) on .mb while
+# pin N is open and its floor shown. The map's focus --fx, --fy, --fs is the highest-numbered
+# such pin, else the view's default (DEFAULT_FOCUS, else the middle); the static fallback uses it.
+# Each pin also has its own animation slot on .pn: ticking it starts that slot, which switches
+# snapping on for .6s with the focus set to that pin, so the newest open banner wins.
+NPIN = 40
+def chain(v, last):
+    for n in range(1, NPIN + 1): last = 'var(--%s%d,%s)' % (v, n, last)
+    return last
+SLOTS = 'srm-k1 .6s,var(--sv,srm-x) .6s,' + ','.join('var(--a%d,srm-x) .6s' % n for n in range(1, NPIN + 1))
+SNAPS = ('\n'.join('.srm:has(#b%d:checked) .pn{--a%d:srm-s%d}' % (n, n, n) for n in range(1, NPIN + 1)) + '\n' +
+         '\n'.join('@keyframes srm-s%d{from,to{scroll-snap-type:both mandatory;--fx:var(--x%d);--fy:var(--y%d);--fs:var(--s%d)}}' % (n, n, n, n) for n in range(1, NPIN + 1)))
+# where a view opens when no banner is open (map fractions of the 1280x1000 core); others: the middle
+DEFAULT_FOCUS = {'o2': (.75, .23)}    # the company floor: its office block in the north-east
 
 BANNERS = {}
 PIN_IDS = {}
@@ -183,25 +203,35 @@ def build(base):
     reg = lambda b: ':has(%s:checked)' % ('.' + grp[b] if b in grp else '#' + qs(b)[0])
     show = ['.srm%s .%s' % (reg(b), b) for b in boxes]
     active = ['.srm:has(#%s:checked) .%s' % (f, f) if len(FLOORS[b]) > 1 else '.srm .' + f for b in boxes for f, _ in FLOORS[b]]
-    maps = ''.join('.srm .%s{background-image:url(%s%s.svg)}' % (f, base, f) for f in files)
+    maps = ''.join('.srm .%s{--m:url(%s%s.svg)}' % (f, base, f) for f in files)
+    # switching to another map or floor restarts its own snap slot: the view goes to the open
+    # banner there, else to the view's default
+    view = lambda b, f: '.srm%s%s' % (reg(b), ':has(#%s:checked)' % f if len(FLOORS[b]) > 1 else '')
+    views = ('\n' + ''.join('%s .pn{--sv:srm-v%s}' % (view(b, f), f) for b in boxes for f, _ in FLOORS[b]) +
+             ''.join('%s .mb{--dx:%g;--dy:%g}' % (view(b, f), *DEFAULT_FOCUS[f]) for b in boxes for f, _ in FLOORS[b] if f in DEFAULT_FOCUS) +
+             '\n' +
+             '\n'.join('@keyframes srm-v%s{from,to{scroll-snap-type:both mandatory}}' % f for f in files))
     picked = ''.join('.srm .c%d:has(:checked){background-position:%.4g%%}' % (k, k / .09) for k in range(1, 10))
     css = (CSS.replace('{NAMES}', names).replace('{SHOW}', ','.join(show)).replace('{ACTIVE}', ','.join(active))
-           .replace('{MAPS}', maps).replace('{PAIRS}', ','.join('.srm .' + f for f in sorted(PAIRS))).replace('{PICKED}', picked)
-           .replace('{BASE}', base).strip())   # one rule group per line: easier to find in 꾸미기 CSS
+           .replace('{MAPS}', maps).replace('{PAIRS}', ','.join('.srm .%s:before' % f for f in sorted(PAIRS))).replace('{PICKED}', picked)
+           .replace('{SNAPS}', SNAPS + views).replace('{SLOTS}', SLOTS).replace('{FX}', chain('x', 'var(--dx,.5)'))
+           .replace('{FY}', chain('y', 'var(--dy,.5)')).replace('{FS}', chain('s', '0')).replace('{BASE}', base).strip())   # one rule group per line: easier to find in 꾸미기 CSS
 
-    focus = ''     # per open banner: the map pans to it, only while its floor is shown
+    focus = ''     # per open banner, only while its floor is shown: its --xN, --yN, --sN (see SNAPS)
     def pins(b, f):
         nonlocal focus
         o = ''
         for mark, x, y, h, cap in PINS.get(f, []):
             n = PIN_IDS.setdefault((f, mark, x, y), len(PIN_IDS) + 1)
+            assert n <= NPIN, 'more than %d pins: raise NPIN' % NPIN
             px, py, side = round(x / 12.8), round(y / 10), 1 if x >= 640 else -1
             if h not in BANNERS: BANNERS[h] = luvlog(h); print('@%s: banner %s, 맞배너 %s' % (h, 'found' if BANNERS[h][0] else 'missing', BANNERS[h][1]))
             img, ex = BANNERS[h]; img = (img or base + 'b1.svg').replace('https://', '//')
             cls = ' '.join(['p'] + ['c' + mark] * (mark != 'APT') + ['x'] * ex)
             o += ('<label class=%s style=--x:%d%%;--y:%d%%;--s:%d><input type=checkbox id=b%d><a href=//luvlog.me/%s>%s<img src=%s></a></label>'
                   % ('"%s"' % cls if ' ' in cls else cls, px, py, side, n, h, '<b>%s</b>' % cap if cap else '', img))
-            focus += '%s%s:has(#b%d:checked) .mi{--x:%d%%;--y:%d%%;--s:%d;--t:n}' % (reg(b), ':has(#%s:checked)' % f if len(FLOORS[b]) > 1 else '', n, px, py, side)
+            g = lambda v: ('%g' % v).replace('0.', '.', 1) if 0 < v < 1 else '%g' % v
+            focus += '%s%s:has(#b%d:checked) .mb{--x%d:%s;--y%d:%s;--s%d:%d}' % (reg(b), ':has(#%s:checked)' % f if len(FLOORS[b]) > 1 else '', n, n, g(px / 100), n, g(py / 100), n, side)
         return o
     layers = ''.join('<div class=%s>%s</div>' % (b, ''.join('<div class="z %s">%s</div>' % (f, pins(b, f)) for f, _ in FLOORS[b])) for b in boxes)
     first = lambda b: next((f for f, lab in FLOORS[b] if lab == '1'), FLOORS[b][0][0])
