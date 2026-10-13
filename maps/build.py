@@ -536,7 +536,23 @@ def ruins1():
     m.auto_fillets(12)
     return m
 
-def ruins2():
+def basement_room(m, x, y, door, gap):
+    """A room on the ruined city's B1 (rooms 12 and 13): a bed, a desk and stool against the
+    wall, a locker. 135 along the door wall, 148 deep, top-left corner at x, y; the doorway is in
+    the door wall ('s', 'n', 'e' or 'w') and crosses the gap to the corridor. The room number is
+    a marker (widget.MARKERS) 26 in from the far wall, mid-width."""
+    W, H = 135, 148
+    at = {'s': lambda u, v: (x + u, y + v), 'n': lambda u, v: (x + u, y + H - v),
+          'e': lambda u, v: (x + v, y + u), 'w': lambda u, v: (x + H - v, y + u)}[door]
+    def box(u, v, du, dv):      # u runs along the door wall, v in from the far wall
+        (x1, y1), (x2, y2) = at(u, v), at(u + du, v + dv)
+        return min(x1, x2), min(y1, y2), abs(x2 - x1), abs(y2 - y1)
+    m.add('w', cham(*box(0, 0, W, H), 12)); m.wr(*box(52, H - 2, 30, gap + 4))       # room and its doorway
+    m.holes(rect(*box(14, 60, 36, 70))); m.add('r', line(at(14, 76), at(50, 76)))     # bed and pillow
+    m.holes(rect(*box(97, 54, 24, 44))); m.obj(circ(*at(83, 76), 7))                  # desk against the wall, stool
+    m.holes(rect(*box(97, 106, 24, 26)))                                              # locker
+
+def ruins2(rooms='a'):
     m = Map(42)
     m.far_rock(70)
     # station hall: island platform between two track tunnels
@@ -569,19 +585,22 @@ def ruins2():
     m.holes(jag(900, 880, [(0, 0), (60, -10), (90, 30), (70, 70), (10, 60)]), jag(820, 900, [(0, 0), (30, -8), (36, 16)]))
     rubble(m, 1010, 930, 7, 50, 16)
     m.add('d', line((785, 600), (785, 810)))
-    # basement rooms B12 and B13: two rooms off a short corridor, reached from the upper tunnel
-    m.wr(720, 252, 292, 40); m.wr(846, 292, 40, 58)
-    for x in (722, 877):
-        m.add('w', cham(x, 92, 135, 148, 12)); m.wr(x + 52, 238, 30, 16)          # room and its door
-        m.holes(rect(x + 14, 152, 36, 70)); m.add('r', line((x + 14, 168), (x + 50, 168)))   # bed and pillow
-        m.holes(rect(x + 97, 146, 24, 44)); m.obj(circ(x + 83, 168, 7))          # desk against the wall, stool
-        m.holes(rect(x + 97, 198, 24, 26))                                       # locker
-    m.add('d', line((866, 300), (866, 342)))
+    # rooms 12 and 13 (drafts): A off a short corridor north of the upper tunnel, B either side
+    # of the drift, C off a corridor south of the lower tunnel
+    if rooms == 'a':
+        for x in (726.1, 879.7): basement_room(m, x, 94, 's', 12)
+        m.wr(724.1, 254, 292.6, 40); m.wr(850.4, 294, 40, 56); m.add('d', line((870.4, 302), (870.4, 342)))
+    elif rooms == 'b':
+        basement_room(m, 601.2, 622.5, 'e', 10.8); basement_room(m, 825.2, 622.5, 'w', 15.2)
+    elif rooms == 'c':
+        for x in (418.9, 572.5): basement_room(m, x, 728, 'n', 12)
+        m.wr(416.9, 676, 292.6, 40); m.wr(543.2, 590, 40, 86); m.add('d', line((563.2, 598), (563.2, 668)))
     m.auto_fillets(12)
     return m
 
 MAPS = {'n1': norilsk1, 'n2': norilsk2, 'm1': moscow1, 'm2': moscow2, 's1': home1, 's2': home2, 'o2': company2, 's3': home3,
-        'r1': ruins1, 'r2': ruins2}
+        'r1': ruins1, 'r2': ruins2,
+        'r2b': lambda: ruins2('b'), 'r2c': lambda: ruins2('c')}   # r2b, r2c: drafts of rooms 12 and 13 (r2 is draft A)
 
 if __name__ == '__main__':
     # python3 build.py [--theme NAME] [--out DIR] [n1 n2 ...]
