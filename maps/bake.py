@@ -32,15 +32,16 @@ def apartment(x, y):
     return d
 
 def number(n, x, y, shut):
-    """A numbered banner spot: a gold disc in the marker filter with the number on it in
-    Pretendard Bold, the same size on every map."""
-    k, gap = 19 / 1468, 90                # numeral height 19, 1468 font units tall
+    """A numbered banner spot in the Star Rail map-guide style: a bold white numeral
+    (Pretendard Bold) with a thin dark outline, straight on the map, the same size on every
+    map. A closed spot is grey."""
+    k, gap = 28 / 1468, 70                # numeral height 28, 1468 font units tall
     w = [D[c][0] for c in n]; at = -(sum(w) + gap * (len(n) - 1)) / 2
-    o = '<circle cx="%g" cy="%g" r="17" filter="url(#m%s)"/>' % (x, y, 'c' if shut else 'o')
+    o = '<g fill="%s" stroke="#1f1f1f" stroke-width="%g" stroke-linejoin="round" paint-order="stroke">' % ('#9b9b9b' if shut else '#fff', 4.4 / k)
     for c, cw in zip(n, w):
-        o += '<path fill="#1a1a1a" transform="translate(%g %g) scale(%g)" d="%s"/>' % (x + (at + cw / 2) * k, y, k, D[c][1])
+        o += '<path transform="translate(%g %g) scale(%g)" d="%s"/>' % (x + (at + cw / 2) * k, y, k, D[c][1])
         at += cw + gap
-    return o
+    return o + '</g>'
 
 def bake(svg, marks, closed, size):
     out = [FILTER % ('o', '#1a1a1a', '#f1cd84'), FILTER % ('c', '#131313', '#9b9b9b'),
