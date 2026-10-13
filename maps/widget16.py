@@ -167,7 +167,7 @@ CSS = '''
 @container (max-width:560px){
 .srm .hw{--v:100cqi;--vh:calc(100cqi/1.28);--bw:11em}
 .srm .hv{aspect-ratio:1.28}.srm .mb{inset:0}.srm .zc{display:none}
-.srm .tr{top:calc(3.5% + 1em);left:auto;right:2.5%}
+.srm .hv .tr{top:calc(3.5% + 1em);left:auto;right:2.5%}
 .srm .hl{position:static;width:auto;padding:.6em 0}}
 @supports (timeline-scope:none){@container (max-width:560px){
 .srm .hw{--k:1.28;--vh:100cqi}.srm .hv{aspect-ratio:1}
