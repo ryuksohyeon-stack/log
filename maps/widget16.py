@@ -7,9 +7,9 @@ Maps come from k/ (maps/kremlin with the shop markers drawn in by bake.py).
 Edit REGIONS, FLOORS and PINS below; everything else follows."""
 import os, sys, json, urllib.request
 
-def banner_of(h):
-    """The image luvlog itself shows for @h in a banner list ("러브로그 홈 걸기"): the home's
-    banner image, else its card image. Read from the public pages/<h> record; None if missing."""
+def luvlog(h):
+    """(banner image, links back to HOST?) for @h, from its public pages/<h> record, the same
+    record luvlog's own "러브로그 홈 걸기" reads. Image: the home's banner, else its card image."""
     url = 'https://firestore.googleapis.com/v1/projects/lovelog-cc579/databases/(default)/documents/pages/' + h
     def val(v):
         k, x = next(iter(v.items()))
@@ -19,13 +19,18 @@ def banner_of(h):
     try:
         d = {a: val(b) for a, b in json.load(urllib.request.urlopen(url, timeout=20)).get('fields', {}).items()}
     except Exception as e:
-        print('banner lookup failed for', h, e); return None
+        print('luvlog lookup failed for', h, e); return None, False
     m = d.get('modes') or {}
     pick = lambda k: d.get(k) or ((m.get('a') or {}).get('snap') or {}).get(k) or ((m.get('b') or {}).get('snap') or {}).get(k) or ''
     hero = next((o for o in d.get('heroImgs') or [] if isinstance(o, dict) and o.get('img')), {})
-    for v in (pick('bannerImg'), pick('cardImg'), hero.get('img'), d.get('heroImg')):
-        if isinstance(v, str) and v.startswith('https://'): return v
-    return None
+    img = next((v for v in (pick('bannerImg'), pick('cardImg'), hero.get('img'), d.get('heroImg')) if isinstance(v, str) and v.startswith('https://')), None)
+    links = set()     # the handles in its banner and neighbour lists, as luvlog's linkedSetOf
+    for w in d.get('side') or []:
+        if isinstance(w, dict) and w.get('t') in ('banner', 'nb'):
+            for b in w.get('items') or []:
+                x = b.get('h') if isinstance(b, dict) else b
+                if isinstance(x, str) and x.strip(): links.add(x.strip().lower().lstrip('@'))
+    return img, HOST in links
 
 # list entries: (radio id, list label, title shown top left, map box)
 GROUPS = [
@@ -40,20 +45,28 @@ GROUPS = [
 FLOORS = {'mn': [('n1', '1'), ('n2', 'B1')], 'mm': [('m1', '1'), ('m2', 'B1')],
           's1': [('s1', '')], 's2': [('s2', '')], 's3': [('s3', '')]}
 NIGHT = {'n1', 'n2'}          # these also get a polar-night map, <name>a.svg
-# banner pins: map file -> (number, x, y in the 1280x1000 map, exchanged?, luvlog handle)
-# The pin links to luvlog.me/<handle>; its image is that home's own banner, looked up
-# when the widget is built (see banner_of), so re-run the build to pick up new banners.
-PINS = {'s1': [(1, 640, 790, True, 'milan')]}
+HOST = 'vasilic'    # the luvlog home this widget sits on
+# banner pins: map file -> (number, x, y in the 1280x1000 map, luvlog handle)
+# The pin links to luvlog.me/<handle>. When the widget is built, luvlog's public record for
+# that home gives its banner image, and whether its banner list carries HOST back (맞배너).
+# Re-run the build to pick up changed banners.
+PINS = {'s1': [(1, 640, 790, 'milan')]}
 
+# The root class is .srm because luvlog's own page CSS styles .hm (display:flex).
+# CSS is written for luvlog's widget renderer: it rewrites every selector as
+# ".<widget> <selector>" (splitting lists at commas), and puts a widget into a sandboxed
+# frame where links can't open when its CSS has overflow:hidden, html/body rules,
+# vh heights or position:fixed. So: overflow:clip, no commas inside :has()/:is(), and
+# each keyframe starts with a throwaway `:root{};` that soaks up the prefix.
 CSS = '''
-.hm{container-type:inline-size;word-break:keep-all}.hm *{margin:0;box-sizing:border-box}.hm input{display:none}
-.hw{counter-reset:pt px;position:relative;overflow:hidden;font-size:clamp(9px,1.2cqi,14px);--F:#dcc7c8;--V:#bccad8;--v:77cqi;--vh:66.67cqi;--w0:77cqi;background:#efe5e5;color:#2a1416;font-family:Pretendard,sans-serif}
+.srm{display:block;container-type:inline-size;word-break:keep-all}.srm *{margin:0;box-sizing:border-box}.srm input{display:none}
+.hw{counter-reset:pt px;position:relative;overflow:clip;font-size:clamp(9px,1.2cqi,14px);--F:#dcc7c8;--V:#bccad8;--v:77cqi;--vh:66.67cqi;--w0:77cqi;background:#efe5e5;color:#2a1416;font-family:Pretendard,sans-serif}
 {NAMES}
 .hv{position:relative;aspect-ratio:3/2}
-.mb{position:absolute;left:0;top:0;width:77%;height:100%;overflow:hidden}
+.mb{position:absolute;left:0;top:0;width:77%;height:100%;overflow:clip}
 .mi{position:relative;width:var(--w0);top:calc(var(--vh)/2 - var(--w0)/2.56);aspect-ratio:1.28}
 .mb,.mi{background:var(--F)}
-.hm:has(#q1:checked,#q2:checked):has(#n1:checked) .mb{background:linear-gradient(var(--F) 50%,var(--V) 0)}.hm:has(#q6:checked) .mb{background:var(--V)}
+.srm:has(#q1:checked):has(#n1:checked) .mb,.srm:has(#q2:checked):has(#n1:checked) .mb{background:linear-gradient(var(--F) 50%,var(--V) 0)}.srm:has(#q6:checked) .mb{background:var(--V)}
 .mi>div,.fs p{position:absolute;inset:0;visibility:hidden}
 {SHOW}{visibility:visible;--c:pt;--e:pt px}
 .z{position:absolute;inset:0;--o:0;pointer-events:none}
@@ -66,7 +79,7 @@ CSS = '''
 :checked+.p+.bn{display:block}.bn img{display:block;max-width:13em}
 .hd:after{content:var(--nm)}.tr b:after{content:counter(px) " / " counter(pt)}
 .hl{position:absolute;top:4%;right:1.5%;width:20%;z-index:5}
-.hl>b{display:block;margin-bottom:.9em;padding:.5em .9em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border-radius:2em;background:#3a3a3a;color:#eee;font-weight:500}
+.hl>b{display:block;margin-bottom:.9em;padding:.5em .9em;white-space:nowrap;overflow:clip;text-overflow:ellipsis;border-radius:2em;background:#3a3a3a;color:#eee;font-weight:500}
 .hl p{padding:.3em .8em;background:#c4c4c4;color:#555;font-size:.85em}
 .hl label{display:block;padding:.75em 1em;border-bottom:1px solid #ddd;background:#f4f4f4;color:#333}
 .hl label:before{content:"✦ ";font-size:.7em}
@@ -99,13 +112,13 @@ CSS = '''
 .zg i{display:block;height:400%}
 .zc u{position:absolute;left:50%;top:calc(100% - 2.1em);width:.6em;height:.6em;margin:-.3em;rotate:45deg;background:#8c1724;pointer-events:none;animation:zk linear both;animation-timeline:--zt}
 }
-@keyframes k1{from,to{scroll-snap-type:both mandatory}}
-@keyframes zw{to{width:calc(var(--w0)*3)}}
-@keyframes tx{from{translate:max(0px,calc(var(--v)/2 - 50%))}to{translate:min(calc(var(--v) - 100%),calc(var(--v)/2 - 50%))}}
-@keyframes ty{from{transform:translateY(max(0px,calc(var(--vh)/2 - 50%)))}to{transform:translateY(min(calc(var(--vh) - 100%),calc(var(--vh)/2 - 50%)))}}
-@keyframes zk{to{top:2.1em}}
-.hm:not(:has(#q1:checked)) .pd,.hm:has(#q1:checked) .z>img:not(.pd){display:none}
-.hm:has(#q1:checked) :is(.hd,.zc){filter:invert(1) hue-rotate(180deg)}
+@keyframes k1{from,to{:root{};scroll-snap-type:both mandatory}}
+@keyframes zw{to{:root{};width:calc(var(--w0)*3)}}
+@keyframes tx{from{:root{};translate:max(0px,calc(var(--v)/2 - 50%))}to{:root{};translate:min(calc(var(--v) - 100%),calc(var(--v)/2 - 50%))}}
+@keyframes ty{from{:root{};transform:translateY(max(0px,calc(var(--vh)/2 - 50%)))}to{:root{};transform:translateY(min(calc(var(--vh) - 100%),calc(var(--vh)/2 - 50%)))}}
+@keyframes zk{to{:root{};top:2.1em}}
+.srm:not(:has(#q1:checked)) .pd,.srm:has(#q1:checked) .z>img:not(.pd){display:none}
+.srm:has(#q1:checked) .hd,.srm:has(#q1:checked) .zc{filter:invert(1) hue-rotate(180deg)}
 @container (max-width:560px){.hv{aspect-ratio:auto;height:calc(100cqi/1.28)}.mb{width:100%}.hl{position:static;width:auto;padding:.6em}.hw{--v:100cqi;--vh:78.13cqi;--w0:100cqi}.zc{right:3%;width:34px;height:130px}}
 '''
 NIGHT_HW = ';--F:#161c2e;--V:#0c1222;background:#0f1424'   # polar night colours, added to q1's rule
@@ -115,23 +128,24 @@ BANNERS = {}
 def build(base):
     items = [it for _, its in GROUPS for it in its]
     boxes = list(dict.fromkeys(it[3] for it in items))
-    qs = lambda box: ','.join('#%s:checked' % it[0] for it in items if it[3] == box)
-    names = ''.join('.hm:has(#%s:checked) .hw{--nm:"%s"%s}' % (q, t, NIGHT_HW if q == 'q1' else '') for q, _, t, _ in items)
+    qs = lambda box: [it[0] for it in items if it[3] == box]
+    names = ''.join('.srm:has(#%s:checked) .hw{--nm:"%s"%s}' % (q, t, NIGHT_HW if q == 'q1' else '') for q, _, t, _ in items)
     show, active = [], []
     for b in boxes:
         fl = FLOORS[b]
         if len(fl) > 1:
-            show.append('.hm:has(%s) :is(.%s,.f%s)' % (qs(b), b, b[1]))
+            show += ['.srm:has(#%s:checked) .%s' % (q, c) for q in qs(b) for c in (b, 'f' + b[1])]
             active += ['.hw:has(#%s:checked) .%s>:nth-child(%d)' % (f, b, k + 1) for k, (f, _) in enumerate(fl)]
         else:
-            show.append('.hm:has(%s) .%s' % (qs(b), b)); active.append('.%s>*' % b)
+            show += ['.srm:has(#%s:checked) .%s' % (q, b) for q in qs(b)]; active.append('.%s>*' % b)
     css = CSS.replace('{NAMES}', names).replace('{SHOW}', ','.join(show)).replace('{ACTIVE}', ','.join(active)).replace('\n', '')
 
     def pins(f):
         o = ''
-        for n, x, y, ex, h in PINS.get(f, []):
+        for n, x, y, h in PINS.get(f, []):
             pos = 'style=--x:%d;--y:%d' % (round(x / 12.8), round(y / 10))
-            img = BANNERS.setdefault(h, banner_of(h)) or base + 'b1.svg'
+            if h not in BANNERS: BANNERS[h] = luvlog(h); print('@%s: banner %s, 맞배너 %s' % (h, 'found' if BANNERS[h][0] else 'missing', BANNERS[h][1]))
+            img, ex = BANNERS[h]; img = img or base + 'b1.svg'
             o += ('<input type=checkbox id=b%d><label for=b%d class=%s %s>%d</label><a class=bn href=https://luvlog.me/%s target=_blank %s><img src=%s></a>'
                   % (n, n, '"p x"' if ex else 'p', pos, n, h, pos, img.replace('&', '&amp;')))
         return o
@@ -145,7 +159,7 @@ def build(base):
     html = ('<div class=hw><div class=hv><div class=zc><b class=zg><i></i></b><u></u></div><div class=mb><b class=pn></b><div class=mi>' + maps +
             '</div></div><h4 class=hd></h4><div class=tr><i></i><b></b></div><div class=fs>' + floors + '</div></div>'
             '<div class=hl><b>✦ Карта звёздного пути ›</b>' + lst + '</div></div>')
-    return '<div class=hm><style>' + css + '</style>' + html + '</div>'
+    return '<div class=srm><style>' + css + '</style>' + html + '</div>'
 
 if __name__ == '__main__':
     here = os.path.dirname(os.path.abspath(__file__))
