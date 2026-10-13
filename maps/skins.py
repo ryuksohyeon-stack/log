@@ -3,6 +3,8 @@ markers) dressed in three different skins for the white-night / travel /
 Russia concept.
 
 python3 skins.py <skin> <image-base> <out.html>
+  Widget 16 (../star-rail-map.html) is now built by widget16.py; the kremlin
+  skin here is its earlier draft form.
   The widgets in use are ../star-rail-map.html (kremlin) and
   ../star-rail-map-mono.html (mono). The kremlin one loads the copies in
   ../k/ (short links): https://cdn.jsdelivr.net/gh/ryuksohyeon-stack/log@<7-char sha>/k/
