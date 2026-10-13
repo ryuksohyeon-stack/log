@@ -55,9 +55,10 @@ FLOORS = {'mn': [('n1', '1'), ('n2', 'B1')], 'mm': [('m1', '1'), ('m2', 'B1')],
 HOST = 'vasilic'    # the luvlog home this widget sits on
 # banner pins: map file -> (mark, x, y in the 1280x1000 map, luvlog handle, caption)
 # The pin is an invisible tap area over a marker drawn into the map (widget.MARKERS, bake.py):
-# 'APT' the apartment block, '1', '2'... the numbered gold discs (numbers start at 1 on each
-# map). Keep x, y on whole percents (x a multiple of 12.8, y of 10) so the tap ring sits on
-# the drawn marker. Tapping it rings the marker and opens the banner beside it, on that floor
+# 'APT' the apartment block, '1' to '9' the white numerals (numbers start at 1 on each map).
+# Keep x, y on whole percents (x a multiple of 12.8, y of 10) and the same as the marker's, so
+# the red-orange copy from on.svg lands on the drawn marker. Tapping a pin turns its marker
+# red-orange and opens the banner beside it, on that floor
 # only: to the left for a pin on the left half of the map, else to the right; the map pans so
 # the whole banner is in view. The banner links to luvlog.me/<handle>. When the widget is
 # built, luvlog's public record for that home gives its banner image, and whether its banner
@@ -82,7 +83,7 @@ CSS = '''
 .hw{counter-reset:pt px;position:relative;overflow:clip;font-size:clamp(9px,1.2cqi,14px);--F:#dcc7c8;--V:#bccad8;--v:77cqi;--vh:66.67cqi;--w0:77cqi;background:#efe5e5;color:#2a1416}
 {NAMES}
 .hv{position:relative;aspect-ratio:3/2}
-.mb{position:absolute;left:0;top:0;width:77%;height:100%;overflow:clip}
+.mb{position:absolute;inset:0 23% 0 0;overflow:clip}
 .mi{position:relative;width:var(--w0);top:calc(var(--vh)/2 - var(--w0)/2.56);aspect-ratio:1.28;translate:var(--f);--f:clamp(2.6% + 15em - var(--x) - (1 + var(--s))*1e4px,clamp(var(--v) - 100%,var(--v)/2 - var(--x),0px),var(--v) - 2.6% - 15em - var(--x) + (1 - var(--s))*1e4px)}
 .mb,.mi{background:var(--F)}
 :has(.A:checked):has(#n1:checked) .mb{background:linear-gradient(var(--F) 50%,var(--V) 0)}:has(#q6:checked) .mb{background:var(--V)}
@@ -92,8 +93,8 @@ CSS = '''
 {ACTIVE}{--o:1;--d:block}
 .z>img{position:absolute;z-index:var(--o);width:100%;height:100%;object-fit:cover;object-position:0;opacity:max(.13,var(--o));transition:opacity .4s}
 :has(#q1:checked) .z>img{object-position:100%}
-.p{position:absolute;left:var(--x);top:var(--y);width:max(3.6%,2.4em);aspect-ratio:3/4;translate:-50% -50%;z-index:3;border-radius:.3em;display:var(--d,none);pointer-events:auto;cursor:pointer;counter-increment:pt}.p.x{counter-increment:pt px}.o{aspect-ratio:1;border-radius:50%}.p:has(:checked){box-shadow:0 0 0 .15em #7fe3f0,0 0 .5em #7fe3f0}
-.p a{display:none;position:absolute;left:calc(50% + var(--s)*72%);top:50%;translate:calc(var(--s)*50% - 50%) -50%;padding:.2em;border-radius:.3em;background:#fff;box-shadow:0 .2em .6em #0006}
+.p{position:absolute;left:var(--x);top:var(--y);width:4%;aspect-ratio:1;translate:-50% -50%;z-index:3;display:var(--d,none);pointer-events:auto;cursor:pointer;counter-increment:pt}.p.x{counter-increment:pt px}.p:before{content:"";position:absolute;inset:-.5em}.p:has(:checked){background:url({ON}) 0/1000%}
+.p a{display:none;position:absolute;left:calc(50% + var(--s)*(50% + .6em));top:50%;translate:calc(var(--s)*50% - 50%) -50%;padding:.2em;border-radius:.3em;background:#fff;box-shadow:0 .2em .6em #0006}
 :checked+a{display:block}.p img{display:block;max-width:13em}.p b{display:block;padding:.1em .3em .25em;font-size:.75em;color:#555}
 .hd:after{content:var(--nm)}.tr b:after{content:counter(px) " / " counter(pt)}
 .hl{position:absolute;top:4%;right:1.5%;width:20%;z-index:5}
@@ -120,7 +121,7 @@ CSS = '''
 .pn,.zg{position:absolute;inset:0;overflow:scroll;scrollbar-width:none;overscroll-behavior:contain;animation:k1 .6s}
 .pn{display:block;touch-action:pan-x pan-y;scroll-timeline:--tx x,--ty y}
 .pn:before{content:"";display:block;width:200%;height:200%}
-.pn:after{content:"";position:absolute;left:100%;top:100%;width:1px;height:1px;scroll-snap-align:center}
+.pn:after{content:"";position:absolute;left:100%;top:100%;padding:.5px;scroll-snap-align:center}
 .mi{top:0;pointer-events:none;animation:zw linear both,var(--t,tx) linear both,var(--t,ty) linear both;animation-timeline:--zt,--tx,--ty;transform:translateY(clamp(min(var(--vh) - 100%,var(--vh)/2 - 50%),var(--vh)/2 - var(--y),max(0px,var(--vh)/2 - 50%)))}
 .zc{display:grid;align-content:space-between;justify-items:center;position:absolute;right:1.5%;bottom:4%;z-index:4;width:2.2em;height:9em;border:1px solid #8c1724;background:linear-gradient(#d9b3b7 0 0) 50%/1px 60% no-repeat #fff;color:#8c1724;font-weight:700}
 .zc:before{content:"+"}.zc:after{content:"−"}
@@ -134,7 +135,7 @@ CSS = '''
 @keyframes ty{from{:root{};transform:translateY(max(0px,var(--vh)/2 - 50%))}to{:root{};transform:translateY(min(var(--vh) - 100%,var(--vh)/2 - 50%))}}
 @keyframes zk{to{:root{};top:2.1em}}
 :has(#q1:checked) .hd,:has(#q1:checked) .zc{filter:invert(1) hue-rotate(180deg)}
-@container (max-width:560px){.hv{aspect-ratio:auto;height:calc(100cqi/1.28)}.mb{width:100%}.hl{position:static;width:auto;padding:.6em}.hw{--v:100cqi;--vh:78.13cqi;--w0:100cqi}.zc{right:3%;width:34px;height:130px}}
+@container (max-width:560px){.hv{aspect-ratio:auto;height:calc(100cqi/1.28)}.mb{right:0}.hl{position:static;width:auto;padding:.6em}.hw{--v:100cqi;--vh:78.13cqi;--w0:100cqi}.zc{right:3%;width:34px;height:130px}}
 '''
 # extra colours per list entry: polar night is dark, the abandoned town ash grey
 EXTRA = {'q1': ';--F:#161c2e;--V:#0c1222;background:#0f1424', 'q7': ';--F:#d6d2ce;--V:#b7c0c6'}
@@ -153,8 +154,9 @@ def build(base):
     reg = lambda b: ':has(%s:checked)' % ('.' + grp[b] if b in grp else '#' + qs(b)[0])
     show = [reg(b) + ' .' + b for b in boxes]
     active = [':has(#%s:checked) .%s' % (f, f) if len(FLOORS[b]) > 1 else '.%s>*' % b for b in boxes for f, _ in FLOORS[b]]
+    picked = set()  # numbers on the map: each picks its red-orange cell of on.svg (bake.py)
     focus = ''     # per open banner: the map pans to it (see .mi --f), only while its floor is shown
-    css = CSS.replace('{NAMES}', names).replace('{SHOW}', ','.join(show)).replace('{ACTIVE}', ','.join(active)).replace('\n', '')
+    css = CSS.replace('{ON}', base + 'on.svg').replace('{NAMES}', names).replace('{SHOW}', ','.join(show)).replace('{ACTIVE}', ','.join(active)).replace('\n', '')
 
     def pins(b, f):
         nonlocal focus
@@ -164,7 +166,8 @@ def build(base):
             px, py, side = round(x / 12.8), round(y / 10), 1 if x >= 640 else -1
             if h not in BANNERS: BANNERS[h] = luvlog(h); print('@%s: banner %s, 맞배너 %s' % (h, 'found' if BANNERS[h][0] else 'missing', BANNERS[h][1]))
             img, ex = BANNERS[h]; img = (img or base + 'b1.svg').replace('https://', '//')
-            cls = ' '.join(['p'] + ['o'] * (mark != 'APT') + ['x'] * ex)
+            cls = ' '.join(['p'] + ['n' + mark] * (mark != 'APT') + ['x'] * ex)
+            if mark != 'APT': picked.add(int(mark))
             o += ('<label class=%s style=--x:%d%%;--y:%d%%;--s:%d><input type=checkbox id=b%d><a href=//luvlog.me/%s>%s<img src=%s></a></label>'
                   % ('"%s"' % cls if ' ' in cls else cls, px, py, side, n, h, '<b>%s</b>' % cap if cap else '', img))
             focus += '%s%s:has(#b%d:checked) .mi{--x:%d%%;--y:%d%%;--s:%d;--t:n}' % (reg(b), ':has(#%s:checked)' % f if len(FLOORS[b]) > 1 else '', n, px, py, side)
@@ -179,6 +182,7 @@ def build(base):
     html = ('<div class=hw><div class=hv><div class=zc><b class=zg><i></i></b><u></u></div><div class=mb><b class=pn></b><div class=mi>' + maps +
             '</div></div><b class=hd></b><div class=tr><i></i><b></b></div><div class=fs>' + floors + '</div></div>'
             '<div class=hl><b>✦ Карта звёздного пути ›</b>' + lst + '</div></div>')
+    focus += ''.join('.n%d:has(:checked){background-position:%.3g%%}' % (k, k / .09) for k in sorted(picked))
     return '<div class=srm><style>' + css + focus + '</style>' + html + '</div>'
 
 if __name__ == '__main__':
