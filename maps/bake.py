@@ -19,12 +19,24 @@ FILTER = ('<filter id="m%s" x="-40%%" y="-40%%" width="180%%" height="180%%" col
           '<feFlood flood-color="%s"/><feComposite in2="SourceAlpha" operator="in" result="g"/>'
           '<feMerge><feMergeNode in="h"/><feMergeNode in="o"/><feMergeNode in="g"/></feMerge></filter>')
 
+def apartment(x, y):
+    """A panel block drawn as a marker: roof box, body with three rows of three windows and
+    a door, the openings cut out so the marker filter's dark rim shows through them."""
+    d = 'M%g %gh30v40h-11.5v-11h-7v11h-11.5zM%g %gh20v5h-20z' % (x - 15, y - 20, x - 10, y - 25)
+    for r in range(3):
+        for c in range(3):
+            d += 'M%g %gh5v5h-5z' % (x - 10.5 + 8 * c, y - 16 + 8 * r)
+    return d
+
 def bake(svg, marks, closed, size):
     out = [FILTER % ('o', '#1a1a1a', '#f1cd84'), FILTER % ('c', '#131313', '#9b9b9b'),
            '<g font-family="sans-serif" font-size="%g" text-anchor="middle" dominant-baseline="central">' % size]
     for m in marks:
         shut = len(m) > 3 and m[3] == closed
-        out.append('<text x="%d" y="%d" filter="url(#m%s)">%s</text>' % (m[1], m[2], 'c' if shut else 'o', m[0]))
+        if m[0] == 'APT':     # drawn, not an emoji: banner pins sit on these
+            out.append('<path fill="#000" fill-rule="evenodd" filter="url(#m%s)" d="%s"/>' % ('c' if shut else 'o', apartment(m[1], m[2])))
+        else:
+            out.append('<text x="%d" y="%d" filter="url(#m%s)">%s</text>' % (m[1], m[2], 'c' if shut else 'o', m[0]))
     return svg.replace('</svg>', ''.join(out) + '</g></svg>')
 
 if __name__ == '__main__':

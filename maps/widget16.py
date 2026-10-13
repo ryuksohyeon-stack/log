@@ -48,11 +48,12 @@ FLOORS = {'mn': [('n1', '1'), ('n2', 'B1')], 'mm': [('m1', '1'), ('m2', 'B1')],
 NIGHT = {'n1', 'n2'}          # these also get a polar-night map, <name>a.svg
 HOST = 'vasilic'    # the luvlog home this widget sits on
 # banner pins: map file -> (mark, x, y in the 1280x1000 map, luvlog handle, caption)
-# mark is an emoji, drawn like the shop markers; tapping it opens the banner beside it.
+# The pin is an invisible tap area over an 'APT' marker drawn into the map (widget.MARKERS,
+# bake.py); tapping it rings the marker and opens the banner beside it, on that floor only.
 # The pin links to luvlog.me/<handle>. When the widget is built, luvlog's public record for
 # that home gives its banner image, and whether its banner list carries HOST back (맞배너).
 # Re-run the build to pick up changed banners.
-PINS = {'n1': [('🏙', 130, 705, 'milan', '404호')]}    # the panel block at Norilsk's south-west corner
+PINS = {'n1': [('APT', 130, 705, 'milan', '404호')]}    # the panel block at Norilsk's south-west corner
 
 # The root class is .srm because luvlog's own page CSS styles .hm (display:flex).
 # CSS is written for luvlog's widget renderer: it rewrites every selector as
@@ -75,8 +76,8 @@ CSS = '''
 {ACTIVE}{--o:1;--pe:auto;pointer-events:auto;--a:var(--c);--b:var(--e)}
 .z>img{position:absolute;z-index:var(--o);width:100%;height:100%;opacity:max(.13,var(--o));transition:opacity .4s}
 .p{counter-increment:var(--a)}.p.x{counter-increment:var(--b)}
-.p{position:absolute;left:calc(var(--x)*1%);top:calc(var(--y)*1%);translate:-50% -50%;z-index:3;opacity:var(--o);pointer-events:var(--pe,none);font:1.55em/1 sans-serif;color:#0000;text-shadow:0 0 0 #f1cd84;filter:drop-shadow(0 0 .06em #1a1a1a) drop-shadow(0 0 .06em #1a1a1a) drop-shadow(0 .08em .1em #0008);cursor:pointer}:checked+.p{text-shadow:0 0 0 #7fe3f0}
-.bn{display:none;position:absolute;left:calc(var(--x)*1% + 1.2em);top:calc(var(--y)*1%);translate:0 -50%;z-index:6;padding:.2em;border-radius:.3em;background:#fff;box-shadow:0 .2em .6em #0006;pointer-events:auto}
+.p{position:absolute;left:calc(var(--x)*1%);top:calc(var(--y)*1%);width:3.6%;aspect-ratio:3/4;translate:-50% -55%;z-index:3;border-radius:.3em;pointer-events:var(--pe,none);cursor:pointer}:checked+.p{box-shadow:0 0 0 .15em #7fe3f0,0 0 .5em #7fe3f0}
+.bn{display:none;position:absolute;left:calc(var(--x)*1% + 2.6%);top:calc(var(--y)*1%);translate:0 -50%;z-index:6;padding:.2em;border-radius:.3em;background:#fff;box-shadow:0 .2em .6em #0006;opacity:var(--o);pointer-events:var(--pe,none)}
 :checked+.p+.bn{display:block}.bn img{display:block;max-width:13em}.bn b{display:block;padding:.1em .3em .25em;font-size:.75em;color:#555}
 .hd:after{content:var(--nm)}.tr b:after{content:counter(px) " / " counter(pt)}
 .hl{position:absolute;top:4%;right:1.5%;width:20%;z-index:5}
@@ -150,8 +151,8 @@ def build(base):
             if h not in BANNERS: BANNERS[h] = luvlog(h); print('@%s: banner %s, 맞배너 %s' % (h, 'found' if BANNERS[h][0] else 'missing', BANNERS[h][1]))
             img, ex = BANNERS[h]; img = img or base + 'b1.svg'
             cls = ' '.join(['p'] + ['x'] * ex)
-            o += ('<input type=checkbox id=b%d><label for=b%d class=%s %s>%s</label><a class=bn href=https://luvlog.me/%s target=_blank %s>%s<img src=%s></a>'
-                  % (n, n, '"%s"' % cls if ' ' in cls else cls, pos, mark, h, pos, '<b>%s</b>' % cap if cap else '', img.replace('&', '&amp;')))
+            o += ('<input type=checkbox id=b%d><label for=b%d class=%s %s></label><a class=bn href=https://luvlog.me/%s target=_blank %s>%s<img src=%s></a>'
+                  % (n, n, '"%s"' % cls if ' ' in cls else cls, pos, h, pos, '<b>%s</b>' % cap if cap else '', img.replace('&', '&amp;')))
         return o
     maps = ''.join('<div class=%s>%s</div>' % (b, ''.join(
         '<div class=z><img src=%s%s.svg>%s%s</div>' % (base, f, '<img class=pd src=%s%sa.svg>' % (base, f) if f in NIGHT else '', pins(f))
