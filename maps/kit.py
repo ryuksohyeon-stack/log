@@ -209,66 +209,17 @@ class Map:
         for sh in shapes: s.L[layer].append(sh)
     # ---- background ---------------------------------------------------
     def far_city(s, cell=(104, 84), gap=14):
-        """Faint surrounding city behind the map, apron included, drawn the way Star Rail draws
-        the town around a walkable area: street blocks of uneven size (some joined into one
-        big block), each parted into a few buildings with roof detail (an inner roof edge, a
-        ridge, rooftop boxes, a courtyard), and the odd open lot. gap widens the streets."""
+        """No backdrop: around the map is plain ground. Only the random draws the old backdrop
+        city made from the map's stream are still made (and thrown away), so the rest of the
+        map, drawn after this from the same stream, keeps its layout."""
         cw, ch = cell
-        R = s.rng     # the draws the earlier brick backdrop made from the map's stream, made
-        for gy in range(-1, int(1000 / ch) + 1):       # again and thrown away, so the rest of
-            for gx in range(-1, int(1280 / cw) + 1):   # the map, drawn after this, keeps its layout
+        R = s.rng
+        for gy in range(-1, int(1000 / ch) + 1):
+            for gx in range(-1, int(1280 / cw) + 1):
                 if R.random() < .12: continue
                 for a in (6, 6, 26, 20): R.uniform(0, a)
                 if R.random() < .35: R.uniform(.35, .6)
                 else: R.random()
-        B = random.Random(hash(R.getstate()) & 0xffffffff)
-        def cuts(a, b, lo, hi):
-            c = [a]
-            while c[-1] < b: c.append(c[-1] + B.uniform(lo, hi))
-            return c
-        xs, ys = cuts(-EX - 60, 1280 + EX, 170, 300), cuts(-EY - 60, 1000 + EY, 140, 230)
-        sx = [B.uniform(18, 28) + gap - 14 for _ in xs]; sy = [B.uniform(18, 28) + gap - 14 for _ in ys]
-        used = set()
-        for j in range(len(ys) - 1):
-            for i in range(len(xs) - 1):
-                if (i, j) in used: continue
-                di = 2 if i + 2 < len(xs) and (i + 1, j) not in used and B.random() < .22 else 1
-                dj = 2 if di == 1 and j + 2 < len(ys) and B.random() < .18 else 1
-                used.update((i + a, j + b) for a in range(di) for b in range(dj))
-                x0, x1 = xs[i] + sx[i] / 2, xs[i + di] - sx[i + di] / 2
-                y0, y1 = ys[j] + sy[j] / 2, ys[j + dj] - sy[j + dj] / 2
-                for lot in s._lots(B, x0, y0, x1 - x0, y1 - y0, 0): s._building(B, *lot)
-    def _lots(s, B, x, y, w, h, d):
-        """A block parted into building lots, 8 apart."""
-        if d < 3 and max(w, h) > 120 and B.random() < (.92 if d == 0 else .55):
-            if w >= h:
-                k = w * B.uniform(.35, .65); return s._lots(B, x, y, k - 4, h, d + 1) + s._lots(B, x + k + 4, y, w - k - 4, h, d + 1)
-            k = h * B.uniform(.35, .65); return s._lots(B, x, y, w, k - 4, d + 1) + s._lots(B, x, y + k + 4, w, h - k - 4, d + 1)
-        return [(x, y, w, h)]
-    def _building(s, B, x, y, w, h):
-        """One backdrop building on its lot: a plain or L-shaped roof with its inner edge, and
-        a ridge, rooftop boxes or a courtyard; now and then the lot is left open."""
-        if w < 26 or h < 26 or B.random() < .08: return
-        r = lambda *v: tuple(round(t, 1) for t in v)
-        def ell(x, y, w, h, c, cx, cy):      # the rectangle with corner c (0 NW, 1 NE, 2 SE, 3 SW) cut cx by cy
-            p = [[(x, y + cy), (x + cx, y + cy), (x + cx, y)], [(x + w - cx, y), (x + w - cx, y + cy), (x + w, y + cy)],
-                 [(x + w, y + h - cy), (x + w - cx, y + h - cy), (x + w - cx, y + h)], [(x + cx, y + h), (x + cx, y + h - cy), (x, y + h - cy)]]
-            q = [[(x, y)], [(x + w, y)], [(x + w, y + h)], [(x, y + h)]]; q[c] = p[c]
-            return poly([r(*t) for k in q for t in k])
-        if w > 70 and h > 70 and B.random() < .25:     # L-shaped: one corner cut away
-            c, cx, cy = B.randrange(4), w * B.uniform(.35, .55), h * B.uniform(.35, .55)
-            s.add('f', ell(x, y, w, h, c, cx, cy)); s.add('fr', ell(x + 6, y + 6, w - 12, h - 12, c, cx, cy))
-            return
-        s.add('f', rect(*r(x, y, w, h)))
-        s.add('fr', rect(*r(x + 6, y + 6, w - 12, h - 12)))
-        k = B.random()
-        if w > 100 and h > 90 and k < .35:              # courtyard
-            s.add('fr', rect(*r(x + w * .3, y + h * .3, w * .4, h * .4)))
-        elif k < .7:                                    # ridge along the long side
-            s.add('fr', line(r(x + 6, y + h / 2), r(x + w - 6, y + h / 2)) if w >= h else line(r(x + w / 2, y + 6), r(x + w / 2, y + h - 6)))
-        for _ in range(B.choice((0, 0, 1, 2)) if w > 50 and h > 44 else 0):   # rooftop boxes
-            bw, bh = B.uniform(12, 22), B.uniform(10, 18)
-            s.add('fr', rect(*r(B.uniform(x + 12, x + w - 12 - bw), B.uniform(y + 12, y + h - 12 - bh), bw, bh)))
     def far_rock(s, n=60):
         """Faint rock masses for underground floors, the apron's from their own random stream."""
         A = random.Random(hash(s.rng.getstate()) & 0xffffffff)
