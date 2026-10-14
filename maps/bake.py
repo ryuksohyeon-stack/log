@@ -11,7 +11,7 @@ python3 bake.py <src dir> <out dir> [size]
 
 The look copies the HTML markers: the emoji as a gold silhouette with a dark
 rim and a soft drop shadow; closed shops grey."""
-import os, re, sys
+import math, os, re, sys
 from widget import MARKERS
 from digits import D
 
@@ -53,6 +53,26 @@ def sandwich(x, y):
     d += 'M%g %gh40c0 4 -3 6 -6 6h-28c-3 0 -6 -2 -6 -6z' % (x - 20, y + 12.5)
     return d
 
+def clapper(x, y):
+    """The cinema's clapperboard: the slate with a striped band along its top and the striped arm
+    raised from its hinge at the top left, the stripes cut out so the dark rim shows through."""
+    d = 'M%g %gh32v20h-32z' % (x - 16, y - 4)
+    for k in range(4): d += 'M%g %gl3 -5h3.5l-3 5z' % (x - 14 + 7.5 * k, y + 2.5)
+    c, s = math.cos(math.radians(-16)), math.sin(math.radians(-16))
+    turn = lambda px, py: (x - 16 + c * (px + 16) - s * (py + 4), y - 4 + s * (px + 16) + c * (py + 4))
+    for pts in [[(-16, -11), (16, -11), (16, -4), (-16, -4)]] + [[(-14 + 7.5 * k, -5), (-11 + 7.5 * k, -10), (-7.5 + 7.5 * k, -10), (-10.5 + 7.5 * k, -5)] for k in range(4)]:
+        d += 'M' + 'L'.join('%.1f %.1f' % turn(*p) for p in pts) + 'Z'
+    return d
+
+def rift(x, y):
+    """The gate: a jagged tear in the air, shards flying off it."""
+    shapes = [[(0, -23), (5, -13), (2, -7), (8, 1), (3, 7), (7, 15), (0, 23), (-5, 14), (-2, 7), (-8, -1), (-3, -8), (-6, -16)],
+              [(11, -15), (16, -17), (15, -12)], [(-13, 9), (-18, 12), (-14, 14)], [(12, 11), (16, 15), (11, 15)]]
+    return ''.join('M' + 'L'.join('%g %g' % (x + px, y + py) for px, py in sh) + 'Z' for sh in shapes)
+
+# drawn markers: the concert hall's grand piano, the sandwich shop, the cinema, the gate
+DRAWN = {'PNO': piano, 'SDW': sandwich, 'CIN': clapper, 'GTE': rift}
+
 ON = '#ff4b1f'      # red-orange: a selected banner spot (on.svg)
 
 def number(n, x, y, shut, fill='#fff'):
@@ -74,8 +94,8 @@ def bake(svg, marks, closed, size):
         shut = len(m) > 3 and m[3] == closed
         if m[0][0] == '#':    # numbered banner spot or room number, '#1', '#12'
             out.append(number(m[0][1:], m[1], m[2], shut))
-        elif m[0] in ('PNO', 'SDW'):   # drawn: the concert hall's grand piano, the sandwich shop
-            out.append('<path fill="#000" fill-rule="evenodd" filter="url(#m%s)" d="%s"/>' % ('c' if shut else 'o', (piano if m[0] == 'PNO' else sandwich)(m[1], m[2])))
+        elif m[0] in DRAWN:
+            out.append('<path fill="#000" fill-rule="evenodd" filter="url(#m%s)" d="%s"/>' % ('c' if shut else 'o', DRAWN[m[0]](m[1], m[2])))
         elif m[0] == 'APT':     # drawn, not an emoji: banner pins sit on these
             out.append('<path fill="#000" fill-rule="evenodd" filter="url(#m%s)" d="%s"/>' % ('c' if shut else 'o', apartment(m[1], m[2])))
         else:

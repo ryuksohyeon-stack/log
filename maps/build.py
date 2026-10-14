@@ -344,8 +344,9 @@ def home2():
     m.steps(765, 642, 765, 662, 80)
     m.wr(725, 630, 80, 30)
     m.wr(950, 560, 330, 44); m.wr(950, 760, 330, 44); m.wr(1100, 604, 40, 156)
-    for cx, cy in ((1030, 680), (1210, 680), (1030, 880), (1210, 880)):
+    for cx, cy in ((1030, 680), (1210, 680)):
         plus(m, cx, cy, 62, 26)
+    cinema(m)
     m.add('d', line((960, 582), (1270, 582)), line((960, 782), (1270, 782)))
     m.auto_fillets(16)
     return m
@@ -380,6 +381,26 @@ def sandwich_shop(m):
     m.flat(660, 868, 150, 74, 8)
     m.add('w2', rect(660, 942, 150, 40))
     for x in (682, 708, 778, 800): m.holes(circ(x, 962, 7))
+
+def cinema(m):
+    """A multiplex south of the apartment towers, reached from the street above it: a lobby with
+    the ticket counter along its front, four screening rooms behind, each with rows of seats
+    facing the screen on the back wall, and a canopy over the doors. Marker at (1115, 852)."""
+    x, y, w, h = 966, 836, 298, 150
+    def sunk(sh):       # a w2 strip set into the white floor
+        m.add('w2', sh); m.add('w', reverse(sh))
+    m.add('b', rect(x, y, w, h)); m.add('r', rect(x + 6, y + 6, w - 12, h - 12))
+    m.add('w', rect(x + 12, y + 12, w - 24, 34))                              # lobby
+    m.holes(rect(x + w / 2 - 34, y + 30, 68, 10))                             # ticket counter
+    rw = (w - 24 - 8 * 3) / 4
+    for k in range(4):
+        rx = x + 12 + k * (rw + 8)
+        m.add('w', rect(rx, y + 54, rw, h - 66), rect(rx + rw / 2 - 7, y + 44, 14, 12))   # room and its door
+        for sy in range(y + 80, y + h - 30, 9): m.add('t', line((rx + 6, sy), (rx + rw - 6, sy)))   # seat rows
+        sunk(rect(rx + 6, y + h - 22, rw - 12, 5))                            # screen
+    m.add('w', rect(x + w / 2 - 18, y - 2, 36, 16))                           # front doors
+    sunk(rect(x + w / 2 - 46, y - 16, 92, 14))                                # canopy
+    m.wr(1100, 804, 40, 18)                                                   # the way in from the street
 
 # ===================== Home: the company, 2nd floor =====================
 def desk_island(m, x0, y, n, head):
