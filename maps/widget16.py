@@ -82,7 +82,7 @@ PINS = {'n1': [('APT', 128, 700, 'milan', '404호')],      # the panel block at 
                ('3', 192, 590, 'johann', '')],            # by the helipad
         'r1': [('1', 384, 400, 'pixelatedkisses', ''),    # the round plaza
                ('2', 665.6, 100, 'raymond', '')],         # the crane yard
-        'r2': [('1', 486.4, 400, 'woojaegyeong', '')]}    # the platform
+        'r2': [('1', 780.8, 690, 'woojaegyeong', '')]}    # in the drift between rooms 12 and 13
 # extra colours per list entry: polar night is dark, the abandoned town ash grey
 EXTRA = {'q1': ';--F:#161c2e;--V:#0c1222;background:#0f1424', 'q7': ';--F:#d6d2ce;--V:#b7c0c6'}
 
