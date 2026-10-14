@@ -153,6 +153,7 @@
 @keyframes srm-tx{from{translate:calc(25% + max(0px,var(--v) - 150%)/2)}to{translate:calc(25% + min(var(--v) - 150%,max(0px,var(--v) - 150%)/2))}}
 @keyframes srm-ty{from{transform:translateY(calc(25% + max(0px,var(--vh) - 150%)/2))}to{transform:translateY(calc(25% + min(var(--vh) - 150%,max(0px,var(--vh) - 150%)/2)))}}
 @keyframes srm-zk{to{top:2.1em}}
+@keyframes srm-zd{from{--z:-1}to{--z:0}}
 .srm:has(#q1:checked) .hd,.srm:has(#q1:checked) .zc{filter:invert(1) hue-rotate(180deg)}
 @container (max-width:560px){
 .srm .hw{--v:100cqi;--vh:calc(100cqi/1.28);--bw:11em}
@@ -161,5 +162,13 @@
 .srm .hl{position:static;width:auto;padding:.6em 0}}
 @supports (timeline-scope:none){@container (max-width:560px){
 .srm .hw{--k:1.28;--vh:100cqi}.srm .hv{aspect-ratio:1}
+.srm .hw{animation-name:srm-zd}.srm .mb{--kz:calc(var(--k)*(1 + .6*min(var(--z,0),0)))}
+.srm .zc{display:block;inset:auto;top:calc(100% + .7em);left:0;right:0;width:auto;height:4em;font-size:1.15em;border:solid #d9b3b7;border-width:1px 0;background:#fffc;--iw:200cqi}
+.srm .zc:before,.srm .zc:after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none}
+.srm .zc:before{background:linear-gradient(90deg,#fff,#fff0 22% 78%,#fff)}
+.srm .zc:after{background:linear-gradient(#8c1724 0 0) 50% 100%/2px 62% no-repeat,conic-gradient(from 150deg at 50% 0,#0000,#8c1724 1deg 60deg,#0000 61deg) 50% 0/1.1em .7em no-repeat}
+.srm .zg{touch-action:pan-x;scroll-timeline:--zt x}
+.srm .zg i{width:var(--iw);height:100%;background:url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2740%27 height=%2716%27%3E%3Ctext x=%2720%27 y=%2712%27 font-size=%2711%27 font-family=%27sans-serif%27 font-weight=%27700%27 text-anchor=%27middle%27 fill=%27%238c1724%27%3E0.4%C3%97%3C/text%3E%3C/svg%3E") calc(0.25*var(--iw) - 20px) 15%/40px 16px no-repeat,url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2740%27 height=%2716%27%3E%3Ctext x=%2720%27 y=%2712%27 font-size=%2711%27 font-family=%27sans-serif%27 font-weight=%27700%27 text-anchor=%27middle%27 fill=%27%238c1724%27%3E0.6%C3%97%3C/text%3E%3C/svg%3E") calc(0.4167*var(--iw) - 20px) 15%/40px 16px no-repeat,url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2740%27 height=%2716%27%3E%3Ctext x=%2720%27 y=%2712%27 font-size=%2711%27 font-family=%27sans-serif%27 font-weight=%27700%27 text-anchor=%27middle%27 fill=%27%238c1724%27%3E0.8%C3%97%3C/text%3E%3C/svg%3E") calc(0.5833*var(--iw) - 20px) 15%/40px 16px no-repeat,url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2740%27 height=%2716%27%3E%3Ctext x=%2720%27 y=%2712%27 font-size=%2711%27 font-family=%27sans-serif%27 font-weight=%27700%27 text-anchor=%27middle%27 fill=%27%238c1724%27%3E1%C3%97%3C/text%3E%3C/svg%3E") calc(0.75*var(--iw) - 20px) 15%/40px 16px no-repeat,repeating-linear-gradient(90deg,#c99fa3 0 1px,#0000 0 calc(var(--iw)/24)) calc(var(--iw)/4) 100%/calc(var(--iw)/2 + 1px) 30% no-repeat,repeating-linear-gradient(90deg,#8c1724 0 1.5px,#0000 0 calc(var(--iw)/6)) calc(var(--iw)/4) 100%/calc(var(--iw)/2 + 2px) 48% no-repeat}.srm .zg i:before{top:0;left:auto;right:0;scroll-snap-align:end}
+.srm .zc u{display:none}.srm .hl{padding-top:6.2em}
 .srm .pn{--cw:calc(1.5*var(--k)*var(--v));--ch:calc(1.5*var(--k)*var(--v)/1.28);--sx:clamp(0px,var(--v)*(var(--k)*(.25 + var(--fx) + .02*var(--fs)) - .5) + (var(--bw)/2 + .8em)*var(--fs),var(--v)*(1.5*var(--k) - 1));--sy:clamp(0px,var(--v)*var(--k)*(.25 + var(--fy))/1.28 - var(--vh)/2,var(--v)*var(--k)*1.5/1.28 - var(--vh))}}}
 /* ▲ star rail map ▲ */

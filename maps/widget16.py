@@ -107,6 +107,10 @@ EXTRA = {'q1': ';--F:#161c2e;--V:#0c1222;background:#0f1424', 'q7': ';--F:#d6d2c
 # map smaller than the view, apron and all, stays in its middle (srm-tx, srm-ty), so zoomed
 # out the whole map shows with its banners. A banner opened then sets the scroll as if at
 # three-quarter size (--kq), the smallest that still pans, so zooming back in finds it.
+# On phones the same bar lies under the map as a dial: a ruler (DIAL) slid under a fixed
+# pointer, from 0.4x the phone's map at its left end to the map's own size at its right, where
+# it starts (a snap target at the end). Zoom out only: the map there follows the finger, its
+# scroller as long as its travel, and that length stays as it is, so the view keeps its place.
 # An open banner moves the view to itself once: from the map's focus --fx, --fy, --fs (see
 # SNAPS) .pn works out --sx, --sy, the scroll that centres the pin and its banner, and puts
 # its snap lines there (:before across, :after down: one per axis, each running the scroller's
@@ -179,6 +183,7 @@ CSS = '''
 @keyframes srm-tx{from{translate:calc(25% + max(0px,var(--v) - 150%)/2)}to{translate:calc(25% + min(var(--v) - 150%,max(0px,var(--v) - 150%)/2))}}
 @keyframes srm-ty{from{transform:translateY(calc(25% + max(0px,var(--vh) - 150%)/2))}to{transform:translateY(calc(25% + min(var(--vh) - 150%,max(0px,var(--vh) - 150%)/2)))}}
 @keyframes srm-zk{to{top:2.1em}}
+@keyframes srm-zd{from{--z:-1}to{--z:0}}
 .srm:has(#q1:checked) .hd,.srm:has(#q1:checked) .zc{filter:invert(1) hue-rotate(180deg)}
 @container (max-width:560px){
 .srm .hw{--v:100cqi;--vh:calc(100cqi/1.28);--bw:11em}
@@ -187,6 +192,14 @@ CSS = '''
 .srm .hl{position:static;width:auto;padding:.6em 0}}
 @supports (timeline-scope:none){@container (max-width:560px){
 .srm .hw{--k:1.28;--vh:100cqi}.srm .hv{aspect-ratio:1}
+.srm .hw{animation-name:srm-zd}.srm .mb{--kz:calc(var(--k)*(1 + .6*min(var(--z,0),0)))}
+.srm .zc{display:block;inset:auto;top:calc(100% + .7em);left:0;right:0;width:auto;height:4em;font-size:1.15em;border:solid #d9b3b7;border-width:1px 0;background:#fffc;--iw:200cqi}
+.srm .zc:before,.srm .zc:after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none}
+.srm .zc:before{background:linear-gradient(90deg,#fff,#fff0 22% 78%,#fff)}
+.srm .zc:after{background:linear-gradient(#8c1724 0 0) 50% 100%/2px 62% no-repeat,conic-gradient(from 150deg at 50% 0,#0000,#8c1724 1deg 60deg,#0000 61deg) 50% 0/1.1em .7em no-repeat}
+.srm .zg{touch-action:pan-x;scroll-timeline:--zt x}
+.srm .zg i{width:var(--iw);height:100%;background:{DIAL}}.srm .zg i:before{top:0;left:auto;right:0;scroll-snap-align:end}
+.srm .zc u{display:none}.srm .hl{padding-top:6.2em}
 .srm .pn{--cw:calc(1.5*var(--k)*var(--v));--ch:calc(1.5*var(--k)*var(--v)/1.28);--sx:clamp(0px,var(--v)*(var(--k)*(.25 + var(--fx) + .02*var(--fs)) - .5) + (var(--bw)/2 + .8em)*var(--fs),var(--v)*(1.5*var(--k) - 1));--sy:clamp(0px,var(--v)*var(--k)*(.25 + var(--fy))/1.28 - var(--vh)/2,var(--v)*var(--k)*1.5/1.28 - var(--vh))}}}
 '''
 # Pins b1..b40. The widget sets --xN, --yN, --sN (the pin's place and banner side) on .mb while
@@ -201,6 +214,16 @@ def chain(v, last):
 SLOTS = 'srm-k1 .6s,var(--sv,srm-x) .6s,' + ','.join('var(--a%d,srm-x) .6s' % n for n in range(1, NPIN + 1))
 SNAPS = ('\n'.join('.srm:has(#b%d:checked) .pn{--a%d:srm-s%d}' % (n, n, n) for n in range(1, NPIN + 1)) + '\n' +
          '\n'.join('@keyframes srm-s%d{from,to{scroll-snap-type:both mandatory;--fx:var(--x%d);--fy:var(--y%d);--fs:var(--s%d)}}' % (n, n, n, n) for n in range(1, NPIN + 1)))
+# the phone dial's ruler: scale s sits at 1/4 + (s - .4)/.6/2 of the scroller's content (--iw)
+def dial():
+    svg = lambda t: ('url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2740%27 height=%2716%27%3E'
+                     '%3Ctext x=%2720%27 y=%2712%27 font-size=%2711%27 font-family=%27sans-serif%27 font-weight=%27700%27 '
+                     'text-anchor=%27middle%27 fill=%27%238c1724%27%3E' + t + '%C3%97%3C/text%3E%3C/svg%3E")')
+    at = lambda s: '%.4g' % (.25 + (s - .4) / .6 / 2)
+    labels = ','.join('%s calc(%s*var(--iw) - 20px) 15%%/40px 16px no-repeat' % (svg(t), at(s)) for s, t in ((.4, '0.4'), (.6, '0.6'), (.8, '0.8'), (1, '1')))
+    return (labels + ',repeating-linear-gradient(90deg,#c99fa3 0 1px,#0000 0 calc(var(--iw)/24)) calc(var(--iw)/4) 100%/calc(var(--iw)/2 + 1px) 30% no-repeat'
+            ',repeating-linear-gradient(90deg,#8c1724 0 1.5px,#0000 0 calc(var(--iw)/6)) calc(var(--iw)/4) 100%/calc(var(--iw)/2 + 2px) 48% no-repeat')
+
 # where a view opens when no banner is open (map fractions of the 1280x1000 core); others: the middle
 DEFAULT_FOCUS = {'o2': (.75, .23)}    # the company floor: its office block in the north-east
 
@@ -238,7 +261,7 @@ def build(base):
     css = (CSS.replace('{NAMES}', names).replace('{SHOW}', ','.join(show)).replace('{ACTIVE}', ','.join(active))
            .replace('{MAPS}', maps).replace('{PRELOAD}', preload).replace('{PAIRS}', ','.join('.srm .%s:before' % f for f in sorted(PAIRS))).replace('{PICKED}', picked)
            .replace('{SNAPS}', SNAPS + views).replace('{SLOTS}', SLOTS).replace('{FX}', chain('x', 'var(--dx,.5)'))
-           .replace('{FY}', chain('y', 'var(--dy,.5)')).replace('{FS}', chain('s', '0')).replace('{BASE}', base).strip())   # one rule group per line: easier to find in 꾸미기 CSS
+           .replace('{FY}', chain('y', 'var(--dy,.5)')).replace('{FS}', chain('s', '0')).replace('{BASE}', base).replace('{DIAL}', dial()).strip())   # one rule group per line: easier to find in 꾸미기 CSS
 
     focus = ''     # per open banner, only while its floor is shown: its --xN, --yN, --sN (see SNAPS)
     def pins(b, f):
