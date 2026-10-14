@@ -44,13 +44,13 @@ def luvlog(h):
 
 # list entries: (radio id, list label, title shown top left, map box)
 GROUPS = [
-    ('러시아', [('q1', 'Норильск · 극야', 'Норильск · 극야', 'mn'),
-               ('q2', 'Норильск · 백야', 'Норильск · 백야', 'mn'),
-               ('q3', 'Москва', 'Москва', 'mm')]),
-    ('luv.map', [('q5', 'Liberty', 'luv.map · Liberty', 'mo'),      # 현대물, the modern quarter
-                 ('q6', 'Ocean', 'luv.map · Ocean', 'mq'),          # 바다, the ship
-                 ('q4', 'Venture', 'luv.map · Venture', 'ma'),      # 센가물
-                 ('q7', 'Elysian', 'luv.map · Elysian', 'mr')]),    # 폐도시, the abandoned town
+    ('러시아', [('q1', 'Норильск · 극야', '노릴스크 · 극야', 'mn'),
+               ('q2', 'Норильск · 백야', '노릴스크 · 백야', 'mn'),
+               ('q3', 'Москва', '모스크바', 'mm')]),
+    ('luv.map', [('q5', 'Liberty', 'L · 현대', 'mo'),               # 현대물, the modern quarter
+                 ('q6', 'Ocean', 'O · 바다', 'mq'),                 # 바다, the ship
+                 ('q4', 'Venture', 'V · 센티넬 가이드', 'ma'),      # 센가물
+                 ('q7', 'Elysian', 'E · 고스트 타운', 'mr')]),      # 폐도시, the abandoned town
 ]
 # map boxes: floors as (map file, floor label), top floor first as the floor buttons stack;
 # the floor labelled '1' is shown first. One floor means no floor buttons. Box names must
