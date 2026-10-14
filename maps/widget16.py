@@ -73,7 +73,7 @@ HOST = 'vasilic'    # the luvlog home this widget sits on
 PINS = {'n1': [('APT', 128, 700, 'milan', '404호')],      # the panel block at Norilsk's south-west corner
         's1': [('1', 243.2, 360, 'karma', ''),            # the west hall
                ('2', 729.6, 200, 'meltaway', ''),         # beside the north gate
-               ('3', 780.8, 430, 'love', '')],            # where the east corridor leaves the round hall
+               ('3', 768, 450, 'love', '')],              # the round hall's east side, at the corridor's south corner
         's2': [('1', 128, 760, 'aiden', ''),              # the L-shaped block
                ('2', 742.4, 960, '915', ''),             # in front of the sandwich shop
                ('3', 384, 130, 'chajaehyeon', ''),        # the concert hall's stage
