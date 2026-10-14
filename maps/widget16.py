@@ -99,7 +99,13 @@ EXTRA = {'q1': ';--F:#161c2e;--V:#0c1222;background:#0f1424', 'q7': ';--F:#d6d2c
 # Panning: .pn is an invisible scroller over the map; its scroll progress moves the map (.mi)
 # from 25% past one edge to 25% past the other, so the map's apron (bake.py, kit.EX/EY) can
 # be dragged into view. On phones the scroller is as long as the map's travel, so the map
-# follows the finger. Zoom (desktop) is the registered --z, 0..1, from the zoom bar.
+# follows the finger. Zoom (desktop) is the registered --z, -1..1, from the zoom bar: the map
+# at half its size at the bottom, its own size in the middle (where the bar starts: a snap
+# target there, snapping on for a moment at load as on .pn; it holds its own size a little
+# way either side, so the start is exact and easy to find again) and three times at the top. A
+# map smaller than the view, apron and all, stays in its middle (srm-tx, srm-ty), so zoomed
+# out the whole map shows with its banners. A banner opened then sets the scroll as if at
+# three-quarter size (--kq), the smallest that still pans, so zooming back in finds it.
 # An open banner moves the view to itself once: from the map's focus --fx, --fy, --fs (see
 # SNAPS) .pn works out --sx, --sy, the scroll that centres the pin and its banner, and puts
 # its snap lines there (:before across, :after down: one per axis, each running the scroller's
@@ -113,8 +119,8 @@ CSS = '''
 .srm .hw{counter-reset:pt px;position:relative;overflow:clip;font-size:clamp(9px,1.2cqi,14px);--F:#dcc7c8;--V:#bccad8;--v:77cqi;--vh:66.67cqi;--r:.8658;--k:1;--bw:13em;background:#efe5e5;color:#2a1416}
 {NAMES}
 .srm .hv{position:relative;aspect-ratio:3/2}
-.srm .mb{position:absolute;inset:0 23% 0 0;overflow:clip;--kz:calc(var(--k)*(1 + 2*var(--z,0)));--fx:{FX};--fy:{FY};--fs:{FS}}
-.srm .mi{position:relative;width:calc(var(--v)*var(--k)*(1 + 2*var(--z,0)));aspect-ratio:1.28;translate:var(--f);transform:translateY(var(--g,max(0px,var(--vh)/2 - 50%)));--f:clamp(2.6% + var(--bw) + 2em - var(--fx)*100% - (1 + var(--fs))*1e4px,clamp(var(--v) - 125%,var(--v)/2 - var(--fx)*100%,25%),var(--v) - 2.6% - var(--bw) - 2em - var(--fx)*100% + (1 - var(--fs))*1e4px);--g:clamp(3.6em - var(--fy)*100%,clamp(var(--vh) - 125%,var(--vh)/2 - var(--fy)*100%,25%),var(--vh) - 3.6em - var(--fy)*100%)}
+.srm .mb{position:absolute;inset:0 23% 0 0;overflow:clip;--kz:calc(var(--k)*(1 + 2*max(var(--z,0),0) + .5*min(var(--z,0),0)));--fx:{FX};--fy:{FY};--fs:{FS}}
+.srm .mi{position:relative;width:calc(var(--v)*var(--kz));aspect-ratio:1.28;translate:var(--f);transform:translateY(var(--g,max(0px,var(--vh)/2 - 50%)));--f:clamp(2.6% + var(--bw) + 2em - var(--fx)*100% - (1 + var(--fs))*1e4px,clamp(var(--v) - 125%,var(--v)/2 - var(--fx)*100%,25%),var(--v) - 2.6% - var(--bw) - 2em - var(--fx)*100% + (1 - var(--fs))*1e4px);--g:clamp(3.6em - var(--fy)*100%,clamp(var(--vh) - 125%,var(--vh)/2 - var(--fy)*100%,25%),var(--vh) - 3.6em - var(--fy)*100%)}
 .srm .mb,.srm .mi{background:var(--F)}
 .srm:has(.A:checked):has(#n1:checked) .mb{background:linear-gradient(var(--F) 50%,var(--V) 0)}.srm:has(#q6:checked) .mb{background:var(--V)}
 .srm .mi>div,.srm .fs p{position:absolute;inset:0;display:none}
@@ -124,7 +130,7 @@ CSS = '''
 {ACTIVE}{--o:1;--d:block}
 {MAPS}
 {PRELOAD}
-{PAIRS}{background-size:200% 100%}.srm:has(#q1:checked) .z:before{background-position:100% 0}
+{PAIRS}{background-size:200% 100%;padding:0 1px;background-clip:content-box}.srm:has(#q1:checked) .z:before{background-position:100% 0}
 .srm .p{position:absolute;left:var(--x);top:var(--y);width:4%;aspect-ratio:1;translate:-50% -50%;z-index:3;display:var(--d,none);pointer-events:auto;cursor:pointer;counter-increment:pt}.srm .p.x{counter-increment:pt px}
 .srm .p:before{content:"";position:absolute;inset:-.5em}
 .srm .p:has(:checked){background:url({BASE}on.svg) 0/1000%}
@@ -155,22 +161,22 @@ CSS = '''
 @supports (timeline-scope:none){
 .srm .hw{timeline-scope:--tx,--ty,--zt;animation:srm-z linear both;animation-timeline:--zt}
 .srm .pn,.srm .zg{position:absolute;inset:0;overflow:scroll;scrollbar-width:none;overscroll-behavior:contain}
-.srm .pn{display:block;touch-action:pan-x pan-y;scroll-timeline:--tx x,--ty y;animation:{SLOTS};--cw:calc(2*var(--v));--ch:calc(2*var(--vh));--sx:clamp(0px,(var(--v)*(var(--kz)*(.25 + var(--fx) + .02*var(--fs)) - .5) + (var(--bw)/2 + .8em)*var(--fs))/(var(--kz)*1.5 - 1),var(--v));--sy:clamp(0px,var(--r)*var(--v)*(var(--kz)*(.25 + var(--fy))/1.28 - var(--r)/2)/(var(--kz)*1.5/1.28 - var(--r)),var(--vh))}
+.srm .pn{display:block;touch-action:pan-x pan-y;scroll-timeline:--tx x,--ty y;animation:{SLOTS};--kq:max(var(--kz),.75);--cw:calc(2*var(--v));--ch:calc(2*var(--vh));--sx:clamp(0px,(var(--v)*(var(--kq)*(.25 + var(--fx) + .02*var(--fs)) - .5) + (var(--bw)/2 + .8em)*var(--fs))/(var(--kq)*1.5 - 1),var(--v));--sy:clamp(0px,var(--r)*var(--v)*(var(--kq)*(.25 + var(--fy))/1.28 - var(--r)/2)/(var(--kq)*1.5/1.28 - var(--r)),var(--vh))}
 .srm .pn:before,.srm .pn:after{content:"";position:absolute;left:0;top:0;width:1px;height:1px}
 .srm .pn:before{left:calc(var(--sx) + var(--v)/2);height:var(--ch);scroll-snap-align:none center}
 .srm .pn:after{top:calc(var(--sy) + var(--vh)/2);width:var(--cw);scroll-snap-align:center none}
 .srm .mi{pointer-events:none;animation:srm-tx linear both,srm-ty linear both;animation-timeline:--tx,--ty}
-.srm .zc{display:grid;align-content:space-between;justify-items:center;position:absolute;right:1.5%;bottom:4%;z-index:4;width:2.2em;height:9em;border:1px solid #8c1724;background:linear-gradient(#d9b3b7 0 0) 50%/1px 60% no-repeat #fff;color:#8c1724;font-weight:700}
+.srm .zc{display:grid;align-content:space-between;justify-items:center;position:absolute;right:1.5%;bottom:4%;z-index:4;width:2.2em;height:9em;border:1px solid #8c1724;background:linear-gradient(#d9b3b7 0 0) 50%/.8em 1px no-repeat,linear-gradient(#d9b3b7 0 0) 50%/1px 60% no-repeat #fff;color:#8c1724;font-weight:700}
 .srm .zc:before{content:"+"}.srm .zc:after{content:"−"}
 .srm .zg{touch-action:pan-y;scroll-timeline:--zt y;animation:srm-k1 .6s}
-.srm .zg i{display:block;height:400%}
+.srm .zg i{display:block;position:relative;height:400%}.srm .zg i:before{content:"";position:absolute;top:50%;width:1px;height:1px;scroll-snap-align:center}
 .srm .zc u{position:absolute;left:50%;top:calc(100% - 2.1em);padding:.3em;margin:-.3em;rotate:45deg;background:#8c1724;pointer-events:none;animation:srm-zk linear both;animation-timeline:--zt}
 }
 {SNAPS}
 @keyframes srm-k1{from,to{scroll-snap-type:both mandatory}}
-@keyframes srm-z{to{--z:1}}
-@keyframes srm-tx{from{translate:25%}to{translate:calc(var(--v) - 125%)}}
-@keyframes srm-ty{from{transform:translateY(25%)}to{transform:translateY(calc(var(--vh) - 125%))}}
+@keyframes srm-z{from{--z:-1}47%,53%{--z:0}to{--z:1}}
+@keyframes srm-tx{from{translate:calc(25% + max(0px,var(--v) - 150%)/2)}to{translate:calc(25% + min(var(--v) - 150%,max(0px,var(--v) - 150%)/2))}}
+@keyframes srm-ty{from{transform:translateY(calc(25% + max(0px,var(--vh) - 150%)/2))}to{transform:translateY(calc(25% + min(var(--vh) - 150%,max(0px,var(--vh) - 150%)/2)))}}
 @keyframes srm-zk{to{top:2.1em}}
 .srm:has(#q1:checked) .hd,.srm:has(#q1:checked) .zc{filter:invert(1) hue-rotate(180deg)}
 @container (max-width:560px){
