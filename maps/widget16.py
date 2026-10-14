@@ -77,7 +77,8 @@ PINS = {'n1': [('APT', 128, 700, 'milan', '404호')],      # the panel block at 
         's2': [('1', 128, 760, 'aiden', ''),              # the L-shaped block
                ('2', 742.4, 960, '915', ''),             # in front of the sandwich shop
                ('3', 384, 130, 'chajaehyeon', ''),        # the concert hall's stage
-               ('4', 422.4, 260, 'koyubin', '')],         # the concert hall's seats
+               ('4', 422.4, 260, 'koyubin', ''),          # the concert hall's seats
+               ('5', 435.2, 580, 'woojoo', '')],          # the school's roof
         'o2': [('1', 1164.8, 190, '574839', '')],         # the seat between the head and the 대리
         's3': [('1', 1139, 500, 'legion', ''),            # the ship's bow
                ('2', 281.6, 370, 'stray', ''),            # the deck by the lifeboats
