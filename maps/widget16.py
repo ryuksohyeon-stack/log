@@ -44,13 +44,13 @@ def luvlog(h):
 
 # list entries: (radio id, list label, title shown top left, map box)
 GROUPS = [
-    ('러시아', [('q1', '노릴스크의 극야', '노릴스크 · 극야', 'mn'),
-               ('q2', '노릴스크의 백야', '노릴스크 · 백야', 'mn'),
-               ('q3', '모스크바의 거리', '모스크바의 거리', 'mm')]),
-    ('보금자리', [('q4', '센가물', '보금자리 · 센가물', 'ma'),
-               ('q5', '현대물', '보금자리 · 현대물', 'mo'),
-               ('q6', '바다', '보금자리 · 바다', 'mq'),
-               ('q7', '폐도시', '보금자리 · 폐도시', 'mr')]),
+    ('러시아', [('q1', 'Норильск · 극야', 'Норильск · 극야', 'mn'),
+               ('q2', 'Норильск · 백야', 'Норильск · 백야', 'mn'),
+               ('q3', 'Москва', 'Москва', 'mm')]),
+    ('luv.map', [('q5', 'Liberty', 'luv.map · Liberty', 'mo'),      # 현대물, the modern quarter
+                 ('q6', 'Ocean', 'luv.map · Ocean', 'mq'),          # 바다, the ship
+                 ('q4', 'Venture', 'luv.map · Venture', 'ma'),      # 센가물
+                 ('q7', 'Elysian', 'luv.map · Elysian', 'mr')]),    # 폐도시, the abandoned town
 ]
 # map boxes: floors as (map file, floor label), top floor first as the floor buttons stack;
 # the floor labelled '1' is shown first. One floor means no floor buttons. Box names must
@@ -82,7 +82,8 @@ PINS = {'n1': [('APT', 128, 700, 'milan', '404호')],      # the panel block at 
                ('5', 435.2, 580, 'woojoo', ''),           # the school's roof
                ('6', 1075.2, 920, 'cinema', ''),          # the multiplex's second screen
                ('7', 652.8, 460, 'rowan', ''),            # the avenue, east of the gate
-               ('8', 601.6, 390, 'adrian', '')],          # the road north of the gate
+               ('8', 601.6, 390, 'adrian', ''),           # the road north of the gate
+               ('9', 332.8, 860, 'callan', '')],          # the stadium's pitch, its south-west
         'o2': [('1', 1164.8, 190, '574839', '')],         # the seat between the head and the 대리
         's3': [('1', 1139, 500, 'legion', ''),            # the ship's bow
                ('2', 281.6, 370, 'stray', ''),            # the deck by the lifeboats
