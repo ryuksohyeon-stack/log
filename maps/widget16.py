@@ -72,7 +72,8 @@ HOST = 'vasilic'    # the luvlog home this widget sits on
 # Re-run the build to pick up changed banners.
 PINS = {'n1': [('APT', 128, 700, 'milan', '404호')],      # the panel block at Norilsk's south-west corner
         's1': [('1', 243.2, 360, 'karma', ''),            # the west hall
-               ('2', 729.6, 200, 'meltaway', '')],        # beside the north gate
+               ('2', 729.6, 200, 'meltaway', ''),         # beside the north gate
+               ('3', 780.8, 430, 'love', '')],            # where the east corridor leaves the round hall
         's2': [('1', 128, 760, 'aiden', ''),              # the L-shaped block
                ('2', 742.4, 960, '915', ''),             # in front of the sandwich shop
                ('3', 384, 130, 'chajaehyeon', ''),        # the concert hall's stage
@@ -80,7 +81,8 @@ PINS = {'n1': [('APT', 128, 700, 'milan', '404호')],      # the panel block at 
         'o2': [('1', 1164.8, 190, '574839', '')],         # the seat between the head and the 대리
         's3': [('1', 1139, 500, 'legion', ''),            # the ship's bow
                ('2', 281.6, 370, 'stray', ''),            # the deck by the lifeboats
-               ('3', 192, 590, 'johann', '')],            # by the helipad
+               ('3', 192, 590, 'johann', ''),             # by the helipad
+               ('4', 985.6, 410, 'jeste', '')],           # the foredeck, north of the capstan
         'r1': [('1', 384, 400, 'pixelatedkisses', ''),    # the round plaza
                ('2', 665.6, 100, 'raymond', '')],         # the crane yard
         'r2': [('1', 780.8, 690, 'woojaegyeong', '', 'up')]}   # in the drift between rooms 12 and 13
