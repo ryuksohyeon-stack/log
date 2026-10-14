@@ -6,12 +6,14 @@ floor tiles and an inner curb line, floor detail, lanes, stairs, dots.
 Anything placed inside a walkable area (monuments, medians, hatches) is
 drawn in the building layers and cut out of the walkable path.
 
-The inner lines along walkways and blocks are strokes of their merged
-outlines, not erode filters, so the maps draw quickly; merging the
-outlines needs shapely (pip install shapely)."""
+The maps are plain fills and strokes, no filters, masks or clips, so
+every browser draws them quickly: the block shadow and the inner lines
+along walkways and blocks are worked out as shapes, which needs shapely
+(pip install shapely)."""
 import math, random
 from shapely.geometry import Polygon
 from shapely.ops import unary_union
+from shapely.affinity import translate
 from pl import P, rect, rr, cham, ngon, circ, poly, line, ring, reverse, fillet, area
 
 # Palettes. "hsr" is the grey game-map look; the others are the draft
@@ -129,14 +131,6 @@ def style(p):
         '.l{fill:none;stroke:%(t)s;stroke-width:3;stroke-dasharray:22 18}'
         '.o{fill:%(o)s;stroke:%(os)s;stroke-width:1.5}' % p)
 
-def defs(p):
-    return (
-        '<defs>'
-        # roof texture is softened like a rendered top-down view
-        '<filter id="sb"><feGaussianBlur stdDeviation="%(blur)s"/></filter>'
-        + ('<filter id="sh"><feDropShadow dx="0" dy="5" stdDeviation="4" flood-color="%(shadow)s"/></filter>' if p['shadow'] else '')
-        + '</defs>') % p
-
 EX, EY = 320, 250    # apron: the map runs on this far past the 1280x1000 core on every side,
                       # so panning past the core (or a banner by its edge) still shows map
 
@@ -186,12 +180,12 @@ def rings(sh, step=math.radians(5)):
             cur += [(cx + rx * math.cos(a0 + da * i / n), cy + ry * math.sin(a0 + da * i / n)) for i in range(1, n)] + [(x2, y2)]
     return [r for r in out if len(r) > 2]
 
-def outline(shapes, holes=True):
-    """The merged outline of a layer as path commands: what the layer fills, without the edges
-    where its pieces overlap. With holes, the fill follows SVG's nonzero rule: each clockwise
-    ring counts +1 and each counter-clockwise one (pl.py's holes) -1, and a point is filled
-    where the count is not 0, so a hole cuts a single piece but not two overlapping ones, and a
-    hole lying outside every piece fills like a piece."""
+def merged(shapes, holes=True):
+    """What a layer fills, as one shapely geometry, without the edges where its pieces overlap.
+    With holes, the fill follows SVG's nonzero rule: each clockwise ring counts +1 and each
+    counter-clockwise one (pl.py's holes) -1, and a point is filled where the count is not 0, so
+    a hole cuts a single piece but not two overlapping ones, and a hole lying outside every piece
+    fills like a piece."""
     pieces = []          # (region, winding count), the regions not overlapping
     for sh in shapes:
         for r in rings(sh):
@@ -206,12 +200,21 @@ def outline(shapes, holes=True):
                 rest = rest.difference(g)
             if not rest.is_empty: nxt.append((rest, w))
             pieces = nxt
-    g = unary_union([g for g, n in pieces if n]).buffer(0).simplify(.05)
+    return unary_union([g for g, n in pieces if n]).buffer(0)
+
+def band(g, a, b):
+    """The band a to b in from the edge of g (mitred, so square corners stay square)."""
+    return g.buffer(-a, join_style='mitre').difference(g.buffer(-b, join_style='mitre'))
+
+def path(g, tol=.05, nd=1):
+    """A shapely geometry as path commands, simplified by tol and rounded to nd decimals."""
     cmds = []
+    g = g.simplify(tol)
     for pg in getattr(g, 'geoms', [g]):
+        if pg.is_empty or pg.geom_type != 'Polygon': continue
         for r in [pg.exterior] + list(pg.interiors):
-            pts = [(round(x, 1), round(y, 1)) for x, y in r.coords[:-1]]
-            cmds += [('M', pts[0])] + [('L', q) for q in pts[1:]] + [('Z',)]
+            pts = [(round(x, nd), round(y, nd)) for x, y in r.coords[:-1]]
+            if len(pts) > 2: cmds += [('M', pts[0])] + [('L', q) for q in pts[1:]] + [('Z',)]
     return cmds
 
 class Map:
@@ -398,34 +401,34 @@ class Map:
     def svg(s, theme='hsr'):
         p = PALETTES[theme]
         for k in ('v', 'vw', 'w', 'w2', 't', 'l', 'd'): s.L[k] = s.L[k] + [b for sh in s.L[k] for b in apron_bits(sh)]
-        o = ['<svg xmlns="http://www.w3.org/2000/svg" viewBox="%d %d %d %d" preserveAspectRatio="none"><style>%s</style>%s' % (-EX, -EY, 1280 + 2 * EX, 1000 + 2 * EY, style(p), defs(p))]
+        o = ['<svg xmlns="http://www.w3.org/2000/svg" viewBox="%d %d %d %d" preserveAspectRatio="none"><style>%s</style>' % (-EX, -EY, 1280 + 2 * EX, 1000 + 2 * EY, style(p))]
         if s.L['f']: o.append('<path class="f" d="%s"/>' % P(*s.L['f']))
-        if s.L['fr']: o.append('<path class="fr" filter="url(#sb)" d="%s"/>' % P(*s.L['fr']))
+        if s.L['fr']: o.append('<path class="fr" d="%s"/>' % P(*s.L['fr']))
         for k in ('v', 'vw'):
             if s.L[k]: o.append('<path class="%s" d="%s"/>' % (k, P(*s.L[k])))
-        # blocks, each layer an outline in <defs> (id B, B2), and their rim: a light band 2 to 4.5 in
-        # from the edge of the merged blocks (from a block's stroke's outer edge, if it has one),
-        # drawn as a stroke of the merged outline (Bu) kept inside by a clip and cut down to the band
-        # by a mask. Strokes and clips instead of an erode filter: the same band, rendered in a
-        # fraction of the time.
+        # Everything below is plain fills and strokes, no filters, masks or clips, which some
+        # browsers (Safari above all) draw slowly over a whole map. The block shadow, the blocks'
+        # light rim and the walkways' faint inner line are worked out here as shapes instead.
         bl = [k for k in ('b', 'b2') if s.L[k]]; bw = p.get('bsw', 0) if p.get('bs', 'none') != 'none' else 0
-        uses = lambda a='': ''.join('<use href="#%s"%s/>' % (k.upper(), a) for k in bl)
-        bu = P(outline([sh for k in bl for sh in s.L[k]], holes=False))      # all blocks merged: the rim's line
-        o.append('<defs>%s<path id="Bu" d="%s"/><clipPath id="cb">%s</clipPath><mask id="mb" fill="none">'
-                 '<use href="#Bu" stroke="#fff" stroke-width="%g"/><use href="#Bu" stroke="#000" stroke-width="%g"/></mask></defs>' % (
-            ''.join('<path id="%s" d="%s"/>' % (k.upper(), P(*s.L[k])) for k in bl), bu, uses(), 9 - bw, 4 - bw))
-        o.append('<g%s>' % (' filter="url(#sh)"' if p['shadow'] else '') + ''.join('<use href="#%s" class="%s"/>' % (k.upper(), k) for k in bl) + '</g>')
-        o.append('<use href="#Bu" clip-path="url(#cb)" mask="url(#mb)" fill="none" stroke="%s" stroke-width="%g"/>' % (p['rim'], 9 - bw))
-        o.append('<g filter="url(#sb)">' + ''.join('<path class="%s" d="%s"/>' % (k, P(*s.L[k])) for k in ('r', 'rk') if s.L[k]) + '</g>')
+        blocks = merged([sh for k in bl for sh in s.L[k]], holes=False)
+        if p['shadow'] and not blocks.is_empty:
+            # a soft shadow 5 below the blocks: four nested copies, each a little translucent, so
+            # it fades out over about 6 past the edge as a blur of 4 would
+            c, al = p['shadow'][:7], int(p['shadow'][7:9], 16) / 255
+            k = 1 - (1 - al) ** .25
+            low = translate(blocks, 0, 5)
+            o.append('<g fill="%s" fill-opacity="%.3g">' % (c, k) + ''.join(
+                '<path d="%s"/>' % P(path(low.buffer(d, join_style='mitre'), .4, 0)) for d in (6, 2.5, -1, -4.5)) + '</g>')
+        o.append(''.join('<path class="%s" d="%s"/>' % (k, P(*s.L[k])) for k in bl))
+        # light rim 2 to 4.5 in from the edge of the merged blocks (from a block stroke's outer edge)
+        if not blocks.is_empty: o.append('<path fill="%s" d="%s"/>' % (p['rim'], P(path(band(blocks, 2 - bw / 2, 4.5 - bw / 2)))))
+        o.append(''.join('<path class="%s" d="%s"/>' % (k, P(*s.L[k])) for k in ('r', 'rk') if s.L[k]))
         if s.L['w2']: o.append('<path class="w2" d="%s"/>' % P(*s.L['w2']))
-        # walkable area, and a faint line 8 to 10 in from its edge (its stroke's outer edge): the
-        # merged outline (Wu, so overlapping pieces draw no line between them) stroked in the curb
-        # colour, kept inside by a clip, its outer part painted over in the floor colour
+        # walkable area, and a faint line 8 to 10 in from its edge (its stroke's outer edge),
+        # following the merged area so overlapping pieces draw no line between them
         ww = p.get('wsw', 0) if p.get('ws', 'none') != 'none' else 0
-        o.append('<defs><path id="W" d="%s"/><path id="Wu" d="%s"/><clipPath id="cw"><use href="#W"/></clipPath></defs><use href="#W" class="w"/>'
-                 % (P(*s.L['w']), P(outline(s.L['w']))))
-        o.append('<g clip-path="url(#cw)" fill="none"><use href="#Wu" stroke="%s" stroke-width="%g"/><use href="#Wu" stroke="%s" stroke-width="%g"/></g>'
-                 % (p['curb'], 20 - ww, p['w'], 16 - ww))
+        o.append('<path class="w" d="%s"/>' % P(*s.L['w']))
+        o.append('<path fill="%s" d="%s"/>' % (p['curb'], P(path(band(merged(s.L['w']), 8 - ww / 2, 10 - ww / 2)))))
         for k in ('t', 'tk', 'l', 'o', 'or'):
             if s.L[k]: o.append('<path class="%s" d="%s"/>' % (k, P(*s.L[k])))
         o += s.stairs
