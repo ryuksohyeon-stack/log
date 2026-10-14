@@ -66,9 +66,10 @@ HOST = 'vasilic'    # the luvlog home this widget sits on
 # the red-orange copy from on.svg lands on the drawn marker. Tapping a pin turns its marker
 # red-orange and opens the banner beside it, on that floor only: to the left for a pin on the
 # left half of the map, else to the right, or above it for a pin marked 'up'; the map pans so
-# the whole banner is in view. The banner links to luvlog.me/<handle>. When the widget is
-# built, luvlog's public record for that home gives its banner image, and whether its banner
-# list carries HOST back (맞배너).
+# the whole banner is in view. Its image loads only then (loading=lazy: the banners are hidden
+# until opened, and would otherwise all load with the page). The banner links to
+# luvlog.me/<handle>. When the widget is built, luvlog's public record for that home gives its
+# banner image, and whether its banner list carries HOST back (맞배너).
 # Re-run the build to pick up changed banners.
 PINS = {'n1': [('APT', 128, 700, 'milan', '404호')],      # the panel block at Norilsk's south-west corner
         's1': [('1', 243.2, 360, 'karma', ''),            # the west hall
@@ -237,7 +238,7 @@ def build(base):
             if h not in BANNERS: BANNERS[h] = luvlog(h); print('@%s: banner %s, 맞배너 %s' % (h, 'found' if BANNERS[h][0] else 'missing', BANNERS[h][1]))
             img, ex = BANNERS[h]; img = (img or base + 'b1.svg').replace('https://', '//')
             cls = ' '.join(['p'] + ['c' + mark] * (mark != 'APT') + ['x'] * ex)
-            o += ('<label class=%s style=--x:%d%%;--y:%d%%;--s:%d%s><input type=checkbox id=b%d><a href=//luvlog.me/%s>%s<img src=%s></a></label>'
+            o += ('<label class=%s style=--x:%d%%;--y:%d%%;--s:%d%s><input type=checkbox id=b%d><a href=//luvlog.me/%s>%s<img loading=lazy src=%s></a></label>'
                   % ('"%s"' % cls if ' ' in cls else cls, px, py, side, ';--u:1' * ('up' in opt), n, h, '<b>%s</b>' % cap if cap else '', img))
             g = lambda v: ('%g' % v).replace('0.', '.', 1) if 0 < v < 1 else '%g' % v
             focus += '%s%s:has(#b%d:checked) .mb{--x%d:%s;--y%d:%s;--s%d:%d}' % (reg(b), ':has(#%s:checked)' % f if len(FLOORS[b]) > 1 else '', n, n, g(px / 100), n, g(py / 100), n, side)
