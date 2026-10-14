@@ -4,9 +4,15 @@ Layers, bottom to top: far city, water, buildings (+ inner wall line),
 roof detail, walkable area (one path, holes cut counter-clockwise) with
 floor tiles and an inner curb line, floor detail, lanes, stairs, dots.
 Anything placed inside a walkable area (monuments, medians, hatches) is
-drawn in the building layers and cut out of the walkable path."""
+drawn in the building layers and cut out of the walkable path.
+
+The inner lines along walkways and blocks are strokes of their merged
+outlines, not erode filters, so the maps draw quickly; merging the
+outlines needs shapely (pip install shapely)."""
 import math, random
-from pl import P, rect, rr, cham, ngon, circ, poly, line, ring, reverse, fillet
+from shapely.geometry import Polygon
+from shapely.ops import unary_union
+from pl import P, rect, rr, cham, ngon, circ, poly, line, ring, reverse, fillet, area
 
 # Palettes. "hsr" is the grey game-map look; the others are the draft
 # themes (white-night travel journal, transit board, polar explorer HUD).
@@ -126,14 +132,6 @@ def style(p):
 def defs(p):
     return (
         '<defs>'
-        # faint inner line along the edge of the walkable area
-        '<filter id="e"><feMorphology in="SourceAlpha" operator="erode" radius="8" result="a"/>'
-        '<feMorphology in="SourceAlpha" operator="erode" radius="10" result="b"/>'
-        '<feComposite in="a" in2="b" operator="out" result="c"/><feFlood flood-color="%(curb)s"/><feComposite in2="c" operator="in"/></filter>'
-        # light rim just inside every block
-        '<filter id="eb"><feMorphology in="SourceAlpha" operator="erode" radius="2" result="a"/>'
-        '<feMorphology in="SourceAlpha" operator="erode" radius="4.5" result="b"/>'
-        '<feComposite in="a" in2="b" operator="out" result="c"/><feFlood flood-color="%(rim)s"/><feComposite in2="c" operator="in"/></filter>'
         # roof texture is softened like a rendered top-down view
         '<filter id="sb"><feGaussianBlur stdDeviation="%(blur)s"/></filter>'
         + ('<filter id="sh"><feDropShadow dx="0" dy="5" stdDeviation="4" flood-color="%(shadow)s"/></filter>' if p['shadow'] else '')
@@ -165,6 +163,56 @@ def apron_bits(sh):
             if y <= 0: out.append(line((x, -EY), (x, y)))
             if y >= 1000: out.append(line((x, y), (x, 1000 + EY)))
     return out
+
+def rings(sh, step=math.radians(5)):
+    """A shape's closed rings as point lists, its arcs (pl.py: rotation 0, large-arc flag
+    defaulting to 1) flattened into short chords."""
+    out, cur = [], None
+    for c in sh:
+        if c[0] == 'M': cur = [c[1]]; out.append(cur)
+        elif c[0] == 'L': cur.append(c[1])
+        elif c[0] == 'A':
+            (x1, y1), (x2, y2) = cur[-1], c[4]; rx, ry, sw, lg = abs(c[1]), abs(c[2]), c[3], c[5] if len(c) > 5 else 1
+            hx, hy = (x1 - x2) / 2, (y1 - y2) / 2
+            k = hx * hx / (rx * rx) + hy * hy / (ry * ry)
+            if k > 1: rx, ry = rx * math.sqrt(k), ry * math.sqrt(k)
+            num = rx * rx * ry * ry - rx * rx * hy * hy - ry * ry * hx * hx
+            f = (-1 if lg == sw else 1) * math.sqrt(max(0, num / (rx * rx * hy * hy + ry * ry * hx * hx)))
+            cx, cy = f * rx * hy / ry + (x1 + x2) / 2, -f * ry * hx / rx + (y1 + y2) / 2
+            a0 = math.atan2((y1 - cy) / ry, (x1 - cx) / rx); da = math.atan2((y2 - cy) / ry, (x2 - cx) / rx) - a0
+            if sw and da <= 0: da += 2 * math.pi
+            if not sw and da >= 0: da -= 2 * math.pi
+            n = max(1, math.ceil(abs(da) / step))
+            cur += [(cx + rx * math.cos(a0 + da * i / n), cy + ry * math.sin(a0 + da * i / n)) for i in range(1, n)] + [(x2, y2)]
+    return [r for r in out if len(r) > 2]
+
+def outline(shapes, holes=True):
+    """The merged outline of a layer as path commands: what the layer fills, without the edges
+    where its pieces overlap. With holes, the fill follows SVG's nonzero rule: each clockwise
+    ring counts +1 and each counter-clockwise one (pl.py's holes) -1, and a point is filled
+    where the count is not 0, so a hole cuts a single piece but not two overlapping ones, and a
+    hole lying outside every piece fills like a piece."""
+    pieces = []          # (region, winding count), the regions not overlapping
+    for sh in shapes:
+        for r in rings(sh):
+            pg, w = Polygon(r).buffer(0), (-1 if holes and area(r) < 0 else 1)
+            if pg.is_empty: continue
+            nxt, rest = [], pg
+            for g, n in pieces:
+                if not g.intersects(pg): nxt.append((g, n)); continue
+                a, b = g.intersection(pg), g.difference(pg)
+                if not a.is_empty: nxt.append((a, n + w))
+                if not b.is_empty: nxt.append((b, n))
+                rest = rest.difference(g)
+            if not rest.is_empty: nxt.append((rest, w))
+            pieces = nxt
+    g = unary_union([g for g, n in pieces if n]).buffer(0).simplify(.05)
+    cmds = []
+    for pg in getattr(g, 'geoms', [g]):
+        for r in [pg.exterior] + list(pg.interiors):
+            pts = [(round(x, 1), round(y, 1)) for x, y in r.coords[:-1]]
+            cmds += [('M', pts[0])] + [('L', q) for q in pts[1:]] + [('Z',)]
+    return cmds
 
 class Map:
     def __init__(s, seed=1):
@@ -355,11 +403,29 @@ class Map:
         if s.L['fr']: o.append('<path class="fr" filter="url(#sb)" d="%s"/>' % P(*s.L['fr']))
         for k in ('v', 'vw'):
             if s.L[k]: o.append('<path class="%s" d="%s"/>' % (k, P(*s.L[k])))
-        o.append('<g id="B"%s>' % (' filter="url(#sh)"' if p['shadow'] else '') + ''.join('<path class="%s" d="%s"/>' % (k, P(*s.L[k])) for k in ('b', 'b2') if s.L[k]) + '</g>')
-        o.append('<use href="#B" filter="url(#eb)"/>')
+        # blocks, each layer an outline in <defs> (id B, B2), and their rim: a light band 2 to 4.5 in
+        # from the edge of the merged blocks (from a block's stroke's outer edge, if it has one),
+        # drawn as a stroke of the merged outline (Bu) kept inside by a clip and cut down to the band
+        # by a mask. Strokes and clips instead of an erode filter: the same band, rendered in a
+        # fraction of the time.
+        bl = [k for k in ('b', 'b2') if s.L[k]]; bw = p.get('bsw', 0) if p.get('bs', 'none') != 'none' else 0
+        uses = lambda a='': ''.join('<use href="#%s"%s/>' % (k.upper(), a) for k in bl)
+        bu = P(outline([sh for k in bl for sh in s.L[k]], holes=False))      # all blocks merged: the rim's line
+        o.append('<defs>%s<path id="Bu" d="%s"/><clipPath id="cb">%s</clipPath><mask id="mb" fill="none">'
+                 '<use href="#Bu" stroke="#fff" stroke-width="%g"/><use href="#Bu" stroke="#000" stroke-width="%g"/></mask></defs>' % (
+            ''.join('<path id="%s" d="%s"/>' % (k.upper(), P(*s.L[k])) for k in bl), bu, uses(), 9 - bw, 4 - bw))
+        o.append('<g%s>' % (' filter="url(#sh)"' if p['shadow'] else '') + ''.join('<use href="#%s" class="%s"/>' % (k.upper(), k) for k in bl) + '</g>')
+        o.append('<use href="#Bu" clip-path="url(#cb)" mask="url(#mb)" fill="none" stroke="%s" stroke-width="%g"/>' % (p['rim'], 9 - bw))
         o.append('<g filter="url(#sb)">' + ''.join('<path class="%s" d="%s"/>' % (k, P(*s.L[k])) for k in ('r', 'rk') if s.L[k]) + '</g>')
         if s.L['w2']: o.append('<path class="w2" d="%s"/>' % P(*s.L['w2']))
-        o.append('<path id="W" class="w" d="%s"/><use href="#W" filter="url(#e)"/>' % P(*s.L['w']))
+        # walkable area, and a faint line 8 to 10 in from its edge (its stroke's outer edge): the
+        # merged outline (Wu, so overlapping pieces draw no line between them) stroked in the curb
+        # colour, kept inside by a clip, its outer part painted over in the floor colour
+        ww = p.get('wsw', 0) if p.get('ws', 'none') != 'none' else 0
+        o.append('<defs><path id="W" d="%s"/><path id="Wu" d="%s"/><clipPath id="cw"><use href="#W"/></clipPath></defs><use href="#W" class="w"/>'
+                 % (P(*s.L['w']), P(outline(s.L['w']))))
+        o.append('<g clip-path="url(#cw)" fill="none"><use href="#Wu" stroke="%s" stroke-width="%g"/><use href="#Wu" stroke="%s" stroke-width="%g"/></g>'
+                 % (p['curb'], 20 - ww, p['w'], 16 - ww))
         for k in ('t', 'tk', 'l', 'o', 'or'):
             if s.L[k]: o.append('<path class="%s" d="%s"/>' % (k, P(*s.L[k])))
         o += s.stairs
