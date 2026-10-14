@@ -59,15 +59,16 @@ FLOORS = {'mn': [('n1', '1'), ('n2', 'B1')], 'mm': [('m1', '1'), ('m2', 'B1')], 
           'mo': [('o2', '2'), ('s2', '1')], 'mq': [('s3', '')], 'mr': [('r1', '1'), ('r2', 'B1')]}
 PAIRS = {'n1', 'n2'}  # hold the white-night map on the left and the polar-night map on the right
 HOST = 'vasilic'    # the luvlog home this widget sits on
-# banner pins: map file -> (mark, x, y in the 1280x1000 map, luvlog handle, caption)
+# banner pins: map file -> (mark, x, y in the 1280x1000 map, luvlog handle, caption[, 'up'])
 # The pin is an invisible tap area over a marker drawn into the map (widget.MARKERS, bake.py):
 # 'APT' the apartment block, '1' to '9' the white numerals (numbers start at 1 on each map).
 # Keep x, y on whole percents (x a multiple of 12.8, y of 10) and the same as the marker's, so
 # the red-orange copy from on.svg lands on the drawn marker. Tapping a pin turns its marker
 # red-orange and opens the banner beside it, on that floor only: to the left for a pin on the
-# left half of the map, else to the right; the map pans so the whole banner is in view. The
-# banner links to luvlog.me/<handle>. When the widget is built, luvlog's public record for
-# that home gives its banner image, and whether its banner list carries HOST back (맞배너).
+# left half of the map, else to the right, or above it for a pin marked 'up'; the map pans so
+# the whole banner is in view. The banner links to luvlog.me/<handle>. When the widget is
+# built, luvlog's public record for that home gives its banner image, and whether its banner
+# list carries HOST back (맞배너).
 # Re-run the build to pick up changed banners.
 PINS = {'n1': [('APT', 128, 700, 'milan', '404호')],      # the panel block at Norilsk's south-west corner
         's1': [('1', 243.2, 360, 'karma', ''),            # the west hall
@@ -82,7 +83,7 @@ PINS = {'n1': [('APT', 128, 700, 'milan', '404호')],      # the panel block at 
                ('3', 192, 590, 'johann', '')],            # by the helipad
         'r1': [('1', 384, 400, 'pixelatedkisses', ''),    # the round plaza
                ('2', 665.6, 100, 'raymond', '')],         # the crane yard
-        'r2': [('1', 780.8, 690, 'woojaegyeong', '')]}    # in the drift between rooms 12 and 13
+        'r2': [('1', 780.8, 690, 'woojaegyeong', '', 'up')]}   # in the drift between rooms 12 and 13
 # extra colours per list entry: polar night is dark, the abandoned town ash grey
 EXTRA = {'q1': ';--F:#161c2e;--V:#0c1222;background:#0f1424', 'q7': ';--F:#d6d2ce;--V:#b7c0c6'}
 
@@ -120,7 +121,7 @@ CSS = '''
 .srm .p:before{content:"";position:absolute;inset:-.5em}
 .srm .p:has(:checked){background:url({BASE}on.svg) 0/1000%}
 {PICKED}
-.srm .p a{display:none;position:absolute;left:calc(50% + var(--s)*(50% + .6em));top:50%;translate:calc(var(--s)*50% - 50%) -50%;padding:.2em;border-radius:.3em;background:#fff;box-shadow:0 .2em .6em #0006}
+.srm .p a{display:none;position:absolute;left:calc(50% + var(--s)*(50% + .6em));top:calc(50% - var(--u,0)*(50% + .6em));translate:calc(var(--s)*50% - 50%) calc(-50% - var(--u,0)*50%);padding:.2em;border-radius:.3em;background:#fff;box-shadow:0 .2em .6em #0006}
 .srm .p :checked+a{display:block}.srm .p img{display:block;max-width:var(--bw)}.srm .p b{display:block;padding:.1em .3em .25em;font-size:.75em;color:#555}
 .srm .hd:after{content:var(--nm)}.srm .tr b:after{content:counter(px) " / " counter(pt)}
 .srm .hl{position:absolute;top:4%;right:1.5%;width:20%;z-index:5}
@@ -223,15 +224,15 @@ def build(base):
     def pins(b, f):
         nonlocal focus
         o = ''
-        for mark, x, y, h, cap in PINS.get(f, []):
+        for mark, x, y, h, cap, *opt in PINS.get(f, []):
             n = PIN_IDS.setdefault((f, mark, x, y), len(PIN_IDS) + 1)
             assert n <= NPIN, 'more than %d pins: raise NPIN' % NPIN
-            px, py, side = round(x / 12.8), round(y / 10), 1 if x >= 640 else -1
+            px, py, side = round(x / 12.8), round(y / 10), 0 if 'up' in opt else 1 if x >= 640 else -1
             if h not in BANNERS: BANNERS[h] = luvlog(h); print('@%s: banner %s, 맞배너 %s' % (h, 'found' if BANNERS[h][0] else 'missing', BANNERS[h][1]))
             img, ex = BANNERS[h]; img = (img or base + 'b1.svg').replace('https://', '//')
             cls = ' '.join(['p'] + ['c' + mark] * (mark != 'APT') + ['x'] * ex)
-            o += ('<label class=%s style=--x:%d%%;--y:%d%%;--s:%d><input type=checkbox id=b%d><a href=//luvlog.me/%s>%s<img src=%s></a></label>'
-                  % ('"%s"' % cls if ' ' in cls else cls, px, py, side, n, h, '<b>%s</b>' % cap if cap else '', img))
+            o += ('<label class=%s style=--x:%d%%;--y:%d%%;--s:%d%s><input type=checkbox id=b%d><a href=//luvlog.me/%s>%s<img src=%s></a></label>'
+                  % ('"%s"' % cls if ' ' in cls else cls, px, py, side, ';--u:1' * ('up' in opt), n, h, '<b>%s</b>' % cap if cap else '', img))
             g = lambda v: ('%g' % v).replace('0.', '.', 1) if 0 < v < 1 else '%g' % v
             focus += '%s%s:has(#b%d:checked) .mb{--x%d:%s;--y%d:%s;--s%d:%d}' % (reg(b), ':has(#%s:checked)' % f if len(FLOORS[b]) > 1 else '', n, n, g(px / 100), n, g(py / 100), n, side)
         return o

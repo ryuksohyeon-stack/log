@@ -19,7 +19,7 @@
 .srm .p:before{content:"";position:absolute;inset:-.5em}
 .srm .p:has(:checked){background:url(//cdn.jsdelivr.net/gh/ryuksohyeon-stack/log@0bc1861/k/on.svg) 0/1000%}
 .srm .c1:has(:checked){background-position:11.11%}.srm .c2:has(:checked){background-position:22.22%}.srm .c3:has(:checked){background-position:33.33%}.srm .c4:has(:checked){background-position:44.44%}.srm .c5:has(:checked){background-position:55.56%}.srm .c6:has(:checked){background-position:66.67%}.srm .c7:has(:checked){background-position:77.78%}.srm .c8:has(:checked){background-position:88.89%}.srm .c9:has(:checked){background-position:100%}
-.srm .p a{display:none;position:absolute;left:calc(50% + var(--s)*(50% + .6em));top:50%;translate:calc(var(--s)*50% - 50%) -50%;padding:.2em;border-radius:.3em;background:#fff;box-shadow:0 .2em .6em #0006}
+.srm .p a{display:none;position:absolute;left:calc(50% + var(--s)*(50% + .6em));top:calc(50% - var(--u,0)*(50% + .6em));translate:calc(var(--s)*50% - 50%) calc(-50% - var(--u,0)*50%);padding:.2em;border-radius:.3em;background:#fff;box-shadow:0 .2em .6em #0006}
 .srm .p :checked+a{display:block}.srm .p img{display:block;max-width:var(--bw)}.srm .p b{display:block;padding:.1em .3em .25em;font-size:.75em;color:#555}
 .srm .hd:after{content:var(--nm)}.srm .tr b:after{content:counter(px) " / " counter(pt)}
 .srm .hl{position:absolute;top:4%;right:1.5%;width:20%;z-index:5}
