@@ -5,9 +5,6 @@ python3 maps/build.py --theme ash), plus b1.svg, a stand-in banner.
 n1 and n2 hold both Norilsk palettes side by side, white night on the left and
 polar night on the right; the widget shows one half. o2 is the modern quarter's
 2nd floor (the company). on.svg holds the picked markers in red-orange.
-o2 carries draft a of the company floor; o2b to o2e are drafts b to e
-(python3 maps/build.py --theme kremlin o2b o2c o2d o2e, then bake.py), not linked
-from the widget.
 Every map runs a quarter past its 1280x1000 core on each side (viewBox
 -320 -250 1920 1500), so the widget's map can be dragged past the core's edge.
 They sit in a short folder so the widget's image links stay short.

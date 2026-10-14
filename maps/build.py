@@ -382,66 +382,41 @@ def sandwich_shop(m):
     for x in (682, 708, 778, 800): m.holes(circ(x, 962, 7))
 
 # ===================== Home: the company, 2nd floor =====================
-def desk_island(m, x0, y, n, head, chairs=True, bench=False):
+def desk_island(m, x0, y, n, head):
     """A team's desk island: two facing rows of n desks (centres 30 apart running west from x0),
-    each row one long desk (bench: both rows one table), chairs on the outer sides, and the
-    team head's desk across the end ('e' east of x0 or 'w' west of the last desk), facing
-    down the island."""
+    each row one long desk, chairs on the outer sides, and the team head's desk across the end
+    ('e' east of x0 or 'w' west of the last desk), facing down the island."""
     cs = [x0 - 30 * k for k in range(n)]
-    lo, w = cs[-1] - 14, 30 * n - 2
-    m.add('tk', *([rect(lo, y, w, 44)] if bench else [rect(lo, y, w, 20), rect(lo, y + 24, w, 20)]))
-    if chairs:
-        for cx in cs: m.obj(circ(cx, y - 10, 5), circ(cx, y + 54, 5))
+    m.add('tk', rect(cs[-1] - 14, y, 30 * n - 2, 20), rect(cs[-1] - 14, y + 24, 30 * n - 2, 20))
+    for cx in cs: m.obj(circ(cx, y - 10, 5), circ(cx, y + 54, 5))
     hx = cs[0] + 30 if head == 'e' else cs[-1] - 30
-    m.add('tk', rect(hx - 9, y - 4, 18, 52))
-    if chairs: m.obj(circ(hx + (16 if head == 'e' else -16), y + 22, 6))
+    m.add('tk', rect(hx - 9, y - 4, 18, 52)); m.obj(circ(hx + (16 if head == 'e' else -16), y + 22, 6))
 
-def company2(plan='a'):
-    """The company's 2nd floor over its plaza block, an open-plan office kept plain: two carpeted
-    team zones with desk islands (the team head's desk across the end of each island), a
-    meeting room and the executive office on the north side, the lift and stair core with the
-    washrooms in the middle, and a coffee bar south of it. No city backdrop, so the street
-    level shows faintly through (the widget keeps the other floor at low opacity underneath).
-    The seat between the east team's head and its second desk is (1164.8, 190); the west
-    teams mirror the east ones. Drafts, from busiest to plainest:
-      a  two islands per team, three desks a side
-      b  as a, without chairs
-      c  one island per team, four desks a side; a meeting room and a lounge south of the
-         teams, a pantry where the meeting room was
-      d  a smaller floor (the south third gone), one island per team
-      e  as d, each island one table, no chairs, rooms without inner walls drawn"""
-    small = plan in 'de'
+def company2():
+    """The company's 2nd floor over its plaza block, an open-plan office kept plain: one desk
+    island per team in its carpeted zone (four desks a side, the team head's desk across the
+    end), a meeting room and a lounge south of the teams, a pantry and the executive office on
+    the north side, the lift and stair core with the washrooms in the middle. No city backdrop,
+    so the street level shows faintly through (the widget keeps the other floor at low opacity
+    underneath). The seat between the east team's head and its second desk is (1164.8, 190);
+    the west team mirrors the east one."""
     m = Map(33)
     def room(*shapes):      # a w2 area set into the white floor (cut out of it, so it shows)
         for sh in shapes: m.add('w2', sh); m.add('w', reverse(sh))
-    m.add('w', cham(690, 70, 540, 220 if small else 310, 26))                 # floor plate
-    zh = {'c': 104, 'd': 106, 'e': 106}.get(plan, 196)
-    room(rect(708, 168, 178, zh), rect(1026, 168, 186, zh))                   # carpeted team zones
-    room(rect(706, 84, 176, 66))
-    if plan != 'e': m.add('t', rect(706, 84, 176, 66))
-    if plan == 'c':                                                           # pantry: counter, two tables
-        m.add('tk', rect(716, 92, 156, 14), ngon(764, 128, 11, 16), ngon(824, 128, 11, 16))
-    else:                                                                     # meeting room
-        m.add('tk', rr(746, 104, 96, 26, 10))
-    room(rect(1090, 84, 126, 66))                                             # executive office
-    if plan != 'e': m.add('t', rect(1090, 84, 126, 66))
-    m.add('tk', rect(1150, 96, 48, 20))
-    if plan not in 'be': m.obj(circ(1174, 126, 6))
-    if plan == 'c':     # meeting room and lounge (sofa round a low table) south of the teams
-        room(rect(708, 286, 178, 78)); m.add('t', rect(708, 286, 178, 78)); m.add('tk', rr(752, 312, 90, 26, 10))
-        room(rect(1026, 286, 186, 78))
-        m.add('tk', rr(1060, 300, 120, 18, 8), rr(1060, 300, 18, 48, 8), rr(1162, 300, 18, 48, 8), rr(1100, 326, 40, 20, 6))
-    ly, lh, sy, sh = (92, 42, 190, 56) if small else (120, 46, 232, 62)       # lift and stairs: top, height
-    room(rect(904, ly, 98, lh))                                               # lift
-    if plan != 'e': m.add('t', line((910, ly + 6), (996, ly + lh - 6)), line((996, ly + 6), (910, ly + lh - 6)))
-    room(rect(904, sy, 46, sh)); m.steps(927, sy + 4, 927, sy + sh - 4, 36)   # stairs
-    m.holes(rect(956, sy, 46, sh))                                            # washrooms
-    if plan in 'abd': m.add('tk', rect(904, 260, 98, 12) if small else rect(904, 312, 98, 14))   # coffee bar
-    if plan in 'ab':
-        for y in (200, 300):                                                  # west and east teams
-            desk_island(m, 815.2, y, 3, 'w', plan == 'a'); desk_island(m, 1164.8, y, 3, 'e', plan == 'a')
-    else:
-        desk_island(m, 845.2, 200, 4, 'w', plan != 'e', plan == 'e'); desk_island(m, 1164.8, 200, 4, 'e', plan != 'e', plan == 'e')
+    m.add('w', cham(690, 70, 540, 310, 26))                                   # floor plate
+    room(rect(708, 168, 178, 104), rect(1026, 168, 186, 104))                 # carpeted team zones
+    room(rect(706, 84, 176, 66)); m.add('t', rect(706, 84, 176, 66))         # pantry: counter, two tables
+    m.add('tk', rect(716, 92, 156, 14), ngon(764, 128, 11, 16), ngon(824, 128, 11, 16))
+    room(rect(1090, 84, 126, 66)); m.add('t', rect(1090, 84, 126, 66))       # executive office
+    m.add('tk', rect(1150, 96, 48, 20)); m.obj(circ(1174, 126, 6))
+    room(rect(708, 286, 178, 78)); m.add('t', rect(708, 286, 178, 78))       # meeting room
+    m.add('tk', rr(752, 312, 90, 26, 10))
+    room(rect(1026, 286, 186, 78))                                            # lounge: a sofa round a low table
+    m.add('tk', rr(1060, 300, 120, 18, 8), rr(1060, 300, 18, 48, 8), rr(1162, 300, 18, 48, 8), rr(1100, 326, 40, 20, 6))
+    room(rect(904, 120, 98, 46)); m.add('t', line((910, 126), (996, 160)), line((996, 126), (910, 160)))   # lift
+    room(rect(904, 232, 46, 62)); m.steps(927, 236, 927, 290, 36)             # stairs
+    m.holes(rect(956, 232, 46, 62))                                           # washrooms
+    desk_island(m, 845.2, 200, 4, 'w'); desk_island(m, 1164.8, 200, 4, 'e')   # west and east teams
     m.auto_fillets(16)
     return m
 
@@ -618,9 +593,7 @@ def ruins2():
     return m
 
 MAPS = {'n1': norilsk1, 'n2': norilsk2, 'm1': moscow1, 'm2': moscow2, 's1': home1, 's2': home2, 'o2': company2, 's3': home3,
-        'r1': ruins1, 'r2': ruins2,
-        # drafts of the company floor (o2 is draft a)
-        'o2b': lambda: company2('b'), 'o2c': lambda: company2('c'), 'o2d': lambda: company2('d'), 'o2e': lambda: company2('e')}
+        'r1': ruins1, 'r2': ruins2}
 
 if __name__ == '__main__':
     # python3 build.py [--theme NAME] [--out DIR] [n1 n2 ...]
