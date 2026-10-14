@@ -123,6 +123,7 @@ CSS = '''
 .srm .z:before{content:"";position:absolute;inset:-25%;background:var(--m) 0 0/100% 100% no-repeat}
 {ACTIVE}{--o:1;--d:block}
 {MAPS}
+{PRELOAD}
 {PAIRS}{background-size:200% 100%}.srm:has(#q1:checked) .z:before{background-position:100% 0}
 .srm .p{position:absolute;left:var(--x);top:var(--y);width:4%;aspect-ratio:1;translate:-50% -50%;z-index:3;display:var(--d,none);pointer-events:auto;cursor:pointer;counter-increment:pt}.srm .p.x{counter-increment:pt px}
 .srm .p:before{content:"";position:absolute;inset:-.5em}
@@ -214,6 +215,11 @@ def build(base):
     show = ['.srm%s .%s' % (reg(b), b) for b in boxes]
     active = ['.srm:has(#%s:checked) .%s' % (f, f) if len(FLOORS[b]) > 1 else '.srm .' + f for b in boxes for f, _ in FLOORS[b]]
     maps = ''.join('.srm .%s{--m:url(%s%s.svg)}' % (f, base, f) for f in files)
+    # every map (and the picked markers) loads with the widget, in the background, so switching
+    # to another place or floor shows it at once instead of waiting for it to download then;
+    # on the list, which comes after the map, so the map in view is asked for first
+    preload = ('.srm .hl:after{content:"";position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;background:%s}'
+               % ','.join('url(%s%s.svg)' % (base, f) for f in files + ['on']))
     # switching to another map or floor restarts its own snap slot: the view goes to the open
     # banner there, else to the view's default
     view = lambda b, f: '.srm%s%s' % (reg(b), ':has(#%s:checked)' % f if len(FLOORS[b]) > 1 else '')
@@ -223,7 +229,7 @@ def build(base):
              '\n'.join('@keyframes srm-v%s{from,to{scroll-snap-type:both mandatory}}' % f for f in files))
     picked = ''.join('.srm .c%d:has(:checked){background-position:%.4g%%}' % (k, k / .09) for k in range(1, 10))
     css = (CSS.replace('{NAMES}', names).replace('{SHOW}', ','.join(show)).replace('{ACTIVE}', ','.join(active))
-           .replace('{MAPS}', maps).replace('{PAIRS}', ','.join('.srm .%s:before' % f for f in sorted(PAIRS))).replace('{PICKED}', picked)
+           .replace('{MAPS}', maps).replace('{PRELOAD}', preload).replace('{PAIRS}', ','.join('.srm .%s:before' % f for f in sorted(PAIRS))).replace('{PICKED}', picked)
            .replace('{SNAPS}', SNAPS + views).replace('{SLOTS}', SLOTS).replace('{FX}', chain('x', 'var(--dx,.5)'))
            .replace('{FY}', chain('y', 'var(--dy,.5)')).replace('{FS}', chain('s', '0')).replace('{BASE}', base).strip())   # one rule group per line: easier to find in 꾸미기 CSS
 
