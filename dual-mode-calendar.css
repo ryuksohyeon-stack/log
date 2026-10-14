@@ -1,0 +1,89 @@
+/* luvlog 듀얼 버튼 · 6-1 반원 돔 달력 (Pretendard)
+   A = 1월 13일 극야, B = 1월 14일 해 뜨는 날. 듀얼 버튼 모양은 「튜너」로 둡니다.
+   꾸미기 → 커스텀 CSS에 붙여 넣고 A·B 모드에서 각각 저장하세요. @import 줄은 칸의 맨 위에 둡니다. */
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css');
+
+/* 공통 — 튜너 버튼을 달력 종이로 */
+#mode-toggle#mode-toggle.mb-tuner {
+  min-width: 0; width: 48px; height: 56px; padding: 0; gap: 0;
+  display: block; box-sizing: border-box; overflow: visible;
+  border: 0; border-radius: 4px;
+  background: #fffdfa;
+  box-shadow: 0 5px 14px rgba(30, 32, 70, .24);
+  color: #1c2030; font: 500 8px/1 'IBM Plex Mono', monospace; letter-spacing: 0;
+}
+#mode-toggle#mode-toggle.mb-tuner::before, #mode-toggle#mode-toggle.mb-tuner::after {
+  content: ""; position: absolute; inset: auto; box-sizing: border-box; pointer-events: none;
+}
+/* 스프링 링 두 개 */
+#mode-toggle#mode-toggle.mb-tuner i {
+  position: absolute; inset: auto; left: 0; top: -5px; z-index: 3;
+  width: 100%; height: 10px; background: none; box-shadow: none; transform: none; transition: none;
+}
+#mode-toggle#mode-toggle.mb-tuner i::before, #mode-toggle#mode-toggle.mb-tuner i::after {
+  content: ""; position: absolute; top: 0; left: 11px; width: 3px; height: 10px; border-radius: 2px;
+  background: linear-gradient(90deg, #2b3044, #686d86 50%, #2b3044);
+}
+#mode-toggle#mode-toggle.mb-tuner i::after { left: auto; right: 11px; }
+/* 모드 이름 글자는 숨기고 ЯНВ · A/B 라벨로 */
+#mode-toggle#mode-toggle.mb-tuner span {
+  position: absolute; inset: auto; display: block; box-sizing: border-box;
+  padding: 0; font-size: 0; line-height: 0; color: transparent; transition: none;
+}
+#mode-toggle#mode-toggle.mb-tuner span::before, #mode-toggle#mode-toggle.mb-tuner span::after {
+  display: block; font: 500 5px/1.3 'IBM Plex Mono', monospace; letter-spacing: .16em;
+  color: #7c8298; white-space: nowrap;
+}
+#mode-toggle#mode-toggle.mb-tuner span:last-of-type::after { content: "A"; color: #6f1c2e; }
+#mode-toggle#mode-toggle.mb-tuner.down span:last-of-type::after { content: "B"; }
+@media (prefers-reduced-motion: reduce) {
+  #mode-toggle#mode-toggle.mb-tuner, #mode-toggle#mode-toggle.mb-tuner::before, #mode-toggle#mode-toggle.mb-tuner::after { transition: none !important; }
+}
+
+/* 시안 6-1 · 반원 돔 · 세로 */
+/* 아래 종이 판: 원판의 아래 반쪽을 가리고, 공장은 모두 반원 안쪽에 */
+#mode-toggle#mode-toggle.mb-tuner span:first-of-type {
+  left: 0; top: 9px; width: 48px; height: 47px; border-radius: 0 0 4px 4px;
+  background:
+    repeating-linear-gradient(90deg, #ffd77a 0 1px, #ffd77a00 1px 3px) 11px 11px / 7px 1px no-repeat,
+    repeating-linear-gradient(90deg, #ffd77a 0 1px, #ffd77a00 1px 3px) 11px 13px / 7px 1px no-repeat,
+    repeating-linear-gradient(90deg, #ffd77a 0 1px, #ffd77a00 1px 3px) 31px 13px / 7px 1px no-repeat,
+    linear-gradient(#c8463c, #c8463c) 20px 2px / 2px 2px no-repeat,
+    linear-gradient(#c8463c, #c8463c) 25px 5px / 2px 2px no-repeat,
+    linear-gradient(#232a48, #232a48) 10px 9px / 8px 7px no-repeat,
+    linear-gradient(#232a48, #232a48) 20px 2px / 2px 14px no-repeat,
+    linear-gradient(#232a48, #232a48) 25px 5px / 2px 11px no-repeat,
+    linear-gradient(#232a48, #232a48) 30px 11px / 9px 5px no-repeat,
+    linear-gradient(#e2e5f0, #e2e5f0) 6px 16px / 36px 1.5px no-repeat,
+    linear-gradient(#fffdfa, #fffdfa) 0 16px / 100% 31px no-repeat;
+}
+#mode-toggle#mode-toggle.mb-tuner span:last-of-type { right: 5px; top: 31px; }
+#mode-toggle#mode-toggle.mb-tuner span:last-of-type::before { content: "ЯНВ"; }
+/* 원판: 위 반쪽은 극야(달·별·오로라), 아래 반쪽은 낮(해) — 반 바퀴 돌면 낮이 위로 */
+#mode-toggle#mode-toggle.mb-tuner::before {
+  left: 6px; top: 7px; width: 36px; height: 36px; border-radius: 50%;
+  background:
+    radial-gradient(circle closest-side, #18204a 94%, #18204a00) 23.5px 4px / 7px 7px no-repeat,
+    radial-gradient(circle closest-side, #f6eed2 94%, #f6eed200) 22px 5px / 7px 7px no-repeat,
+    radial-gradient(circle at 3px 3px, #fff .6px, #fff0 1.2px) 0 2px / 9px 15px repeat-x,
+    radial-gradient(circle at 6px 9px, #fffc .5px, #fff0 1.1px) 0 2px / 13px 15px repeat-x,
+    radial-gradient(closest-side, #5af0b45e, #5af0b400) 50% 9px / 36px 8px no-repeat,
+    radial-gradient(circle closest-side, #ffe7a3, #ff8b3d 70%, #ff8b3d00) 50% 19px / 11px 11px no-repeat,
+    radial-gradient(closest-side, #ff9a5280, #ff9a5200) 50% 18px / 34px 14px no-repeat,
+    linear-gradient(#0b1031, #28336a 50%, #f6c7b2 50%, #c9c6dc 75%, #9cbbe3);
+  box-shadow: inset 0 0 0 1px #1c20301a;
+  transition: transform 1.1s cubic-bezier(.5, .05, .25, 1);
+}
+#mode-toggle#mode-toggle.mb-tuner.down::before { transform: rotate(180deg); }
+/* 날짜: 13 → 14 가 위로 굴러감 */
+#mode-toggle#mode-toggle.mb-tuner::after {
+  left: 6px; top: 28px; height: 34px;
+  content: "13\A 14"; white-space: pre; color: #1c2030;
+  clip-path: inset(0 0 17px 0);
+  transition: transform .6s cubic-bezier(.4, 1.35, .5, 1) .35s, clip-path .6s cubic-bezier(.4, 1.35, .5, 1) .35s;
+}
+#mode-toggle#mode-toggle.mb-tuner.down::after { transform: translateY(-17px); clip-path: inset(17px 0 0 0); }
+
+/* 글꼴 · Pretendard */
+#mode-toggle#mode-toggle.mb-tuner::after { font: 700 16px/17px 'Pretendard Variable', Pretendard, 'Noto Sans KR', sans-serif; letter-spacing: -.02em; }
+#mode-toggle#mode-toggle.mb-tuner span::before, #mode-toggle#mode-toggle.mb-tuner span::after { font: 600 5px/1.3 'Pretendard Variable', Pretendard, 'Noto Sans KR', sans-serif; letter-spacing: .14em; }
