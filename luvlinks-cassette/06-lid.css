@@ -36,6 +36,9 @@ body{overflow-x:clip}
 .stage .card:nth-child(n+3){--k:0;--s:1}
 .stage .card:nth-child(4){--k:1}.stage .card:nth-child(5){--k:2}.stage .card:nth-child(6){--k:3}.stage .card:nth-child(7){--k:4}.stage .card:nth-child(8){--k:5}.stage .card:nth-child(9){--k:6}.stage .card:nth-child(10){--k:7}.stage .card:nth-child(11){--k:8}.stage .card:nth-child(12){--k:9}.stage .card:nth-child(13){--k:10}.stage .card:nth-child(14){--k:11}.stage .card:nth-child(15){--k:12}.stage .card:nth-child(16){--k:13}.stage .card:nth-child(17){--k:14}.stage .card:nth-child(18){--k:15}.stage .card:nth-child(19){--k:16}.stage .card:nth-child(20){--k:17}
 .stage .card:nth-child(2n+5){--s:-1}
+/* 사진이 마우스로 끌려가면 밀기 방향이 거꾸로 잡혀서, 사진은 끌리지 않게 */
+.stage .card,.stage .card img{-webkit-user-drag:none;user-select:none}
+.stage .card img{pointer-events:none}
 
 @property --lid{syntax:"<angle>";inherits:true;initial-value:0deg}
 body{--shell:#ffffff0b;--lip:#ffffff07;--rim:#ffffff2b;--glare:#ffffff2e;--glare2:#ffffff10;--drop:0 3em 6em #000b;--empty:#23262d;background:radial-gradient(70% 55% at 50% 44%,#252a33,var(--bgc) 76%) var(--bgc)}
