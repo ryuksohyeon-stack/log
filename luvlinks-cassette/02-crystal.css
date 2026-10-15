@@ -1,0 +1,72 @@
+/* ═══ LUVLINKS CASSETTE PACKAGE · 시안 2 「CRYSTAL Y2K」 ═══
+   스킨 글래스 · 배치 가로 에서 써 주세요. (프로필 카드는 안 건드려요)
+   링크 순서 = 판넬 순서 · 링크마다 사진을 올리면 그 칸에 꽉 차게 들어가요
+   1 케이스 속(카세트+수록곡) · 2 옆면 · 3 표지 · 4, 5, 6… 가사지
+   링크를 하나 더하면 가사지가 한 장 더 이어 붙어요. */
+
+/* ✏️ 색만 바꾸고 싶으면 여기 */
+body{
+--holo:linear-gradient(115deg,#ffd6f6,#d6e4ff 22%,#d4fff2 42%,#fff4cf 60%,#f0d6ff 80%,#d6f1ff); /* 홀로그램 종이 */
+--tape:#4a3a36;  /* 카세트 속 테이프 색 */
+--ink:#26304d;   /* 아래 정보 줄 글자 색 */
+}
+
+/* ── 공통 뼈대: 판넬 배치 · 사진 칸 · 종이 펼침 (1em = 판넬 높이의 1%) ── */
+@property --t{syntax:"<angle>";inherits:true;initial-value:0deg}
+@keyframes ll-unfold{0%{--t:82deg}60%,100%{--t:0deg}}
+body{overflow-x:clip}
+.glow,.controls{display:none}
+.carousel{margin-inline:calc(50% - 50vw)}
+@media (min-width:900px){body.editing .carousel{margin-inline:calc(50% - 50vw + 210px)}}
+.stage{--H:var(--panel,clamp(260px,min(78vw,62dvh),440px));--W:calc(var(--H)*.64);--u:calc(var(--H)/100);font-size:var(--u);height:auto!important;display:flex;align-items:center;overflow:auto hidden;padding:7em 16px 9em;perspective:calc(var(--H)*4);touch-action:pan-x pan-y;cursor:auto;border-radius:0;scroll-snap-type:x proximity;scrollbar-width:none}
+.stage::-webkit-scrollbar{display:none}
+.stage .card{position:relative!important;inset:auto;margin:0;flex:none;width:var(--W);height:100em;transform:none!important;opacity:1!important;pointer-events:auto!important;z-index:1!important;display:block;padding:0;border:0;border-radius:0;background:none;box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none;overflow:visible;scroll-snap-align:center;transition:translate .35s,filter .35s}
+.stage .card:first-child{margin-left:auto}
+.stage .card:last-child{margin-right:auto}
+.stage .card:nth-child(-n+2){margin-right:5em}
+.stage .card:nth-child(2){width:16em}
+.stage .card:nth-child(n+3){height:96em;overflow:hidden}
+.stage .card:nth-child(-n+2).is-active{translate:0 -1.4em}
+/* 펼침: 3번 표지 오른쪽에 4번부터 아코디언처럼 이어 붙어요 */
+.stage .card:nth-child(n+4){--k:1;--s:1;transform:translate3d(calc((var(--k) - .5)*var(--W)*(cos(var(--t)) - 1)),0,calc(var(--W)*-.5*sin(var(--t)))) rotateY(calc(var(--s)*var(--t)))!important;transition:--t .9s cubic-bezier(.3,.7,.2,1);animation:ll-unfold linear both;animation-timeline:scroll(nearest inline)}
+.stage:has(.card:nth-child(-n+2).is-active) .card:nth-child(n+4){--t:82deg}
+.stage .card:nth-child(2n+5){--s:-1}
+.stage .card:nth-child(5){--k:2}.stage .card:nth-child(6){--k:3}.stage .card:nth-child(7){--k:4}.stage .card:nth-child(8){--k:5}.stage .card:nth-child(9){--k:6}.stage .card:nth-child(10){--k:7}.stage .card:nth-child(11){--k:8}.stage .card:nth-child(12){--k:9}.stage .card:nth-child(13){--k:10}.stage .card:nth-child(14){--k:11}.stage .card:nth-child(15){--k:12}.stage .card:nth-child(16){--k:13}.stage .card:nth-child(17){--k:14}.stage .card:nth-child(18){--k:15}.stage .card:nth-child(19){--k:16}.stage .card:nth-child(20){--k:17}
+.stage .card:nth-child(n+4)::before{content:"";position:absolute;inset:0;z-index:9;pointer-events:none;background:var(--shade-a,linear-gradient(90deg,#000a,#0003));opacity:sin(var(--t))}
+.stage .card:nth-child(2n+5)::before{background:var(--shade-b,linear-gradient(90deg,#0002,#fff3))}
+.stage .card:nth-child(n+3)::after{content:"";position:absolute;inset:0;z-index:8;pointer-events:none;background:var(--crease,linear-gradient(90deg,#0000002e,#0000 2.6%))}
+.stage .card:nth-child(3)::after{background:var(--sheen,linear-gradient(100deg,#ffffff14,#0000 40%))}
+/* 사진 칸 — 링크에 올린 사진이 칸에 꽉 차게 (비율이 달라도 가운데 기준으로 알아서 잘려요) */
+.stage .card .meta,.stage .card .orb,.stage .card .ms{display:none}
+.stage .card .visual{position:absolute;margin:0;border-radius:0;background:none;display:block;overflow:hidden}
+.stage .card:nth-child(1) .visual{inset:3em}
+.stage .card:nth-child(2) .visual{inset:2.6em 2.4em}
+.stage .card:nth-child(n+3) .visual{inset:0}
+.stage .card .visual img{position:absolute;inset:0;z-index:1;width:100%;height:100%;object-fit:cover;object-position:50% 50%}
+.stage .card .visual:has(img){background:var(--slot,#ddd)}
+.stage .card .visual:has(img)::before,.stage .card .visual:has(img)::after{display:none}
+/* 사진을 아직 안 올린 종이 칸: 인쇄용 모서리 표시만 */
+.stage .card:nth-child(n+3) .visual::before{content:"";position:absolute;inset:4em;background:linear-gradient(var(--mark),var(--mark)) 0 0/3em 1px,linear-gradient(var(--mark),var(--mark)) 0 0/1px 3em,linear-gradient(var(--mark),var(--mark)) 100% 0/3em 1px,linear-gradient(var(--mark),var(--mark)) 100% 0/1px 3em,linear-gradient(var(--mark),var(--mark)) 0 100%/3em 1px,linear-gradient(var(--mark),var(--mark)) 0 100%/1px 3em,linear-gradient(var(--mark),var(--mark)) 100% 100%/3em 1px,linear-gradient(var(--mark),var(--mark)) 100% 100%/1px 3em;background-repeat:no-repeat}
+
+/* ── 테마 ── */
+body{--slot:#fff;--mark:#5d64a040;--shade-a:linear-gradient(90deg,#5d64a066,#5d64a022);--shade-b:linear-gradient(90deg,#5d64a011,#fff6);--crease:linear-gradient(90deg,#5d64a030,#0000 2.6%),linear-gradient(115deg,#ff9ee61f,#9ec9ff14 30%,#a6ffe314 55%,#fff4a31a 75%,#0000);--sheen:linear-gradient(118deg,#ffffff70 0 8%,#0000 20%),linear-gradient(115deg,#ff9ee633,#9ec9ff26 30%,#a6ffe326 55%,#fff4a333 75%,#ffffff00);background:radial-gradient(45% 35% at 15% 18%,#ffd9f3,#0000),radial-gradient(45% 35% at 88% 30%,#cfe3ff,#0000),radial-gradient(60% 45% at 50% 95%,#d6fff0,#0000) #eceef7}
+/* 1 · 투명 케이스 + 투명 카세트 + 홀로그램 속지 */
+.stage .card:nth-child(1){border-radius:2.2em;background:linear-gradient(125deg,#ffffffd0,#ffffff55 30%,#ffffff30 60%,#ffffff8a);box-shadow:inset 0 0 0 1px #fff,inset 0 0 0 .9em #ffffff40,inset 0 0 0 calc(.9em + 1px) #ffffffb0,0 3em 6em #5d64a033,0 .6em 1.4em #5d64a01f}
+.stage .card:nth-child(1)::before{content:"";position:absolute;inset:0;z-index:5;border-radius:inherit;pointer-events:none;background:linear-gradient(118deg,#0000 22%,#ffffffa0 27%,#0000 34%,#0000 70%,#ffffff70 73%,#0000 77%)}
+.stage .card:nth-child(1) .visual{border-radius:1.2em}
+.stage .card:nth-child(1) .visual::before{content:"";position:absolute;left:0;right:0;top:0;height:39em;border-radius:2.6em;background:repeating-conic-gradient(var(--tape) 0 12deg,#0000 0 60deg) 13.8em 19.2em/3.6em 3.6em no-repeat,radial-gradient(circle,var(--tape) 0 .9em,#fff 1em 1.8em,#e8ebf5 1.9em 3.4em,#c3c9dc 3.5em 3.8em,#0000 3.9em) 11.8em 17.2em/7.6em 7.6em no-repeat,repeating-conic-gradient(var(--tape) 0 12deg,#0000 0 60deg) 40.6em 19.2em/3.6em 3.6em no-repeat,radial-gradient(circle,var(--tape) 0 .9em,#fff 1em 1.8em,#e8ebf5 1.9em 3.4em,#c3c9dc 3.5em 3.8em,#0000 3.9em) 38.6em 17.2em/7.6em 7.6em no-repeat,radial-gradient(circle,#fff 0 .5em,#9aa3bd .6em .9em,#0000 1em) 1.6em 1.6em/2em 2em no-repeat,radial-gradient(circle,#fff 0 .5em,#9aa3bd .6em .9em,#0000 1em) calc(100% - 1.6em) 1.6em/2em 2em no-repeat,radial-gradient(circle,#fff 0 .5em,#9aa3bd .6em .9em,#0000 1em) 50% 89%/2em 2em no-repeat,linear-gradient(#ffffff70,#ffffff70) 50% 100%/62% 22% no-repeat,radial-gradient(circle,var(--tape) 0 7.6em,#6a5650 7.7em 8em,#0000 8.1em) 7.5em 12.9em/16.2em 16.2em no-repeat,radial-gradient(circle,var(--tape) 0 5em,#6a5650 5.1em 5.4em,#0000 5.5em) 34.3em 12.9em/16.2em 16.2em no-repeat,var(--holo) 50% 3.2em/86% 10.4em no-repeat,linear-gradient(160deg,#ffffff90,#ffffff30 40%,#c9d0ff40 70%,#ffffff80);box-shadow:inset 0 0 0 1px #ffffffe0,inset 0 0 0 .5em #ffffff38,inset 0 -.6em 1.4em #8f7dff22,0 1em 2em #5d64a030}
+.stage .card:nth-child(1) .visual::after{content:"";position:absolute;left:0;right:0;top:41.6em;bottom:0;border-radius:1em;background:radial-gradient(120% 70% at 0 0,#ffffffb0,#0000 60%),var(--holo);box-shadow:inset 0 0 0 1px #ffffffd0,0 .6em 1.6em #5d64a026}
+/* 2 · 옆면 */
+.stage .card:nth-child(2){border-radius:1.6em;background:linear-gradient(90deg,#ffffffd0,#ffffff40 30% 70%,#ffffffb0);box-shadow:inset 0 0 0 1px #fff,0 3em 6em #5d64a033}
+.stage .card:nth-child(2)::before{content:"";position:absolute;inset:0;z-index:5;border-radius:inherit;pointer-events:none;background:linear-gradient(90deg,#0000 20%,#ffffff90 34%,#0000 46%)}
+.stage .card:nth-child(2) .visual{border-radius:.8em;background:var(--holo);box-shadow:inset 0 0 0 1px #ffffffd0}
+/* 3 · 표지 · 4~ 가사지 — 종이 */
+.stage .card:nth-child(3){border-radius:1em;background:radial-gradient(70% 50% at 20% 10%,#fff,#0000),radial-gradient(60% 50% at 100% 60%,#c7dcff,#0000),radial-gradient(60% 40% at 0 100%,#ffd3f2,#0000),var(--holo);box-shadow:inset 0 0 0 1px #ffffffd0,0 3em 5em -1em #5d64a055}
+.stage .card:nth-child(n+4){background:linear-gradient(170deg,#fff,#f1f2fa 60%,#e9ecf8);box-shadow:inset 0 0 0 1px #ffffffd0,0 3em 5em -1em #5d64a055}
+/* 아래 정보 줄 */
+.now.glass{background:linear-gradient(#ffffffc8,#ffffffc8) padding-box,var(--holo) border-box;border:2px solid #0000;border-radius:99px;box-shadow:0 10px 30px #5d64a026}
+.now .badge{border-radius:50%;background:var(--holo);color:var(--ink);box-shadow:inset 0 0 0 1px #fff}
+.now .title{color:var(--ink)}
+.now .url{color:#5f6884}
+.now .open{border-radius:99px;background:var(--ink);border-color:var(--ink);color:#fff}
+.foot{letter-spacing:.2em;text-transform:uppercase;color:#7c84a0}

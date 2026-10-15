@@ -1,0 +1,71 @@
+/* ═══ LUVLINKS CASSETTE PACKAGE · 시안 1 「ORANGE MIXTAPE」 ═══
+   스킨 글래스 · 배치 가로 에서 써 주세요. (프로필 카드는 안 건드려요)
+   링크 순서 = 판넬 순서 · 링크마다 사진을 올리면 그 칸에 꽉 차게 들어가요
+   1 케이스 속(카세트+수록곡) · 2 옆면 · 3 표지 · 4, 5, 6… 가사지
+   링크를 하나 더하면 가사지가 한 장 더 이어 붙어요. */
+
+/* ✏️ 색만 바꾸고 싶으면 여기 */
+body{
+--acc:#ff5b1f;   /* 카세트 색 */
+--paper:#cbcbc5; /* 종이 색 */
+--bgc:#0b0b0b;   /* 바탕 색 */
+}
+
+/* ── 공통 뼈대: 판넬 배치 · 사진 칸 · 종이 펼침 (1em = 판넬 높이의 1%) ── */
+@property --t{syntax:"<angle>";inherits:true;initial-value:0deg}
+@keyframes ll-unfold{0%{--t:82deg}60%,100%{--t:0deg}}
+body{overflow-x:clip}
+.glow,.controls{display:none}
+.carousel{margin-inline:calc(50% - 50vw)}
+@media (min-width:900px){body.editing .carousel{margin-inline:calc(50% - 50vw + 210px)}}
+.stage{--H:var(--panel,clamp(260px,min(78vw,62dvh),440px));--W:calc(var(--H)*.64);--u:calc(var(--H)/100);font-size:var(--u);height:auto!important;display:flex;align-items:center;overflow:auto hidden;padding:7em 16px 9em;perspective:calc(var(--H)*4);touch-action:pan-x pan-y;cursor:auto;border-radius:0;scroll-snap-type:x proximity;scrollbar-width:none}
+.stage::-webkit-scrollbar{display:none}
+.stage .card{position:relative!important;inset:auto;margin:0;flex:none;width:var(--W);height:100em;transform:none!important;opacity:1!important;pointer-events:auto!important;z-index:1!important;display:block;padding:0;border:0;border-radius:0;background:none;box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none;overflow:visible;scroll-snap-align:center;transition:translate .35s,filter .35s}
+.stage .card:first-child{margin-left:auto}
+.stage .card:last-child{margin-right:auto}
+.stage .card:nth-child(-n+2){margin-right:5em}
+.stage .card:nth-child(2){width:16em}
+.stage .card:nth-child(n+3){height:96em;overflow:hidden}
+.stage .card:nth-child(-n+2).is-active{translate:0 -1.4em}
+/* 펼침: 3번 표지 오른쪽에 4번부터 아코디언처럼 이어 붙어요 */
+.stage .card:nth-child(n+4){--k:1;--s:1;transform:translate3d(calc((var(--k) - .5)*var(--W)*(cos(var(--t)) - 1)),0,calc(var(--W)*-.5*sin(var(--t)))) rotateY(calc(var(--s)*var(--t)))!important;transition:--t .9s cubic-bezier(.3,.7,.2,1);animation:ll-unfold linear both;animation-timeline:scroll(nearest inline)}
+.stage:has(.card:nth-child(-n+2).is-active) .card:nth-child(n+4){--t:82deg}
+.stage .card:nth-child(2n+5){--s:-1}
+.stage .card:nth-child(5){--k:2}.stage .card:nth-child(6){--k:3}.stage .card:nth-child(7){--k:4}.stage .card:nth-child(8){--k:5}.stage .card:nth-child(9){--k:6}.stage .card:nth-child(10){--k:7}.stage .card:nth-child(11){--k:8}.stage .card:nth-child(12){--k:9}.stage .card:nth-child(13){--k:10}.stage .card:nth-child(14){--k:11}.stage .card:nth-child(15){--k:12}.stage .card:nth-child(16){--k:13}.stage .card:nth-child(17){--k:14}.stage .card:nth-child(18){--k:15}.stage .card:nth-child(19){--k:16}.stage .card:nth-child(20){--k:17}
+.stage .card:nth-child(n+4)::before{content:"";position:absolute;inset:0;z-index:9;pointer-events:none;background:var(--shade-a,linear-gradient(90deg,#000a,#0003));opacity:sin(var(--t))}
+.stage .card:nth-child(2n+5)::before{background:var(--shade-b,linear-gradient(90deg,#0002,#fff3))}
+.stage .card:nth-child(n+3)::after{content:"";position:absolute;inset:0;z-index:8;pointer-events:none;background:var(--crease,linear-gradient(90deg,#0000002e,#0000 2.6%))}
+.stage .card:nth-child(3)::after{background:var(--sheen,linear-gradient(100deg,#ffffff14,#0000 40%))}
+/* 사진 칸 — 링크에 올린 사진이 칸에 꽉 차게 (비율이 달라도 가운데 기준으로 알아서 잘려요) */
+.stage .card .meta,.stage .card .orb,.stage .card .ms{display:none}
+.stage .card .visual{position:absolute;margin:0;border-radius:0;background:none;display:block;overflow:hidden}
+.stage .card:nth-child(1) .visual{inset:3em}
+.stage .card:nth-child(2) .visual{inset:2.6em 2.4em}
+.stage .card:nth-child(n+3) .visual{inset:0}
+.stage .card .visual img{position:absolute;inset:0;z-index:1;width:100%;height:100%;object-fit:cover;object-position:50% 50%}
+.stage .card .visual:has(img){background:var(--slot,#ddd)}
+.stage .card .visual:has(img)::before,.stage .card .visual:has(img)::after{display:none}
+/* 사진을 아직 안 올린 종이 칸: 인쇄용 모서리 표시만 */
+.stage .card:nth-child(n+3) .visual::before{content:"";position:absolute;inset:4em;background:linear-gradient(var(--mark),var(--mark)) 0 0/3em 1px,linear-gradient(var(--mark),var(--mark)) 0 0/1px 3em,linear-gradient(var(--mark),var(--mark)) 100% 0/3em 1px,linear-gradient(var(--mark),var(--mark)) 100% 0/1px 3em,linear-gradient(var(--mark),var(--mark)) 0 100%/3em 1px,linear-gradient(var(--mark),var(--mark)) 0 100%/1px 3em,linear-gradient(var(--mark),var(--mark)) 100% 100%/3em 1px,linear-gradient(var(--mark),var(--mark)) 100% 100%/1px 3em;background-repeat:no-repeat}
+
+/* ── 테마 ── */
+body{--slot:var(--paper);--mark:#0000002e;--crease:linear-gradient(90deg,#00000038,#0000 2.6%),radial-gradient(#0000001a .06em,#0000 .09em) 0 0/.5em .5em;--sheen:radial-gradient(#0000001a .06em,#0000 .09em) 0 0/.5em .5em,linear-gradient(100deg,#ffffff14,#0000 40%);--tex:radial-gradient(#0000001c .06em,#0000 .09em) 0 0/.5em .5em,radial-gradient(120% 90% at 30% 20%,#ffffff1f,#0000 60%),var(--paper);background:radial-gradient(80% 55% at 50% 48%,#1d1d1d,var(--bgc) 75%) var(--bgc)}
+/* 1 · 케이스 + 카세트 + 속지 */
+.stage .card:nth-child(1){border-radius:1.8em;background:linear-gradient(104deg,#ffffff14 0 12%,#fff0 24% 66%,#ffffff0c 78%,#fff0),#121212;box-shadow:inset 0 0 0 1px #ffffff30,inset 0 0 0 .8em #151515,inset 0 0 0 calc(.8em + 1px) #ffffff14,0 3em 6em #000d}
+.stage .card:nth-child(1)::before{content:"";position:absolute;inset:0;z-index:5;border-radius:inherit;pointer-events:none;background:radial-gradient(circle at 3.4em 3.4em,#0000 0 .9em,#ffffff40 1em 1.15em,#0000 1.25em),linear-gradient(115deg,#0000 30%,#ffffff12 36%,#0000 46%)}
+.stage .card:nth-child(1) .visual{border-radius:.8em}
+.stage .card:nth-child(1) .visual::before{content:"";position:absolute;left:0;top:0;bottom:0;width:37em;border-radius:1.8em;background:repeating-conic-gradient(#111 0 13deg,#0000 0 60deg) 21.4em 28.4em/4.8em 4.8em no-repeat,radial-gradient(circle,#111 0 1.15em,#ececea 1.25em 2.4em,#111 2.5em 4.8em,#0000 4.9em) 19em 26em/9.6em 9.6em no-repeat,repeating-conic-gradient(#111 0 13deg,#0000 0 60deg) 21.4em 60.8em/4.8em 4.8em no-repeat,radial-gradient(circle,#111 0 1.15em,#ececea 1.25em 2.4em,#111 2.5em 4.8em,#0000 4.9em) 19em 58.4em/9.6em 9.6em no-repeat,linear-gradient(#5d5d5d,#a9a9a6 30%,#4c4c4c 52%,#888 80%,#3c3c3c) 19.4em 36.1em/8.8em 21.8em no-repeat,linear-gradient(#0d0d0d,#0d0d0d) 18.8em 35.5em/10em 23em no-repeat,radial-gradient(circle,#2a2a2a 0 .6em,#0000 .7em) 1.4em 1.4em/2.4em 2.4em no-repeat,radial-gradient(circle,#2a2a2a 0 .6em,#0000 .7em) 1.4em calc(100% - 1.4em)/2.4em 2.4em no-repeat,radial-gradient(circle,#2a2a2a 0 .6em,#0000 .7em) 1.4em 50%/2.4em 2.4em no-repeat,linear-gradient(90deg,#0000001c,#0000 12% 86%,#00000030),var(--acc);box-shadow:inset 0 0 0 .3em #00000020,inset .35em .35em 0 #ffffff3a,inset -.3em -.3em 0 #00000026,0 .6em 1.4em #000a}
+.stage .card:nth-child(1) .visual::after{content:"";position:absolute;right:0;top:0;bottom:0;width:25em;border-radius:.6em;background:var(--tex);box-shadow:-.7em 0 1.6em #0008,inset 0 0 0 1px #0000001a}
+/* 2 · 옆면 */
+.stage .card:nth-child(2){border-radius:1.2em;background:linear-gradient(90deg,#ffffff1c,#fff0 24% 76%,#ffffff12),#121212;box-shadow:inset 0 0 0 1px #ffffff30,0 3em 6em #000d}
+.stage .card:nth-child(2) .visual{background:var(--tex);box-shadow:inset 0 0 0 .9em var(--paper),inset 0 0 0 calc(.9em + 1px) #0000004d}
+/* 3 · 표지 · 4~ 가사지 — 종이 */
+.stage .card:nth-child(n+3){background:var(--tex);box-shadow:0 3em 5em -1em #000c}
+/* 아래 정보 줄 */
+.now.glass{position:relative;background:#141414;border:1px solid #ffffff1e;border-radius:3px;box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none}
+.now::before{content:"NOW PLAYING";position:absolute;left:10px;top:-7px;padding:0 6px;background:var(--bgc);font:9px/14px ui-monospace,Menlo,monospace;letter-spacing:.2em;color:var(--acc)}
+.now .badge{border-radius:50%;background:var(--acc);color:#111}
+.now .title{color:#eee}
+.now .url{color:#8a8a85}
+.now .open{border-radius:999px;background:var(--acc);border-color:var(--acc);color:#111;font-weight:700}
+.foot{letter-spacing:.2em;text-transform:uppercase;color:#5d5d58}
