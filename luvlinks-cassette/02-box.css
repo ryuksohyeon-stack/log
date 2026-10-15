@@ -1,0 +1,54 @@
+/* ═══ LUVLINKS CASSETTE PACKAGE · 형식 2 「3D BOX 입체 진열」 ═══
+   스킨 글래스 · 배치 가로 에서 써 주세요. 프로필 카드는 안 건드려요.
+   링크 순서 = 판넬 순서, 링크마다 올린 사진이 그 칸에 꽉 차게 들어가요.
+   1 케이스(카세트+수록곡) · 2 옆면 · 3 뒷면 · 4, 5, 6… 가사지(3번에 이어 붙어요)
+   케이스와 옆면이 하나의 입체 상자가 되고, 뒷면부터 가사지는 지그재그로 서 있어요. 옆으로 밀면 넓게 펼쳐져요. */
+
+/* ✏️ 바꾸고 싶으면 여기 */
+body{--bgc:#e4e4e0}   /* 바탕 색 */
+
+/* ── 공통: 판넬 줄 · 사진 칸 · 투명 케이스 (1em = 판넬 높이의 1%) ── */
+@property --t{syntax:"<angle>";inherits:true;initial-value:0deg}
+@property --f{syntax:"<angle>";inherits:true;initial-value:0deg}
+body{overflow-x:clip}
+.glow{display:none}
+.carousel{margin-inline:calc(50% - 50vw)}
+@media (min-width:900px){body.editing .carousel{margin-inline:calc(50% - 50vw + 210px)}}
+.stage{--H:var(--panel,clamp(260px,min(78vw,62dvh),440px));--W:calc(var(--H)*.64);--u:calc(var(--H)/100);font-size:var(--u);height:auto!important;display:flex;align-items:center;overflow:auto hidden;padding:8em 16px 10em;perspective:calc(var(--H)*4);touch-action:pan-x pan-y;cursor:auto;border-radius:0;scroll-snap-type:x proximity;scrollbar-width:none}
+.stage::-webkit-scrollbar{display:none}
+.stage .card{position:relative!important;inset:auto;margin:0;flex:none;width:var(--W);height:100em;transform:none!important;opacity:1!important;pointer-events:auto!important;z-index:1!important;display:block;padding:0;border:0;border-radius:0;background:none;box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none;overflow:visible;scroll-snap-align:center;transition:translate .35s}
+.stage .card:first-child{margin-left:auto}
+.stage .card:last-child{margin-right:auto}
+.stage .card:nth-child(2){width:16em}
+.stage .card .meta,.stage .card .orb,.stage .card .ms{display:none}
+/* 사진 칸: 링크 사진이 꽉 차게, 사진이 없으면 빈 칸 색만 */
+.stage .card .visual{position:absolute;inset:0;margin:0;border-radius:0;background:var(--empty);display:block;overflow:hidden}
+.stage .card .visual img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+/* 투명 케이스 (1번 앞면 · 2번 옆면) */
+.stage .card:nth-child(1){border-radius:2.4em;background:var(--shell);box-shadow:inset 0 0 0 1px var(--rim),inset 0 0 0 .8em var(--lip),inset 0 0 0 calc(.8em + 1px) var(--rim),var(--drop)}
+.stage .card:nth-child(1) .visual{inset:3em 2.8em 3em 3.2em;border-radius:.3em;box-shadow:0 0 0 .55em var(--lip),0 0 0 calc(.55em + 1px) var(--rim)}
+.stage .card:nth-child(1)::before{content:"";position:absolute;inset:0;z-index:5;border-radius:inherit;pointer-events:none;background:linear-gradient(112deg,#fff0 16%,var(--glare) 22%,#fff0 30%),linear-gradient(112deg,#fff0 60%,var(--glare2) 64%,#fff0 70%),radial-gradient(90% 50% at 0 0,var(--glare2),#fff0 60%)}
+.stage .card:nth-child(1)::after{content:"";position:absolute;inset:0;z-index:6;border-radius:inherit;pointer-events:none;background:radial-gradient(circle,#0000 0 .8em,var(--rim) .9em 1.05em,#0000 1.15em) 1.2em 1.2em/2.6em 2.6em no-repeat,linear-gradient(var(--rim),var(--rim)) .2em 20%/.7em 7em no-repeat,linear-gradient(var(--rim),var(--rim)) .2em 80%/.7em 7em no-repeat}
+.stage .card:nth-child(2){border-radius:1.6em;background:linear-gradient(90deg,var(--glare2),#fff0 22% 78%,var(--glare2)),var(--shell);box-shadow:inset 0 0 0 1px var(--rim),var(--drop)}
+.stage .card:nth-child(2) .visual{inset:2.6em 2.6em;border-radius:.2em;box-shadow:0 0 0 .4em var(--lip),0 0 0 calc(.4em + 1px) var(--rim)}
+.stage .card:nth-child(2)::before{content:"";position:absolute;inset:0;z-index:5;border-radius:inherit;pointer-events:none;background:linear-gradient(90deg,#fff0 18%,var(--glare) 34%,#fff0 50%),linear-gradient(var(--rim),var(--rim)) 50% 1.3em/60% 1px no-repeat,linear-gradient(var(--rim),var(--rim)) 50% calc(100% - 1.3em)/60% 1px no-repeat}
+/* 가사지 순번 (4번 링크 = 1) — 접히는 각도 계산용 */
+.stage .card:nth-child(n+3){--k:0;--s:1}
+.stage .card:nth-child(4){--k:1}.stage .card:nth-child(5){--k:2}.stage .card:nth-child(6){--k:3}.stage .card:nth-child(7){--k:4}.stage .card:nth-child(8){--k:5}.stage .card:nth-child(9){--k:6}.stage .card:nth-child(10){--k:7}.stage .card:nth-child(11){--k:8}.stage .card:nth-child(12){--k:9}.stage .card:nth-child(13){--k:10}.stage .card:nth-child(14){--k:11}.stage .card:nth-child(15){--k:12}.stage .card:nth-child(16){--k:13}.stage .card:nth-child(17){--k:14}.stage .card:nth-child(18){--k:15}.stage .card:nth-child(19){--k:16}.stage .card:nth-child(20){--k:17}
+.stage .card:nth-child(2n+5){--s:-1}
+
+body{--shell:#ffffff5c;--lip:#ffffff3d;--rim:#0000001f;--glare:#ffffffb8;--glare2:#ffffff55;--drop:0 2.4em 4em #0000002b;--empty:#cfcfca;background:linear-gradient(#f5f5f3,var(--bgc) 58%,#cfcfca) var(--bgc)}
+.controls{display:none}
+.stage{align-items:flex-end;padding-bottom:16em}
+.stage .card{-webkit-box-reflect:below .4em linear-gradient(#0000 72%,#0000001f)}
+/* 옆면이 상자의 왼쪽 면, 케이스가 앞면 */
+.stage .card:nth-child(2){order:-1;margin-left:auto;transform-origin:100% 50%;transform:rotateY(-56deg)!important;filter:brightness(.84)}
+.stage .card:nth-child(1){margin-left:0;transform-origin:0 50%;transform:rotateY(34deg)!important;margin-right:-2em}
+.stage .card:nth-child(1).is-active,.stage .card:nth-child(2).is-active{translate:0 -1.4em}
+/* 3~ · 서 있는 지그재그 종이 */
+@keyframes ll-fold{0%{--t:66deg}70%,100%{--t:14deg}}
+.stage .card:nth-child(n+3){--t:30deg;--s:1;height:96em;box-shadow:0 2em 3.6em -1em #0000003d;transform:translate3d(calc((var(--k) + .5)*var(--W)*(cos(var(--t)) - 1)),0,calc(var(--W)*-.5*sin(var(--t)))) rotateY(calc(var(--s)*var(--t)))!important;transition:--t .9s cubic-bezier(.3,.7,.2,1);animation:ll-fold linear both;animation-timeline:scroll(nearest inline)}
+.stage .card:nth-child(2n+4){--s:-1}
+.stage:has(.card:nth-child(-n+2).is-active) .card:nth-child(n+3){--t:74deg}
+.stage .card:nth-child(n+3)::before{content:"";position:absolute;inset:0;z-index:9;pointer-events:none;background:linear-gradient(90deg,#0000001a,#00000052);opacity:sin(var(--t))}
+.stage .card:nth-child(2n+4)::before{background:linear-gradient(90deg,#ffffff38,#0000000d)}
