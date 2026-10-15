@@ -46,15 +46,15 @@ body{overflow-x:clip}
 body{--shell:#ffffff5c;--lip:#ffffff3d;--rim:#0000001f;--glare:#ffffffb8;--glare2:#ffffff55;--drop:0 2.4em 4em #0000002b;--empty:#cfcfca;background:linear-gradient(#f5f5f3,var(--bgc) 58%,#cfcfca) var(--bgc)}
 .stage{align-items:flex-end;padding-bottom:16em}
 .stage .card{-webkit-box-reflect:below .4em linear-gradient(#0000 72%,#0000001f)}
-/* 옆면이 상자의 왼쪽 면, 케이스가 앞면 · 카탈로그와는 떨어져 있어요 */
+/* 옆면이 상자의 왼쪽 면, 케이스가 앞면 */
 .stage .card:nth-child(2){order:-1;margin-left:auto;transform-origin:100% 50%;transform:rotateY(-56deg)!important;filter:brightness(.84)}
-.stage .card:nth-child(1){margin-left:0;transform-origin:0 50%;transform:rotateY(34deg)!important;margin-right:14em}
+.stage .card:nth-child(1){margin-left:0;transform-origin:0 50%;transform:rotateY(34deg)!important;margin-right:-2em}
 .stage .card:nth-child(1).is-active,.stage .card:nth-child(2).is-active{translate:0 -1.4em}
 /* 3~ · 서 있는 지그재그 종이: 고른 판넬까지는 쫙 펴지고, 그 뒤 장은 원래처럼 서 있어요 */
 @property --A{syntax:"<number>";inherits:true;initial-value:0}
 .stage{--A:0;--al:0deg;--ph:30deg;transition:--A .9s cubic-bezier(.3,.7,.2,1)}
 /* 폰처럼 화면이 좁으면: 손으로 스크롤하는 대신 밀 때마다 한 칸씩, 고른 판넬이 화면 안으로 따라와요 (화면에 다 들어오면 그대로) */
-.stage{--n:5;--T:calc(94em + (var(--n) - 2)*var(--W));--sur:calc(100cqw - 32px - var(--T));--shift:clamp(min(var(--sur),0px),50cqw - 16px - 94em - (var(--A) - .5)*var(--W),0px);container-type:inline-size;overflow:hidden;touch-action:pan-y;scroll-snap-type:none}
+.stage{--n:5;--T:calc(78em + (var(--n) - 2)*var(--W));--sur:calc(100cqw - 32px - var(--T));--shift:clamp(min(var(--sur),0px),50cqw - 16px - 78em - (var(--A) - .5)*var(--W),0px);container-type:inline-size;overflow:hidden;touch-action:pan-y;scroll-snap-type:none}
 .stage:has(.card:nth-child(3):last-child){--n:3}.stage:has(.card:nth-child(4):last-child){--n:4}.stage:has(.card:nth-child(5):last-child){--n:5}.stage:has(.card:nth-child(6):last-child){--n:6}.stage:has(.card:nth-child(7):last-child){--n:7}.stage:has(.card:nth-child(8):last-child){--n:8}.stage:has(.card:nth-child(9):last-child){--n:9}.stage:has(.card:nth-child(10):last-child){--n:10}.stage:has(.card:nth-child(11):last-child){--n:11}.stage:has(.card:nth-child(12):last-child){--n:12}.stage:has(.card:nth-child(13):last-child){--n:13}.stage:has(.card:nth-child(14):last-child){--n:14}.stage:has(.card:nth-child(15):last-child){--n:15}.stage:has(.card:nth-child(16):last-child){--n:16}.stage:has(.card:nth-child(17):last-child){--n:17}.stage:has(.card:nth-child(18):last-child){--n:18}.stage:has(.card:nth-child(19):last-child){--n:19}.stage:has(.card:nth-child(20):last-child){--n:20}
 .stage .card{left:var(--shift)}
 .stage:has(.card:nth-child(3).is-active){--A:1}.stage:has(.card:nth-child(4).is-active){--A:2}.stage:has(.card:nth-child(5).is-active){--A:3}.stage:has(.card:nth-child(6).is-active){--A:4}.stage:has(.card:nth-child(7).is-active){--A:5}.stage:has(.card:nth-child(8).is-active){--A:6}.stage:has(.card:nth-child(9).is-active){--A:7}.stage:has(.card:nth-child(10).is-active){--A:8}.stage:has(.card:nth-child(11).is-active){--A:9}.stage:has(.card:nth-child(12).is-active){--A:10}.stage:has(.card:nth-child(13).is-active){--A:11}.stage:has(.card:nth-child(14).is-active){--A:12}.stage:has(.card:nth-child(15).is-active){--A:13}.stage:has(.card:nth-child(16).is-active){--A:14}.stage:has(.card:nth-child(17).is-active){--A:15}.stage:has(.card:nth-child(18).is-active){--A:16}.stage:has(.card:nth-child(19).is-active){--A:17}.stage:has(.card:nth-child(20).is-active){--A:18}
