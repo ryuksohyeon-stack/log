@@ -1,11 +1,8 @@
-/* ═══ LUVLINKS CASSETTE PACKAGE · 형식 2 「3D BOX 입체 진열」 — 한 장씩 펼치기 ═══
+/* ═══ LUVLINKS CASSETTE PACKAGE · 형식 2 「3D BOX 입체 진열」 ═══
    스킨 글래스 · 배치 가로 에서 써 주세요. 프로필 카드는 안 건드려요.
    링크 순서 = 판넬 순서, 링크마다 올린 사진이 그 칸에 꽉 차게 들어가요.
-   1 케이스(카세트+수록곡) · 2 옆면 · 3 뒷면 · 4, 5, 6… 가사지
-   케이스와 옆면이 하나의 입체 상자가 돼요. 3번을 누르거나 화살표로 3번에 오면 카탈로그가 상자에서 펼쳐져 나오고,
-   4번 · 5번…을 누를 때마다 한 장씩 이어서 펼쳐져요. 앞 판넬로 돌아가면 다시 접혀요.
-   다음 장은 살짝 열린 채로 있어서 눌러서 펼칠 수 있어요. 밀기 · 화살표 · 점으로도 돼요.
-   처음엔 접힌 채로 보여 주고 싶으면 1번 링크를 「첫 화면」으로 고정하세요. */
+   1 케이스(카세트+수록곡) · 2 옆면 · 3 뒷면 · 4, 5, 6… 가사지(3번에 이어 붙어요)
+   케이스와 옆면이 하나의 입체 상자가 되고, 뒷면부터 가사지는 지그재그로 서 있어요. 옆으로 밀면 넓게 펼쳐져요. */
 
 /* ✏️ 바꾸고 싶으면 여기 */
 body{--bgc:#e4e4e0}   /* 바탕 색 */
@@ -39,30 +36,19 @@ body{overflow-x:clip}
 .stage .card:nth-child(n+3){--k:0;--s:1}
 .stage .card:nth-child(4){--k:1}.stage .card:nth-child(5){--k:2}.stage .card:nth-child(6){--k:3}.stage .card:nth-child(7){--k:4}.stage .card:nth-child(8){--k:5}.stage .card:nth-child(9){--k:6}.stage .card:nth-child(10){--k:7}.stage .card:nth-child(11){--k:8}.stage .card:nth-child(12){--k:9}.stage .card:nth-child(13){--k:10}.stage .card:nth-child(14){--k:11}.stage .card:nth-child(15){--k:12}.stage .card:nth-child(16){--k:13}.stage .card:nth-child(17){--k:14}.stage .card:nth-child(18){--k:15}.stage .card:nth-child(19){--k:16}.stage .card:nth-child(20){--k:17}
 .stage .card:nth-child(2n+5){--s:-1}
-/* 사진이 마우스로 끌려가면 밀기 방향이 거꾸로 잡혀서, 사진은 끌리지 않게 */
-.stage .card,.stage .card img{-webkit-user-drag:none;user-select:none}
-.stage .card img{pointer-events:none}
 
-body{--shell:#ffffff5c;--lip:#ffffff3d;--rim:#0000001f;--glare:#ffffffb8;--glare2:#ffffff55;--drop:0 2.4em 4em #0000002b;--empty:#cfcfca;--back:#f4f4f1;background:linear-gradient(#f5f5f3,var(--bgc) 58%,#cfcfca) var(--bgc)}
-/* 줄: 밀어서 스크롤하는 대신, 고른 판넬이 화면 가운데로 와요 */
-.stage{--a:34deg;--m:-1;--n:5;--ez:cubic-bezier(.3,.7,.2,1);--q:mod(calc(var(--m) + 1),2);--sm:calc(1 - 2*var(--q));--cw:calc(var(--W)*cos(var(--a)));--dx:calc(var(--cw) - var(--W));--dz:calc(var(--W)*sin(var(--a))*-1);--T:calc(80em + var(--dx) + (var(--n) - 2)*var(--cw));--sur:calc(100cqw - var(--T) - 32px);--xf:calc(80em + var(--dx) + (var(--m) + .5)*var(--cw));--shift:calc(clamp(min(var(--sur),0px),50cqw - var(--xf),0px) + max(var(--sur),0px)/2 + 16px);container-type:inline-size;overflow:visible;transform-style:preserve-3d;pointer-events:none;touch-action:pan-y;align-items:flex-end;padding:8em 0 14em;scroll-snap-type:none}
-.stage:has(.card:nth-child(3):last-child){--n:3}.stage:has(.card:nth-child(4):last-child){--n:4}.stage:has(.card:nth-child(5):last-child){--n:5}.stage:has(.card:nth-child(6):last-child){--n:6}.stage:has(.card:nth-child(7):last-child){--n:7}.stage:has(.card:nth-child(8):last-child){--n:8}.stage:has(.card:nth-child(9):last-child){--n:9}.stage:has(.card:nth-child(10):last-child){--n:10}.stage:has(.card:nth-child(11):last-child){--n:11}.stage:has(.card:nth-child(12):last-child){--n:12}.stage:has(.card:nth-child(13):last-child){--n:13}.stage:has(.card:nth-child(14):last-child){--n:14}.stage:has(.card:nth-child(15):last-child){--n:15}.stage:has(.card:nth-child(16):last-child){--n:16}.stage:has(.card:nth-child(17):last-child){--n:17}.stage:has(.card:nth-child(18):last-child){--n:18}.stage:has(.card:nth-child(19):last-child){--n:19}.stage:has(.card:nth-child(20):last-child){--n:20}
-.stage:has(.card:nth-child(3).is-active){--m:0}.stage:has(.card:nth-child(4).is-active){--m:1}.stage:has(.card:nth-child(5).is-active){--m:2}.stage:has(.card:nth-child(6).is-active){--m:3}.stage:has(.card:nth-child(7).is-active){--m:4}.stage:has(.card:nth-child(8).is-active){--m:5}.stage:has(.card:nth-child(9).is-active){--m:6}.stage:has(.card:nth-child(10).is-active){--m:7}.stage:has(.card:nth-child(11).is-active){--m:8}.stage:has(.card:nth-child(12).is-active){--m:9}.stage:has(.card:nth-child(13).is-active){--m:10}.stage:has(.card:nth-child(14).is-active){--m:11}.stage:has(.card:nth-child(15).is-active){--m:12}.stage:has(.card:nth-child(16).is-active){--m:13}.stage:has(.card:nth-child(17).is-active){--m:14}.stage:has(.card:nth-child(18).is-active){--m:15}.stage:has(.card:nth-child(19).is-active){--m:16}.stage:has(.card:nth-child(20).is-active){--m:17}
-.carousel{overflow-x:clip}
-.stage .card{margin:0!important;left:var(--shift);transition:left .7s var(--ez),translate .35s}
-/* 상자: 옆면이 왼쪽 면, 케이스가 앞면 */
-.stage .card:nth-child(2){order:-1;transform-origin:100% 50%;transform:rotateY(calc(var(--a) - 90deg))!important;filter:brightness(.84)}
-.stage .card:nth-child(1){transform-origin:0 50%;transform:rotateY(var(--a))!important}
-.stage .card:nth-child(-n+2).is-active{translate:0 -1.4em}
-/* 카탈로그: 펼쳐진 장은 상자 오른쪽 모서리에서부터 지그재그로 */
-.stage .card:nth-child(n+3){--o:0;height:96em;transform-origin:0 50%;box-shadow:0 2em 3.6em -1em #0000003d;translate:calc(var(--dx) + var(--k)*var(--dx)) 0 calc(var(--dz) + var(--o)*var(--W)*sin(var(--a)));rotate:y calc((2*var(--o) - 1)*var(--a));transition:translate .8s var(--ez),rotate .8s var(--ez),left .7s var(--ez),opacity .3s,visibility 0s}
-.stage .card:nth-child(2n+4){--o:1}
-/* 아직 안 펼친 장: 마지막으로 펼친 장 뒤에 접혀 숨어요 */
-.stage .card.is-active ~ .card:nth-child(n+3){translate:calc(var(--dx) + (var(--m) + 1)*var(--cw) - var(--k)*var(--W)) 0 calc(var(--dz) + var(--q)*var(--W)*sin(var(--a)));rotate:y calc(var(--sm)*(var(--a) - 180deg));opacity:0!important;visibility:hidden;transition:translate .8s var(--ez),rotate .8s var(--ez),left .7s var(--ez),opacity .3s,visibility 0s .8s}
-/* 바로 다음 장: 살짝 열려 있어 눌러서 펼쳐요 */
-.stage .card.is-active + .card:nth-child(n+3),.stage .card:nth-child(1).is-active ~ .card:nth-child(3){rotate:y calc(var(--sm)*-66deg);opacity:1!important;visibility:visible;transition:translate .8s var(--ez),rotate .8s var(--ez),left .7s var(--ez),opacity .3s .25s,visibility 0s}
-/* 종이 앞 · 뒤 */
-.stage .card:nth-child(n+3) .visual{-webkit-backface-visibility:hidden;backface-visibility:hidden}
-.stage .card:nth-child(n+3)::before{content:"";position:absolute;inset:0;transform:rotateY(180deg);-webkit-backface-visibility:hidden;backface-visibility:hidden;background:var(--back);box-shadow:inset 0 0 0 1px #0000000f}
-.stage .card:nth-child(n+3)::after{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;-webkit-backface-visibility:hidden;backface-visibility:hidden;background:linear-gradient(90deg,#ffffff2e,#0000000a)}
-.stage .card:nth-child(2n+4)::after{background:linear-gradient(90deg,#0000000f,#00000047)}
+body{--shell:#ffffff5c;--lip:#ffffff3d;--rim:#0000001f;--glare:#ffffffb8;--glare2:#ffffff55;--drop:0 2.4em 4em #0000002b;--empty:#cfcfca;background:linear-gradient(#f5f5f3,var(--bgc) 58%,#cfcfca) var(--bgc)}
+.controls{display:none}
+.stage{align-items:flex-end;padding-bottom:16em}
+.stage .card{-webkit-box-reflect:below .4em linear-gradient(#0000 72%,#0000001f)}
+/* 옆면이 상자의 왼쪽 면, 케이스가 앞면 */
+.stage .card:nth-child(2){order:-1;margin-left:auto;transform-origin:100% 50%;transform:rotateY(-56deg)!important;filter:brightness(.84)}
+.stage .card:nth-child(1){margin-left:0;transform-origin:0 50%;transform:rotateY(34deg)!important;margin-right:-2em}
+.stage .card:nth-child(1).is-active,.stage .card:nth-child(2).is-active{translate:0 -1.4em}
+/* 3~ · 서 있는 지그재그 종이 */
+@keyframes ll-fold{0%{--t:66deg}70%,100%{--t:14deg}}
+.stage .card:nth-child(n+3){--t:30deg;--s:1;height:96em;box-shadow:0 2em 3.6em -1em #0000003d;transform:translate3d(calc((var(--k) + .5)*var(--W)*(cos(var(--t)) - 1)),0,calc(var(--W)*-.5*sin(var(--t)))) rotateY(calc(var(--s)*var(--t)))!important;transition:--t .9s cubic-bezier(.3,.7,.2,1);animation:ll-fold linear both;animation-timeline:scroll(nearest inline)}
+.stage .card:nth-child(2n+4){--s:-1}
+.stage:has(.card:nth-child(-n+2).is-active) .card:nth-child(n+3){--t:74deg}
+.stage .card:nth-child(n+3)::before{content:"";position:absolute;inset:0;z-index:9;pointer-events:none;background:linear-gradient(90deg,#0000001a,#00000052);opacity:sin(var(--t))}
+.stage .card:nth-child(2n+4)::before{background:linear-gradient(90deg,#ffffff38,#0000000d)}
