@@ -1,0 +1,45 @@
+# 노릴스크(UTC+7) 자정이 지나면 달력 그림 세 장(norilsk/cal-1..3.png)을 새 날짜로 다시 그려요.
+# luvlinks 프로필 CSS가 raw.githubusercontent.com/…/HEAD/norilsk/cal-N.png 를 불러와서 날짜가 매일 바뀌어요.
+# 예약 실행은 기본 브랜치에 이 파일이 있어야 돌아가요. Actions 탭에서 「Run workflow」로 바로 돌릴 수도 있어요.
+name: Norilsk calendar
+
+on:
+  schedule:
+    - cron: '2 17 * * *'    # 노릴스크 00:02
+    - cron: '41 17 * * *'   # 예약이 밀렸을 때를 대비해 한 번 더
+  workflow_dispatch:
+  push:
+    paths:
+      - norilsk/calendar.mjs
+      - .github/workflows/norilsk-calendar.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: norilsk-calendar
+  cancel-in-progress: false
+
+jobs:
+  draw:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install Chromium
+        run: |
+          npm install --no-save --no-package-lock playwright@1.48.2
+          npx playwright install --with-deps chromium
+      - name: Draw today's calendars
+        run: node norilsk/calendar.mjs
+      - name: Commit if the date changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add norilsk/cal-*.png
+          if git diff --cached --quiet; then echo "no change"; exit 0; fi
+          git commit -m "Norilsk calendar $(TZ=Asia/Krasnoyarsk date +%F)"
+          git pull --rebase
+          git push
