@@ -32,7 +32,7 @@ body{--nr-bg:#FEFCF8;--nr-ac:#FF4500;--nr-ac2:#F4602F}
 .page:has(.card:nth-child(2).is-active) #now .badge .ms{visibility:hidden}
 /* 하단 문구(맨 아래 한 줄)와 옆 작은 luvlinks 로고 색 */
 #foot.foot{color:var(--nr-ac2)}#foot.foot:not(:empty)::before{background:var(--nr-ac2)}
-/* 폰: 소개 6.5px · 노래 6px로 작게 (노래 칸은 줄 맞춤이 안 깨지게 칸째로 0.75배 · 그 안 글씨 8px × 0.75 = 6px · 아주 좁은 폰에선 가사가 안 잘리게 조금 더 작게 · 크롬이 글씨를 저절로 키우지 않게) */
-@media (max-width:700px){.profile .pcard.p-glass{column-gap:10px;-webkit-text-size-adjust:none;text-size-adjust:none}.profile .pcard.p-glass .pbio{font-size:6.5px;line-height:1.5}.profile .pcard.p-glass>div:not([class]){zoom:.75}.profile .pcard.p-glass>div:not([class])::before,.profile .pcard.p-glass>div:not([class])::after,.profile .pcard.p-glass .pname::before{font-size:min(8px,calc(100cqi / 18.6))}}
+/* 폰: 소개 6.7px · 노래 6px로 작게 (노래 칸은 줄 맞춤이 안 깨지게 칸째로 0.75배 · 그 안 글씨 8px × 0.75 = 6px · 아주 좁은 폰에선 가사가 안 잘리게 조금 더 작게 · 크롬이 글씨를 저절로 키우지 않게) */
+@media (max-width:700px){.profile .pcard.p-glass{column-gap:10px;-webkit-text-size-adjust:none;text-size-adjust:none}.profile .pcard.p-glass .pbio{font-size:6.7px;line-height:1.5}.profile .pcard.p-glass>div:not([class]){zoom:.75}.profile .pcard.p-glass>div:not([class])::before,.profile .pcard.p-glass>div:not([class])::after,.profile .pcard.p-glass .pname::before{font-size:min(8px,calc(100cqi / 18.6))}}
 /* 배경 음악 · 「화면 누르면 재생」이 폰 · 태블릿에선 소리 없이 켜져요(바만 움직여요). 노래가 아직 안 나왔을 때만 첫 터치 · 첫 클릭이 ▶ 단추에 닿게 투명 막을 깔아요 (모든 기기 · 유튜브 링크와 직접 올린 mp3 둘 다) */
 body:not(.editing):not(:has(>iframe[title="BGM"])) #bgm.yt:not(.on):not([data-style="term"]) .bgm-btn::after,body:not(.editing) #bgm:not(.yt):not(.on):not([style*="--p:"]):not([data-style="term"]) .bgm-btn::after,body:not(.editing) #bgm[data-style="ring"]:not(.yt):not(.on)[style*="--p: 0;"] .bgm-btn::after{content:"";position:absolute;inset:-300vh -300vw;z-index:2;background:#0000;cursor:auto;animation:none}#bgm .bgm-btn{-webkit-tap-highlight-color:#0000}
