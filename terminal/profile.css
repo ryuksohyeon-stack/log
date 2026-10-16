@@ -27,7 +27,7 @@
   position:static;display:block;width:auto;height:0;min-width:0;aspect-ratio:auto;margin:0;padding:0;gap:0;overflow:visible;font-size:0;line-height:0;opacity:1;
   border:0!important;border-radius:0!important;background:none!important;box-shadow:none!important;animation:none!important;text-shadow:none}
 /* 카드 안 여백은 .main 에 — 카드에 여백을 주면 cqi(카드 폭) 기준이 줄어요 */
-#profile .p-idcard .main{box-sizing:border-box;height:auto;min-height:calc(var(--ch)*5.4112 + var(--L)*24.00);padding:calc(var(--ch)*5.4112 + var(--L)*3.5) calc(var(--ch)*2) calc(var(--L)*10.8) calc(var(--ch)*46.4)}
+#profile .p-idcard .main{box-sizing:border-box;height:auto;min-height:calc(var(--ch)*5.4112 + var(--L)*21.88);padding:calc(var(--ch)*5.4112 + var(--L)*3.5) calc(var(--ch)*2) calc(var(--L)*9.8) calc(var(--ch)*46.4)}
 #profile .p-idcard .pav>*,#profile .p-idcard .lgwrap>img,#profile .p-idcard .lgwrap>.ms{display:none}
 
 /* Hey, 이름 (브랜드 칸) */
@@ -48,7 +48,8 @@
   background-repeat:no-repeat}
 #profile .p-idcard .idno{height:var(--L);margin:0;text-align:left}
 #profile .p-idcard .idno::before{content:"Hardware";display:block;padding-left:calc(var(--ch)*18);font:400 calc(var(--fs)*1.07)/var(--L) "LL Term",monospace;letter-spacing:calc(var(--ch)*-.07);color:#b6d27e}
-#profile .p-idcard .idno::after{content:none}
+/* 인사 한 줄 (Bonsoir! Elliot.) — 편집기 「카드 번호」 칸 */
+#profile .p-idcard .idno::after{content:attr(data-no);position:absolute;left:calc(var(--ch)*46.4);bottom:calc(var(--L)*2.8);height:var(--L);white-space:pre;font:700 calc(var(--fs)*1.07)/var(--L) "LL Term",monospace;letter-spacing:calc(var(--ch)*-.07);color:#f2cd8f;display:block;margin:0;padding:0;border-radius:0;background:none;text-shadow:none;pointer-events:none}
 #profile .p-idcard .tr{display:grid;grid-template-columns:calc(var(--ch)*11) minmax(0,1fr);gap:0;width:calc(var(--ch)*84.6);height:var(--L);margin:0;padding:0 0 0 calc(var(--ch)*3);border:0;
   font:calc(var(--fs)*1.07)/var(--L) "LL Term",monospace;letter-spacing:calc(var(--ch)*-.07);
   background:repeating-linear-gradient(#0000 0 calc(var(--L)*.5 - var(--t)/2),#b6d27e 0 calc(var(--L)*.5 + var(--t)/2),#0000 0 var(--L)) calc(var(--ch)*.5) 0/calc(var(--ch)*1.3) var(--L) no-repeat}
@@ -57,31 +58,31 @@
 #profile .p-idcard .tr span{font-weight:600;color:#f3f6f4;font-family:"LL Bar","LL Term",monospace}
 
 /* 글자 겹 */
-#profile .p-idcard .main::before,#profile .p-idcard .photo::before,#profile .p-idcard .pav::before,#profile .p-idcard .pav::after,#profile .p-idcard .barcode::before,#profile .p-idcard .barcode::after,#profile .p-idcard .cap::before,#profile .p-idcard .cap::after{position:absolute;left:calc(var(--ch)*1.4);white-space:pre;font-family:"LL Term",monospace;font-size:calc(var(--fs)*1.07);line-height:var(--L);letter-spacing:calc(var(--ch)*-.07);text-transform:none;pointer-events:none}
+#profile .p-idcard .main::before,#profile .p-idcard .photo::before,#profile .p-idcard .pav::before,#profile .p-idcard .pav::after,#profile .p-idcard .barcode::before,#profile .p-idcard .barcode::after,#profile .p-idcard .cap::after{position:absolute;left:calc(var(--ch)*1.4);white-space:pre;font-family:"LL Term",monospace;font-size:calc(var(--fs)*1.07);line-height:var(--L);letter-spacing:calc(var(--ch)*-.07);text-transform:none;pointer-events:none}
 #profile .p-idcard .main::before,#profile .p-idcard .photo::before{top:calc(var(--ch)*5.4112 + var(--L)*.5)}
-#profile .p-idcard .pav::before,#profile .p-idcard .pav::after,#profile .p-idcard .barcode::before,#profile .p-idcard .barcode::after,#profile .p-idcard .cap::before,#profile .p-idcard .cap::after,#profile .p-idcard .photo::after{position:absolute;left:calc(var(--ch)*1.4);bottom:calc(var(--L)*0.8);height:calc(var(--L)*10);pointer-events:none}
-#profile .p-idcard .main::before{content:"PowerShell 7.6.3";color:#b6d27e;font-weight:700}
-#profile .p-idcard .photo::before{content:"               \3A =+=-.\A                      -+\A                        +\3A \A                      .+###+.\A                     *#######*\A                   .+*#######*+.\A                 *##**+*###*+**##*\A             +++##**####*#**###*##+\A          +++==+*######***#*#######++==\A         *====####***+****#*#***#*##*+=++=+=\A       +=====+*###****+***+++***###**++==\3A .--+\A      +=-\3A ..-=+####*+****#**++###**=\3A -=-.-\3A \3A -*\A      =......\3A =***=-===*#**+*--*+++...\3A \3A .\3A \3A .=*\A       *=.....\3A -==-=+++***##+--*####=\3A =\3A \3A .\3A =++\A        +#+\3A ....\3A =+**#****+=-=-+#*##+=\3A --==+\A         +=-\3A ---+*******###*+#+**###-==+**+\A          *=\3A .\3A \3A --+*+*+*****+***+=++\3A =-=+++\A          ++-=..\3A \3A \3A -+++++*+++++=.\3A -\3A .======\A           +=-=\3A \3A \3A .-++=+--\3A -......\3A \3A \3A =+=-=\A            +-.\3A \3A ..\3A \3A ..\3A ............\3A ==-+\A             ++==---=--\3A ..\3A \3A --====-=+=++\A                +=++=++=+=+=======++=\A                 ====-\3A ===-=====++++\A                    \3A ..\3A \3A -===+=+=";color:#fdbbcf;font-weight:700}
-#profile .p-idcard .pav::before{content:"\A                                                               Anniversary\A \A \A \A \A \A \A \A ";color:#b6d27e;font-weight:400}
-#profile .p-idcard .pav::after{content:"\A \A                                                 D-DAY\A                                                 NEXT\A                                                 NEXT\A \A \A \A \A PS C\3A \\Users\\Vanil>";color:#b6d27e;font-weight:700}
-#profile .p-idcard .barcode::before{content:"\A                                                                                                         Uptime / Date\A \A \A \A \A \A \A \A ";color:#eeec8c;font-weight:400}
-#profile .p-idcard .barcode::after{content:"\A \A                                                                                                NORILSK\A                                                                                                KOREA\A \A \A \A \A \A ";color:#eeec8c;font-weight:700}
-#profile .p-idcard .cap::before{content:"\A \A \A \A \A \A \A                                              Bonsoir! Elliot.\A \A ";color:#f2cd8f;font-weight:700}
-#profile .p-idcard .cap::after{content:"\A \A \A \A \A \A \A \A                                              @208×195 · Milan Vasilic (in Norilsk)\A ";color:#aeb4aa;font-weight:400}
-/* 아스키 아트 — 사진보다 조금 작게 (0.85배) */
-#profile .p-idcard .photo::before{top:calc(var(--ch)*5.4112 + var(--L)*1.5);font-size:calc(var(--fs)*1.12*0.85);line-height:calc(var(--L)*0.85);letter-spacing:calc(var(--ch)*-.12*0.85)}
+#profile .p-idcard .pav::before,#profile .p-idcard .pav::after,#profile .p-idcard .barcode::before,#profile .p-idcard .barcode::after,#profile .p-idcard .cap::after,#profile .p-idcard .photo::after{position:absolute;left:calc(var(--ch)*1.4);bottom:calc(var(--L)*0.8);height:calc(var(--L)*9);pointer-events:none}
+#profile .p-idcard .main::before{content:"PowerShell 4.0.4";color:#b6d27e;font-weight:700}
+#profile .p-idcard .photo::before{content:"                              ***#****++\A                              #*#**##*##***\A                             ##*+*++********#\A            *+*+++          ##*+++*+++++***+*#*\A         ###*##******+     #***+++++++*****+****\A        #****+*#*###***   #**++++++==+****++#+**\A      *##+++*+************#++========+*#+*+*#++**\A     ##**+*********#*#***+*+==========+**#**++++#\A    #********+*+**+=+***#*#+==-========++++**+++*\A    #*++**+=+++++++=====+#*#=-==-=====+==++#**++**\A   #*++***+++++++*+++===-***+=-========+==+#**++**\A   #==***+=+++++***+++===+***==-======+=+++#**++**\A  #*==+**=+++*++**#*++=-==*##====-=====+=+**#****\A  #*==+**=++++++**++++====*#*#**+++=++++**###*\A  #*-=+***++++++**+**+*+*+**#*    ******\A  #*==+***+*****+************\A   #+++++*****+*************\A    *#*##*******+****#####*\A         *#####*#####**";color:#b07f6e;font-weight:700}
+#profile .p-idcard .pav::before{content:"\A                                                               Anniversary\A \A \A \A \A \A \A ";color:#b6d27e;font-weight:400}
+#profile .p-idcard .pav::after{content:"\A \A                                                 D-DAY\A                                                 NEXT\A \A \A \A \A PS C\3A \\Users\\Nalc>";color:#b6d27e;font-weight:700}
+#profile .p-idcard .barcode::before{content:"\A                                                                                                         Uptime / Date\A \A \A \A \A \A \A ";color:#eeec8c;font-weight:400}
+#profile .p-idcard .barcode::after{content:"\A \A                                                                                                NORILSK\A                                                                                                KOREA\A \A \A \A \A ";color:#eeec8c;font-weight:700}
+#profile .p-idcard .cap::after{content:"\A \A \A \A \A \A \A                                              @208×195 · Milan Vasilic (in Norilsk)\A ";color:#aeb4aa;font-weight:400}
+/* 아스키 아트 — 글자는 초콜릿 체리 모양, 색은 칸마다 깔린 작은 그림(초콜릿 · 필링)에서 */
+#profile .p-idcard .photo::before{top:calc(var(--ch)*5.4112 + var(--L)*3.625);font-size:calc(var(--fs)*1.12*0.85);line-height:calc(var(--L)*0.85);letter-spacing:calc(var(--ch)*-.12*0.85);
+  -webkit-text-fill-color:transparent;background:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAATCAYAAADWOo4fAAABq0lEQVR42sVXQU7DMBAcFx94Qo4oCihFCO4oP+BS8QBOfKRf6LlPqKqqUn6AuIOQUkEU5dgn9EQ5Odos63gTaLunOrXXM7uza9vgBFYu53sA+Hh775w3mc5MyJc5BfgQ8D5EzCnAV18VACC+jJvfbuyzm7tbJI/PZjABX+Q0aebrOWg69pkjx4mYY6Sb+wkB5pmgGeMkrCbdNEpdaXbraIS4bLSRlsBHeY3Xq+9uCdEO4Ut1iATVbR/w1DcNHP1G502mM2M1knEOtMCdrRer3msoYE5IMttVZNTREAn0Bc/30uxppYU+5vefI9EJ1aXkQ9tpNLLiirGSdLTgk3GKstg0//ECO6Q5bCOpYLn5Iu9IhDb5i5xCTcIO6fXOXuIdACAqjhN1GgR3FtihzpJxii12iPK6lakuGfVtCvTgavZl1wkbcuaTT1lskCFFSWRE60GqCek+486dXwES7j3eLqTpEhQkJUHllCFtjWMFKC3QzttouZzv14uVOOHp7BplsREJuG+uFiSL8hrbhwv1pW8QAe0jI6vOWyR8BKhm/yPKgx802pdTqNAOaT/v9Syx1RFd/gAAAABJRU5ErkJggg==) calc(var(--ch)*0.85) 0/calc(var(--ch)*40.8) calc(var(--L)*16.15) no-repeat;-webkit-background-clip:text;background-clip:text;image-rendering:pixelated}
 
 /* 아래 상자 테두리 · 기념일과 날짜 그림 */
 #profile .p-idcard .photo::after{content:"";width:calc(var(--ch)*(134 - 1.4));background:
-    url(https://raw.githubusercontent.com/ryuksohyeon-stack/log/HEAD/terminal/anniv.png) calc(var(--ch)*59) calc(var(--L)*2)/calc(var(--ch)*30) calc(var(--L)*3),
+    url(https://raw.githubusercontent.com/ryuksohyeon-stack/log/HEAD/terminal/anniv.png) calc(var(--ch)*59) calc(var(--L)*2)/calc(var(--ch)*30) calc(var(--L)*2),
     url(https://raw.githubusercontent.com/ryuksohyeon-stack/log/HEAD/terminal/dates.png) calc(var(--ch)*106) calc(var(--L)*2)/calc(var(--ch)*22) calc(var(--L)*2),
     linear-gradient(#9aa0a4 0 0) calc(var(--ch)*45.5) calc(var(--L)*1.5 - var(--t)/2)/calc(var(--ch)*15.5) var(--t),
     linear-gradient(#9aa0a4 0 0) calc(var(--ch)*74) calc(var(--L)*1.5 - var(--t)/2)/calc(var(--ch)*15.5) var(--t),
     linear-gradient(#9aa0a4 0 0) calc(var(--ch)*89.5 - var(--t)/2) calc(var(--L)*1.5)/var(--t) calc(var(--L)*0.5),
-    linear-gradient(#9aa0a4 0 0) calc(var(--ch)*45.5) calc(var(--L)*5.5 - var(--t)/2)/calc(var(--ch)*44) var(--t),
-    linear-gradient(#9aa0a4 0 0) calc(var(--ch)*89.5 - var(--t)/2) calc(var(--L)*5)/var(--t) calc(var(--L)*0.5),
-    linear-gradient(#b6d27e 0 0) calc(var(--ch)*45.5 - var(--t)/2) calc(var(--L)*1.5)/var(--t) calc(var(--L)*4),
-    repeating-linear-gradient(#0000 0 calc(var(--L)*.5 - var(--t)/2),#b6d27e 0 calc(var(--L)*.5 + var(--t)/2),#0000 0 var(--L)) calc(var(--ch)*45.5) calc(var(--L)*2)/calc(var(--ch)*1.3) calc(var(--L)*3),
+    linear-gradient(#9aa0a4 0 0) calc(var(--ch)*45.5) calc(var(--L)*4.5 - var(--t)/2)/calc(var(--ch)*44) var(--t),
+    linear-gradient(#9aa0a4 0 0) calc(var(--ch)*89.5 - var(--t)/2) calc(var(--L)*4)/var(--t) calc(var(--L)*0.5),
+    linear-gradient(#b6d27e 0 0) calc(var(--ch)*45.5 - var(--t)/2) calc(var(--L)*1.5)/var(--t) calc(var(--L)*3),
+    repeating-linear-gradient(#0000 0 calc(var(--L)*.5 - var(--t)/2),#b6d27e 0 calc(var(--L)*.5 + var(--t)/2),#0000 0 var(--L)) calc(var(--ch)*45.5) calc(var(--L)*2)/calc(var(--ch)*1.3) calc(var(--L)*2),
     linear-gradient(#9aa0a4 0 0) calc(var(--ch)*92.5) calc(var(--L)*1.5 - var(--t)/2)/calc(var(--ch)*10.5) var(--t),
     linear-gradient(#9aa0a4 0 0) calc(var(--ch)*118) calc(var(--L)*1.5 - var(--t)/2)/calc(var(--ch)*10.5) var(--t),
     linear-gradient(#9aa0a4 0 0) calc(var(--ch)*128.5 - var(--t)/2) calc(var(--L)*1.5)/var(--t) calc(var(--L)*0.5),
@@ -92,6 +93,6 @@
   background-repeat:no-repeat}
 
 /* 깜빡이는 커서 */
-#profile .p-idcard .main::after{content:"";position:absolute;left:calc(var(--ch)*20.3);bottom:calc(var(--L)*0.73);width:calc(var(--ch)*1.3);height:calc(var(--L)*.24);background:#d6f2ff;animation:llTermBlink 1.1s steps(1) infinite}
+#profile .p-idcard .main::after{content:"";position:absolute;left:calc(var(--ch)*19.3);bottom:calc(var(--L)*0.73);width:calc(var(--ch)*1.3);height:calc(var(--L)*.24);background:#d6f2ff;animation:llTermBlink 1.1s steps(1) infinite}
 @keyframes llTermBlink{50%{opacity:0}}
 @media (prefers-reduced-motion:reduce){#profile .p-idcard .main::after{animation:none}}

@@ -1,5 +1,5 @@
 // 터미널 프로필의 날짜 그림 두 장을 오늘 날짜로 다시 그려요. luvlinks 프로필 CSS(terminal/profile.css)가 불러가요.
-//   anniv.png — Anniversary 상자:  D+238 · since 2026-02-22  /  다가올 100일 단위 기념일  /  다가올 1년 단위 기념일
+//   anniv.png — Anniversary 상자:  D+238 · since 2026-02-22  /  가장 가까운 다가올 기념일 하나 (100일 단위 · 1년 단위 중)
 //   dates.png — Uptime / Date 상자: 노릴스크 날짜  /  한국 날짜
 // 사귄 날을 1일로 세요. 기념일은 100일마다(300 days …)와 해마다(1 year, 2 years …)예요. 오늘이 기념일이면 (TODAY).
 //   node terminal/days.mjs                        → 지금
@@ -36,8 +36,9 @@ const k = Math.max(100, Math.ceil(day / 100) * 100);
 const next100 = new Date(start.getTime() + (k - 1) * 864e5);
 let y = 1, nextY;
 while ((nextY = new Date(Date.UTC(start.getUTCFullYear() + y, start.getUTCMonth(), start.getUTCDate()))) < kr) y++;
-const anniv = [day > 0 ? `D+${day} · since ${START}` : `D${day - 1} · from ${START}`,
-  `${k} days · ${ymd(next100)} (${left(next100)})`, `${y} year${y > 1 ? 's' : ''} · ${ymd(nextY)} (${left(nextY)})`];
+// 둘 중 먼저 오는 것 하나만 (같은 날이면 해 단위로)
+const next = nextY <= next100 ? { d: nextY, t: `${y} year${y > 1 ? 's' : ''}` } : { d: next100, t: `${k} days` };
+const anniv = [day > 0 ? `D+${day} · since ${START}` : `D${day - 1} · from ${START}`, `${next.t} · ${ymd(next.d)} (${left(next.d)})`];
 const dates = [`${ymd(nor)} ${WD[nor.getUTCDay()]} (UTC+7)`, `${ymd(kr)} ${WD[kr.getUTCDay()]} (UTC+9)`];
 
 const block = (id, lines, cols) => `<div id="${id}" style="width:${cols * CH}px;height:${lines.length * LR * CH}px">${lines.join('\n')}</div>`;
