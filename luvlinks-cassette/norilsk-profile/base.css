@@ -3,7 +3,7 @@
    왼쪽: 노릴스크 오늘 날짜(노릴스크 자정이 지나면 저절로 바뀌어요) · 오른쪽 위: 라디오 · 그 아래: 소개(오른쪽 정렬) · 오른쪽 아래: 프로필 사진.
    이름 · 핸들 · 직함 · 태그 · 머리 사진 · 공유 버튼은 이 카드에선 안 보여요. */
 /* ✏️ 색은 여기서: --nr-bg 프로필 카드 · 아래 링크 카드 바탕 / --nr-ac 포인트 색 */
-body{--nr-bg:#FDFAF2;--nr-ac:#FF4500}
+body{--nr-bg:#FEFCF8;--nr-ac:#FF4500}
 .profile .p-glass{--nr-ink:#151515;--nr-mu:#8a8170;display:grid;grid-template-columns:min(34%,124px) minmax(0,1fr) auto;grid-template-rows:auto minmax(0,1fr);grid-template-areas:"d r r" "d b p";gap:10px 16px;padding:14px 16px;border:0;border-radius:0;background:var(--nr-bg);color:var(--nr-ink);word-break:keep-all;box-shadow:0 10px 26px #0000001c,0 1px 2px #00000014;-webkit-backdrop-filter:none;backdrop-filter:none;overflow:hidden}
 /* 가로로 넓게: 페이지 폭(440px)보다 넓게, 폰에선 화면 폭에 맞춰요 */
 .profile{width:min(calc(100vw - 32px),600px);align-self:center}
@@ -20,8 +20,11 @@ body{--nr-bg:#FDFAF2;--nr-ac:#FF4500}
 .profile .p-glass.has-cover{padding-top:16px}.profile .p-glass.has-cover .pav{margin-top:0}
 /* 아래 링크 카드도 같은 바탕 · 열기 버튼은 포인트 색 */
 #now.now{background:var(--nr-bg);border-color:#0000;box-shadow:0 10px 26px #0000001c,0 1px 2px #00000014;-webkit-backdrop-filter:none;backdrop-filter:none;color:#151515}
-#now .badge{background:#f7efdc;color:var(--nr-ac)}
+#now .badge{background:#f8f1e3;color:var(--nr-ac)}
 #now .title{color:#151515}
 #now .url{color:#6d6553}
 #now .open,#now .open .ms{color:#151515}
 #now .open{background:var(--nr-ac);border-color:var(--nr-ac)}
+/* 링크 칸 사진: 그 링크를 고르면 아이콘 대신 사진이 떠요 · 사진을 더 넣으려면 nth-child(번호)와 주소만 바꿔 한 줄씩 더해요 */
+.page:has(.card:nth-child(2).is-active) #now .badge{background:url(https://raw.githubusercontent.com/ryuksohyeon-stack/log/HEAD/norilsk/link-2.jpg) 50%/cover}
+.page:has(.card:nth-child(2).is-active) #now .badge .ms{visibility:hidden}
