@@ -1,10 +1,10 @@
 /* ═══ 프로필 카드 · 노릴스크 ═══
    편집 → 프로필 모양은 「글래스」로 두세요.
-   왼쪽: 노릴스크 오늘 날짜(노릴스크 자정이 지나면 저절로 바뀌어요) · 오른쪽 위: 라디오 · 그 아래: 소개(오른쪽 정렬) · 오른쪽 아래: 프로필 사진.
+   왼쪽: 노릴스크 오늘 날짜(노릴스크 자정이 지나면 저절로 바뀌어요) · 위: 라디오 · 오른쪽 위: 프로필 사진 · 그 아래: 소개(오른쪽 끝까지 · 오른쪽 정렬).
    이름 · 핸들 · 직함 · 태그 · 머리 사진 · 공유 버튼은 이 카드에선 안 보여요. */
 /* ✏️ 색은 여기서: --nr-bg 프로필 카드 · 아래 링크 카드 바탕 / --nr-ac 프로필 카드 포인트 색 / --nr-ac2 링크 바 「열기」 · 하단 문구 색(#DA5C32에 레드오렌지를 섞고 더 맑게) */
 body{--nr-bg:#FEFCF8;--nr-ac:#FF4500;--nr-ac2:#F4602F}
-.profile .p-glass{--nr-ink:#151515;--nr-mu:#8a8170;display:grid;grid-template-columns:min(34%,124px) minmax(0,1fr) auto;grid-template-rows:auto minmax(0,1fr);grid-template-areas:"d r r" "d b p";gap:10px 16px;padding:14px 16px;border:0;border-radius:0;background:var(--nr-bg);color:var(--nr-ink);word-break:keep-all;box-shadow:0 10px 26px #0000001c,0 1px 2px #00000014;-webkit-backdrop-filter:none;backdrop-filter:none;overflow:hidden}
+.profile .p-glass{--nr-ink:#151515;--nr-mu:#8a8170;display:grid;grid-template-columns:min(34%,124px) minmax(0,1fr) auto;grid-template-rows:auto minmax(0,1fr);grid-template-areas:"d r p" "d b b";gap:10px 16px;padding:14px 16px;border:0;border-radius:0;background:var(--nr-bg);color:var(--nr-ink);word-break:keep-all;box-shadow:0 10px 26px #0000001c,0 1px 2px #00000014;-webkit-backdrop-filter:none;backdrop-filter:none;overflow:hidden}
 /* 가로로 넓게: 페이지 폭(440px)보다 넓게, 폰에선 화면 폭에 맞춰요 */
 .profile{width:min(calc(100vw - 32px),600px);align-self:center}
 .profile .pcard.p-glass{width:100%;max-width:none;zoom:1}
@@ -14,9 +14,9 @@ body{--nr-bg:#FEFCF8;--nr-ac:#FF4500;--nr-ac2:#F4602F}
 /* 오른쪽 위: 라디오 */
 .profile .p-glass>div:not([class]){grid-area:r;position:relative;min-width:0;height:50px;overflow:hidden;container-type:inline-size}
 .profile .p-glass .pname{position:relative;height:14px;margin:0;font-size:0;line-height:14px}
-/* 오른쪽 아래: 소개 · 사진 */
+/* 아래: 소개(사진 밑까지 넓게) · 오른쪽 위: 사진 */
 .profile .p-glass .pbio{grid-area:b;align-self:center;margin:0;text-align:right;color:var(--nr-ink);opacity:1}
-.profile .p-glass .pav{grid-area:p;align-self:center;margin:0}
+.profile .p-glass .pav{grid-area:p;align-self:start;margin:0}
 .profile .p-glass.has-cover{padding-top:16px}.profile .p-glass.has-cover .pav{margin-top:0}
 /* 아래 링크 카드도 같은 바탕 · 열기 버튼은 포인트 색 */
 #now.now{background:var(--nr-bg);border-color:#0000;box-shadow:0 10px 26px #0000001c,0 1px 2px #00000014;-webkit-backdrop-filter:none;backdrop-filter:none;color:#151515}
@@ -32,7 +32,7 @@ body{--nr-bg:#FEFCF8;--nr-ac:#FF4500;--nr-ac2:#F4602F}
 .page:has(.card:nth-child(2).is-active) #now .badge .ms{visibility:hidden}
 /* 하단 문구(맨 아래 한 줄)와 옆 작은 luvlinks 로고 색 */
 #foot.foot{color:var(--nr-ac2)}#foot.foot:not(:empty)::before{background:var(--nr-ac2)}
-/* 폰: 소개 · 노래 글씨를 같은 크기(6px)로 작게 (노래 칸은 줄 맞춤이 안 깨지게 칸째로 0.75배 · 그 안 글씨 8px × 0.75 = 6px · 크롬이 글씨를 저절로 키우지 않게) */
-@media (max-width:700px){.profile .pcard.p-glass{-webkit-text-size-adjust:none;text-size-adjust:none}.profile .pcard.p-glass .pbio{font-size:6px;line-height:1.5}.profile .pcard.p-glass>div:not([class]){zoom:.75}.profile .pcard.p-glass>div:not([class])::before,.profile .pcard.p-glass>div:not([class])::after,.profile .pcard.p-glass .pname::before{font-size:8px}}
+/* 폰: 소개 · 노래 글씨를 같은 크기(6px)로 작게 (노래 칸은 줄 맞춤이 안 깨지게 칸째로 0.75배 · 그 안 글씨 8px × 0.75 = 6px · 아주 좁은 폰에선 가사가 안 잘리게 조금 더 작게 · 크롬이 글씨를 저절로 키우지 않게) */
+@media (max-width:700px){.profile .pcard.p-glass{column-gap:10px;-webkit-text-size-adjust:none;text-size-adjust:none}.profile .pcard.p-glass .pbio{font-size:6px;line-height:1.5}.profile .pcard.p-glass>div:not([class]){zoom:.75}.profile .pcard.p-glass>div:not([class])::before,.profile .pcard.p-glass>div:not([class])::after,.profile .pcard.p-glass .pname::before{font-size:min(8px,calc(100cqi / 18.6))}}
 /* 배경 음악 · 「화면 누르면 재생」이 폰 · 태블릿에선 소리 없이 켜져요(바만 움직여요). 노래가 아직 안 나왔을 때만 첫 터치 · 첫 클릭이 ▶ 단추에 닿게 투명 막을 깔아요 (모든 기기 · 유튜브 링크와 직접 올린 mp3 둘 다) */
 body:not(.editing):not(:has(>iframe[title="BGM"])) #bgm.yt:not(.on):not([data-style="term"]) .bgm-btn::after,body:not(.editing) #bgm:not(.yt):not(.on):not([style*="--p:"]):not([data-style="term"]) .bgm-btn::after,body:not(.editing) #bgm[data-style="ring"]:not(.yt):not(.on)[style*="--p: 0;"] .bgm-btn::after{content:"";position:absolute;inset:-300vh -300vw;z-index:2;background:#0000;cursor:auto;animation:none}#bgm .bgm-btn{-webkit-tap-highlight-color:#0000}
