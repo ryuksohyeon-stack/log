@@ -41,11 +41,15 @@ const next = nextY <= next100 ? { d: nextY, t: `${y} year${y > 1 ? 's' : ''}` } 
 const anniv = [day > 0 ? `D+${day} · since ${START}` : `D${day - 1} · from ${START}`, `${next.t} · ${ymd(next.d)} (${left(next.d)})`];
 const dates = [`${ymd(nor)} ${WD[nor.getUTCDay()]} (UTC+7)`, `${ymd(kr)} ${WD[kr.getUTCDay()]} (UTC+9)`];
 
-const block = (id, lines, cols) => `<div id="${id}" style="width:${cols * CH}px;height:${lines.length * LR * CH}px">${lines.join('\n')}</div>`;
+// 글자마다 제 칸(CH px)에 따로 놓아요 — 자간으로 맞추면 깃허브 컴퓨터에서 글자 폭이 반올림돼 끝 글자가 잘렸어요
+const esc = (c) => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;' })[c] || c;
+const block = (id, lines, cols) => `<div id="${id}" style="width:${cols * CH}px;height:${lines.length * LR * CH}px">${lines.map((l, r) =>
+  [...l].map((c, i) => c === ' ' ? '' : `<span style="left:${i * CH}px;top:${r * LR * CH}px">${esc(c)}</span>`).join('')).join('')}</div>`;
 const html = `<!doctype html><meta charset="utf-8"><style>
 @font-face{font-family:T;font-weight:600;src:url(${FONT}) format("woff2")}
 *{margin:0}html,body{background:transparent}
-div{font:600 ${(CH / 0.5859) * 1.07}px/${LR * CH}px T;letter-spacing:${-0.07 * CH}px;color:${INK};white-space:pre;overflow:hidden;margin-bottom:10px}
+div{position:relative;font:600 ${(CH / 0.5859) * 1.07}px/${LR * CH}px T;color:${INK};overflow:hidden;margin-bottom:10px}
+span{position:absolute;white-space:pre}
 </style>${block('anniv', anniv, 30)}${block('dates', dates, 22)}`;
 
 const args = process.env.HTTPS_PROXY ? ['--proxy-server=' + process.env.HTTPS_PROXY] : [];
