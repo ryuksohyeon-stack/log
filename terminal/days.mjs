@@ -1,7 +1,7 @@
 // 터미널 프로필의 날짜 그림 두 장을 오늘 날짜로 다시 그려요. luvlinks 프로필 CSS(terminal/profile.css)가 불러가요.
-//   anniv.png — Anniversary 상자:  D+238 · since 2026-02-22  /  200 days · 2026-09-09 (지나간 기념일 중 가장 최근 것)
+//   anniv.png — Anniversary 상자:  D+238 · since 2026-02-22  /  다가올 100일 단위 기념일  /  다가올 1년 단위 기념일
 //   dates.png — Uptime / Date 상자: 노릴스크 날짜  /  한국 날짜
-// 사귄 날을 1일로 세요. 기념일은 100일마다와 해마다(1 year, 2 years …)예요.
+// 사귄 날을 1일로 세요. 기념일은 100일마다(300 days …)와 해마다(1 year, 2 years …)예요. 오늘이 기념일이면 (TODAY).
 //   node terminal/days.mjs                        → 지금
 //   DD_NOW=2026-10-17T16:00:00Z node terminal/days.mjs → 그 시각으로 (확인용)
 //   DD_OUT=다른/폴더 → 그림을 그 폴더에 저장 (기본: 이 파일 옆)
@@ -30,23 +30,22 @@ const WD = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 const kr = localDay('Asia/Seoul'), nor = localDay('Asia/Krasnoyarsk');
 const start = new Date(START + 'T00:00:00Z');
 const day = Math.round((kr - start) / 864e5) + 1;            // 한국 날짜로 센 디데이
-// 지나간 기념일 중 가장 최근 것 — 100일마다(100일째 = 사귄 날 + 99일) · 해마다(같은 월일)
-let last = null;
-for (let k = 100; k <= day; k += 100) last = { d: new Date(start.getTime() + (k - 1) * 864e5), t: `${k} days` };
-for (let y = 1; ; y++) {
-  const d = new Date(Date.UTC(start.getUTCFullYear() + y, start.getUTCMonth(), start.getUTCDate()));
-  if (d > kr) break;
-  if (!last || d >= last.d) last = { d, t: `${y} year${y > 1 ? 's' : ''}` };
-}
-const anniv = [day > 0 ? `D+${day} · since ${START}` : `D${day - 1} · from ${START}`, last ? `${last.t} · ${ymd(last.d)}` : '-'];
+// 다가올 기념일 — 100일 단위 하나(100일째 = 사귄 날 + 99일), 1년 단위 하나(같은 월일)
+const left = (d) => { const n = Math.round((d - kr) / 864e5); return n ? `D-${n}` : 'TODAY'; };
+const k = Math.max(100, Math.ceil(day / 100) * 100);
+const next100 = new Date(start.getTime() + (k - 1) * 864e5);
+let y = 1, nextY;
+while ((nextY = new Date(Date.UTC(start.getUTCFullYear() + y, start.getUTCMonth(), start.getUTCDate()))) < kr) y++;
+const anniv = [day > 0 ? `D+${day} · since ${START}` : `D${day - 1} · from ${START}`,
+  `${k} days · ${ymd(next100)} (${left(next100)})`, `${y} year${y > 1 ? 's' : ''} · ${ymd(nextY)} (${left(nextY)})`];
 const dates = [`${ymd(nor)} ${WD[nor.getUTCDay()]} (UTC+7)`, `${ymd(kr)} ${WD[kr.getUTCDay()]} (UTC+9)`];
 
-const block = (id, lines, cols) => `<div id="${id}" style="width:${cols * CH}px;height:${2 * LR * CH}px">${lines.join('\n')}</div>`;
+const block = (id, lines, cols) => `<div id="${id}" style="width:${cols * CH}px;height:${lines.length * LR * CH}px">${lines.join('\n')}</div>`;
 const html = `<!doctype html><meta charset="utf-8"><style>
 @font-face{font-family:T;font-weight:600;src:url(${FONT}) format("woff2")}
 *{margin:0}html,body{background:transparent}
 div{font:600 ${(CH / 0.5859) * 1.07}px/${LR * CH}px T;letter-spacing:${-0.07 * CH}px;color:${INK};white-space:pre;overflow:hidden;margin-bottom:10px}
-</style>${block('anniv', anniv, 25)}${block('dates', dates, 22)}`;
+</style>${block('anniv', anniv, 30)}${block('dates', dates, 22)}`;
 
 const args = process.env.HTTPS_PROXY ? ['--proxy-server=' + process.env.HTTPS_PROXY] : [];
 const browser = await chromium.launch({ args });
