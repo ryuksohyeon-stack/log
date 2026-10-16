@@ -8,7 +8,7 @@
    (더 키우거나 줄이려면 아래 width 의 520px 숫자만 바꾸면 돼요) */
 
 /* ★ 시계 주소 — Cloudflare 에 올린 워커 주소로 바꿔 주세요 */
-#profile .p-idcard{--clock:url(https://ll-clock.YOURNAME.workers.dev/)}
+#profile .p-idcard{--clock:url(https://11-clock.pnftloop-luv.workers.dev/)}
 
 @font-face{font-family:"LL Term";font-weight:400;src:url(https://cdn.jsdelivr.net/npm/@fontsource/cascadia-mono@5.2.3/files/cascadia-mono-latin-400-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+2000-206F}
 @font-face{font-family:"LL Term";font-weight:600;src:url(https://cdn.jsdelivr.net/npm/@fontsource/cascadia-mono@5.2.3/files/cascadia-mono-latin-600-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+2000-206F}
