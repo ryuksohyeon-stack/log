@@ -1,6 +1,6 @@
-// 터미널 프로필의 날짜 그림 두 장을 오늘 날짜로 다시 그려요. luvlinks 프로필 CSS(terminal/profile.css)가 불러가요.
+// 터미널 프로필의 기념일 그림을 오늘 날짜로 다시 그려요. luvlinks 프로필 CSS(terminal/profile.css)가 불러가요.
 //   anniv.png — Anniversary 상자:  D+238 · since 2026-02-22  /  가장 가까운 다가올 기념일 하나 (100일 단위 · 1년 단위 중)
-//   dates.png — Uptime / Date 상자: 노릴스크 날짜  /  한국 날짜
+// 노릴스크 · 한국 날짜와 시간은 Cloudflare 시계(terminal/clock-worker.js)가 그려요.
 // 사귄 날을 1일로 세요. 기념일은 100일마다(300 days …)와 해마다(1 year, 2 years …)예요. 오늘이 기념일이면 (TODAY).
 //   node terminal/days.mjs                        → 지금
 //   DD_NOW=2026-10-17T16:00:00Z node terminal/days.mjs → 그 시각으로 (확인용)
@@ -26,8 +26,7 @@ function localDay(tz) {   // 그 도시의 오늘 → UTC 자정 Date
   const p = Object.fromEntries(new Intl.DateTimeFormat('en-CA', { timeZone: tz, year: 'numeric', month: 'numeric', day: 'numeric' }).formatToParts(now).map((x) => [x.type, x.value]));
   return new Date(Date.UTC(+p.year, +p.month - 1, +p.day));
 }
-const WD = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-const kr = localDay('Asia/Seoul'), nor = localDay('Asia/Krasnoyarsk');
+const kr = localDay('Asia/Seoul');
 const start = new Date(START + 'T00:00:00Z');
 const day = Math.round((kr - start) / 864e5) + 1;            // 한국 날짜로 센 디데이
 // 다가올 기념일 — 100일 단위 하나(100일째 = 사귄 날 + 99일), 1년 단위 하나(같은 월일)
@@ -39,7 +38,6 @@ while ((nextY = new Date(Date.UTC(start.getUTCFullYear() + y, start.getUTCMonth(
 // 둘 중 먼저 오는 것 하나만 (같은 날이면 해 단위로)
 const next = nextY <= next100 ? { d: nextY, t: `${y} year${y > 1 ? 's' : ''}` } : { d: next100, t: `${k} days` };
 const anniv = [day > 0 ? `D+${day} · since ${START}` : `D${day - 1} · from ${START}`, `${next.t} · ${ymd(next.d)} (${left(next.d)})`];
-const dates = [`${ymd(nor)} ${WD[nor.getUTCDay()]} (UTC+7)`, `${ymd(kr)} ${WD[kr.getUTCDay()]} (UTC+9)`];
 
 // 글자마다 제 칸(CH px)에 따로 놓아요 — 자간으로 맞추면 깃허브 컴퓨터에서 글자 폭이 반올림돼 끝 글자가 잘렸어요
 const esc = (c) => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;' })[c] || c;
@@ -50,7 +48,7 @@ const html = `<!doctype html><meta charset="utf-8"><style>
 *{margin:0}html,body{background:transparent}
 div{position:relative;font:600 ${(CH / 0.5859) * 1.07}px/${LR * CH}px T;color:${INK};overflow:hidden;margin-bottom:10px}
 span{position:absolute;white-space:pre}
-</style>${block('anniv', anniv, 30)}${block('dates', dates, 22)}`;
+</style>${block('anniv', anniv, 30)}`;
 
 const args = process.env.HTTPS_PROXY ? ['--proxy-server=' + process.env.HTTPS_PROXY] : [];
 const browser = await chromium.launch({ args });
@@ -60,6 +58,6 @@ await page.setContent(html, { waitUntil: 'networkidle' });
 await page.evaluate(() => document.fonts.ready);
 // 글꼴을 못 받았으면 다른 글꼴로 그려져 칸이 어긋나요 — 그런 그림은 저장하지 않아요
 if (!(await page.evaluate(() => document.fonts.check('600 20px T')))) throw new Error('Cascadia Mono 글꼴을 불러오지 못했어요');
-for (const id of ['anniv', 'dates']) await page.locator('#' + id).screenshot({ path: path.join(outDir, id + '.png'), omitBackground: true });
+await page.locator('#anniv').screenshot({ path: path.join(outDir, 'anniv.png'), omitBackground: true });
 await browser.close();
-console.log(`days  ${anniv.join(' / ')}  |  ${dates.join(' / ')}`);
+console.log(`days  ${anniv.join(' / ')}`);
