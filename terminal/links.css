@@ -1,0 +1,17 @@
+/* ===== 링크 카드 사진 · 열기 단추 (luvlinks 꾸미기 › 자유 CSS) =====
+   터미널 프로필 CSS 맨 아래에 이어 붙여 주세요 — 둘을 합쳐도 2만 자 안이에요.
+   · 카드 사진은 링크 순서대로: 1~4번 치즈 새우, 5번 복주머니 (6번부터는 원래대로)
+   · 편집기에서 링크에 「사진 올리기」를 하면 그 사진이 이 사진 위에 덮여요 */
+
+/* 열기 단추 — 프로필 창 포인트 색 */
+#now .open{background:#ef7d5e;color:#1f100b}
+
+/* 카드 사진 */
+#stage>.card:nth-child(-n+5) .visual{background:#fff url(https://raw.githubusercontent.com/ryuksohyeon-stack/log/d814986244af9f235d66e74a8f5d9bce47144fda/terminal/link-shrimp.jpg) 50%/cover no-repeat}
+#stage>.card:nth-child(5) .visual{background-image:url(https://raw.githubusercontent.com/ryuksohyeon-stack/log/d814986244af9f235d66e74a8f5d9bce47144fda/terminal/link-pouch.jpg)}
+#stage>.card:nth-child(-n+5) .visual>:not(img){display:none}
+
+/* 아래 링크 창의 작은 네모도 지금 가운데 카드의 사진으로 */
+body:has(#stage>.card:nth-child(-n+5).is-active) #now .badge{background:#fff url(https://raw.githubusercontent.com/ryuksohyeon-stack/log/d814986244af9f235d66e74a8f5d9bce47144fda/terminal/link-shrimp.jpg) 50%/cover no-repeat}
+body:has(#stage>.card:nth-child(5).is-active) #now .badge{background-image:url(https://raw.githubusercontent.com/ryuksohyeon-stack/log/d814986244af9f235d66e74a8f5d9bce47144fda/terminal/link-pouch.jpg)}
+body:has(#stage>.card:nth-child(-n+5).is-active) #now .badge>.ms{display:none}
