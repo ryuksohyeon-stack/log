@@ -9,7 +9,7 @@
    */
 
 /* ✏️ 바꾸고 싶으면 여기 */
-body{--bgc:#e4e4e0}   /* 바탕 색 */
+body{--bgc:#f1f1ed}   /* 바탕 색 */
 
 /* ── 공통: 판넬 줄 · 사진 칸 · 투명 케이스 (1em = 판넬 높이의 1%) ── */
 @property --t{syntax:"<angle>";inherits:true;initial-value:0deg}
@@ -44,7 +44,7 @@ body{overflow-x:clip}
 .stage .card,.stage .card img{-webkit-user-drag:none;user-select:none}
 .stage .card img{pointer-events:none}
 
-body{--shell:#ffffff5c;--lip:#ffffff3d;--rim:#0000001f;--glare:#ffffffb8;--glare2:#ffffff55;--drop:0 2.4em 4em #0000002b;--empty:#cfcfca;background:linear-gradient(#f5f5f3,var(--bgc) 58%,#cfcfca) var(--bgc)}
+body{--shell:#ffffff5c;--lip:#ffffff3d;--rim:#0000001f;--glare:#ffffffb8;--glare2:#ffffff55;--drop:0 2.4em 4em #0000002b;--empty:#cfcfca;background:linear-gradient(#fbfbf9,var(--bgc) 58%,#e4e4df) var(--bgc)}
 .stage{align-items:flex-end;padding-bottom:16em}
 .stage .card{-webkit-box-reflect:below .4em linear-gradient(#0000 72%,#0000001f)}
 /* 옆면이 상자의 왼쪽 면, 케이스가 앞면 */
