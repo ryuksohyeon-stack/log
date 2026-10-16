@@ -1,8 +1,9 @@
 /* ═══ 프로필 카드 · 노릴스크 ═══
    편집 → 프로필 모양은 「글래스」로 두세요.
    왼쪽: 노릴스크 오늘 날짜(노릴스크 자정이 지나면 저절로 바뀌어요) · 오른쪽 위: 라디오 · 그 아래: 소개(오른쪽 정렬) · 오른쪽 아래: 프로필 사진.
+   카드 바탕 색은 편집 → 프로필의 「포인트 색 (글래스 · 인스타 카드)」을 따라가요(고른 색의 연한 색).
    이름 · 핸들 · 직함 · 태그 · 머리 사진 · 공유 버튼은 이 카드에선 안 보여요. */
-.profile .p-glass{--nr-ink:#151515;--nr-ac:#ff4f14;--nr-bg:#e9ecf3;--nr-mu:#7d8392;display:grid;grid-template-columns:min(34%,124px) minmax(0,1fr) auto;grid-template-rows:auto minmax(0,1fr);grid-template-areas:"d r r" "d b p";gap:10px 16px;padding:14px 16px;border:1px solid var(--nr-ink);border-radius:0;background:var(--nr-bg);color:var(--nr-ink);word-break:keep-all;box-shadow:4px 4px 0 #1515151f;-webkit-backdrop-filter:none;backdrop-filter:none;overflow:hidden}
+.profile .p-glass{--nr-ink:#151515;--nr-ac:#ff4f14;--nr-bg:#e9ecf3;--nr-mu:#7d8392;display:grid;grid-template-columns:min(34%,124px) minmax(0,1fr) auto;grid-template-rows:auto minmax(0,1fr);grid-template-areas:"d r r" "d b p";gap:10px 16px;padding:14px 16px;border:0;border-radius:0;background:var(--pc-soft,var(--nr-bg));color:var(--nr-ink);word-break:keep-all;box-shadow:0 10px 26px #0000001c,0 1px 2px #00000014;-webkit-backdrop-filter:none;backdrop-filter:none;overflow:hidden}
 /* 가로로 넓게: 페이지 폭(440px)보다 넓게, 폰에선 화면 폭에 맞춰요 */
 .profile{width:min(calc(100vw - 32px),600px);align-self:center}
 .profile .pcard.p-glass{width:100%;max-width:none;zoom:1}
