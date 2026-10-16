@@ -14,8 +14,8 @@
 @font-face{font-family:"LL Term";font-weight:600;src:url(https://cdn.jsdelivr.net/npm/@fontsource/cascadia-mono@5.2.3/files/cascadia-mono-latin-600-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+2000-206F}
 @font-face{font-family:"LL Term";font-weight:700;src:url(https://cdn.jsdelivr.net/npm/@fontsource/cascadia-mono@5.2.3/files/cascadia-mono-latin-700-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+2000-206F}
 @font-face{font-family:"LL Term";font-weight:600;src:url(https://cdn.jsdelivr.net/npm/@fontsource/cascadia-mono@5.2.3/files/cascadia-mono-symbols2-600-normal.woff2) format("woff2");unicode-range:U+2500-259F}
-/* 막대 글꼴 — 항목 값에 ■ (또는 █) 를 쓰면 초록 칸, □ (또는 ░) 를 쓰면 회색 점 */
-@font-face{font-family:"LL Bar";src:url(data:font/woff2;base64,d09GMgABAAAAAAGEAAwAAAAAA0wAAAE5AAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIiIjFgZgAEQKcF4BNgIkAwwLDAAEIAVdBzwbWAIALgt4Q2r0L2EiqfCLRc9QEfwmwjs2ugjq90P33r8fQLCZqKiwJnIps6yPrXIo2ahGVtVWkWqbTQiSf4aCRrY2QLPT5D6m6ZJ//oOVN7zu9N/ldPLTAeB2hItlnjRvFQcSaJBC4BxDy14OgvGh/IejoAMjikAoQqiQAkUo6ODs5c//H57M1zG1NLII16q+zJ8z/6ayJr4DNKULKvR5sJYW0aRJYf5cFPAxPHGlAAA1aEGiC0OABERyZjpt7G64F638Ov7N+frqttt9GwSCvYs7u9S5/KspmsCPv11zEy5yJN+jUkBw+3X5Gu+rCwBA5GsABGopQAEAQFoSIDQgQNGoQSWyWWjT7lbRYXhra6orT/9UDdqyZcqmK546cMMtL9ynoIjOGpeiRBVZXX/0vL565emCusUCAA==) format("woff2");unicode-range:U+2588,U+2591,U+25A0,U+25A1}
+/* 막대 글꼴 — 항목 값에 ■ (또는 █) 를 쓰면 포인트 색 칸, □ (또는 ░) 를 쓰면 회색 점 */
+@font-face{font-family:"LL Bar";src:url(data:font/woff2;base64,d09GMgABAAAAAAGUAAwAAAAAA0wAAAFJAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIiIjFgZgAEQKcF4BNgIkAwwLDAAEIAVdBzwbWAIAvg43xiQErP5XbKnMGNrxRJXaPPeBvNDwKfOPu0jwUhsiqN/r9t5/odRiM1Eouo6iulKa8DhZx2MckSiMhAYIAAqeARqISWBQX2u0zSYEyT9DQSO7gCkMXXlxpzYvQA+gcR7rkn/+g01QEomvEUDyhq07/Xc5nfx0ALgd4WKZJ81bxYEEGqQQOMfQspeDYHwo/+FIaMOQJBCSEApkgSQktLF08v9f8mtTko1U4FLVlzN/siZ+AJrQCQV6PFjLKmjQIDH7Igr4mNzbLwBACTQhowMDgAyI5JzTdn1noplfR7+/57O+DQLBTs122+dHA/hdmhtTI1FIILj9uvyKTw4AIPIrAAIlWYAEAIBsToBQhwBJvTqFyI1Ci1a3kjaDVSfq4U/VoKqqCav2PVhz7NSzKwqS6CxhN1IUkYuj26fSwf5DGS3KAAA=) format("woff2");unicode-range:U+2588,U+2591,U+25A0,U+25A1}
 
 /* 창 — 반투명 바탕, 위에 탭 줄 */
 #profile .p-idcard{
@@ -36,7 +36,7 @@
 #profile .p-idcard .pav>*,#profile .p-idcard .lgwrap>img,#profile .p-idcard .lgwrap>.ms{display:none}
 
 /* Hey, 이름 (브랜드 칸) */
-#profile .p-idcard .band{position:absolute;left:calc(var(--ch)*(1.4 + 45));top:calc(var(--ch)*5.4112 + var(--L)*1.5);display:block;height:var(--L);margin:0;padding:0;background:none;box-shadow:none;color:#ef7d5e;white-space:nowrap;font:400 calc(var(--fs)*1.07)/var(--L) "LL Term",monospace;letter-spacing:calc(var(--ch)*-.07)}
+#profile .p-idcard .band{position:absolute;left:calc(var(--ch)*(1.4 + 45));top:calc(var(--ch)*5.4112 + var(--L)*1.5);display:block;height:var(--L);margin:0;padding:0;background:none;box-shadow:none;color:#e8663f;white-space:nowrap;font:400 calc(var(--fs)*1.07)/var(--L) "LL Term",monospace;letter-spacing:calc(var(--ch)*-.07)}
 #profile .p-idcard .band::before{content:"Hey, ";font-weight:700;color:#f3f6f4}
 #profile .p-idcard .lgwrap{display:inline}
 #profile .p-idcard .band .lg{display:inline;writing-mode:horizontal-tb;transform:none;margin:0;font:inherit;letter-spacing:inherit;text-transform:none;opacity:1}
@@ -49,32 +49,32 @@
     linear-gradient(#9aa0a4 0 0) calc(var(--ch)*43.5 - var(--t)/2) calc(var(--L)*0.5)/var(--t) calc(var(--L)*0.5),
     linear-gradient(#9aa0a4 0 0) calc(var(--ch)*0.5) calc(100% - var(--L)*.5 - var(--t)/2)/calc(var(--ch)*43) var(--t),
     linear-gradient(#9aa0a4 0 0) calc(var(--ch)*43.5 - var(--t)/2) calc(100% - var(--L))/var(--t) calc(var(--L)*0.5),
-    linear-gradient(#ef7d5e 0 0) calc(var(--ch)*.5 - var(--t)/2) calc(var(--L)*0.5)/var(--t) calc(100% - var(--L));
+    linear-gradient(#e8663f 0 0) calc(var(--ch)*.5 - var(--t)/2) calc(var(--L)*0.5)/var(--t) calc(100% - var(--L));
   background-repeat:no-repeat}
 #profile .p-idcard .idno{order:-1;height:var(--L);margin:0;text-align:left}
 /* 맨 위 두 줄 — 노릴스크 · 한국 날짜와 시간 (값은 시계 그림, 분마다 스스로 넘어가요) */
 #profile .p-idcard .tbl::before{content:"NORILSK\A KOREA";display:block;height:calc(var(--L)*2);padding-left:calc(var(--ch)*3);white-space:pre;
-  font:700 calc(var(--fs)*1.07)/var(--L) "LL Term",monospace;letter-spacing:calc(var(--ch)*-.07);color:#ef7d5e;
+  font:700 calc(var(--fs)*1.07)/var(--L) "LL Term",monospace;letter-spacing:calc(var(--ch)*-.07);color:#e8663f;
   background:var(--clock) calc(var(--ch)*14) 0/calc(var(--ch)*29) calc(var(--L)*2) no-repeat,
-    repeating-linear-gradient(#0000 0 calc(var(--L)*.5 - var(--t)/2),#ef7d5e 0 calc(var(--L)*.5 + var(--t)/2),#0000 0 var(--L)) calc(var(--ch)*.5) 0/calc(var(--ch)*1.3) calc(var(--L)*2) no-repeat}
-#profile .p-idcard .idno::before{content:"Hardware";display:block;padding-left:calc(var(--ch)*18);font:400 calc(var(--fs)*1.07)/var(--L) "LL Term",monospace;letter-spacing:calc(var(--ch)*-.07);color:#ef7d5e}
+    repeating-linear-gradient(#0000 0 calc(var(--L)*.5 - var(--t)/2),#e8663f 0 calc(var(--L)*.5 + var(--t)/2),#0000 0 var(--L)) calc(var(--ch)*.5) 0/calc(var(--ch)*1.3) calc(var(--L)*2) no-repeat}
+#profile .p-idcard .idno::before{content:"Hardware";display:block;padding-left:calc(var(--ch)*18);font:400 calc(var(--fs)*1.07)/var(--L) "LL Term",monospace;letter-spacing:calc(var(--ch)*-.07);color:#e8663f}
 /* 인사 한 줄 (Bonsoir! Elliot.) — 편집기 「카드 번호」 칸 */
 #profile .p-idcard .idno::after{content:attr(data-no);position:absolute;left:calc(var(--ch)*46.4);bottom:calc(var(--L)*2.8);height:var(--L);white-space:pre;font:700 calc(var(--fs)*1.07)/var(--L) "LL Term",monospace;letter-spacing:calc(var(--ch)*-.07);color:#f2cd8f;display:block;margin:0;padding:0;border-radius:0;background:none;text-shadow:none;pointer-events:none}
 #profile .p-idcard .tr{display:grid;grid-template-columns:calc(var(--ch)*11) minmax(0,1fr);gap:0;width:calc(var(--ch)*84.6);height:var(--L);margin:0;padding:0 0 0 calc(var(--ch)*3);border:0;
   font:calc(var(--fs)*1.07)/var(--L) "LL Term",monospace;letter-spacing:calc(var(--ch)*-.07);
-  background:repeating-linear-gradient(#0000 0 calc(var(--L)*.5 - var(--t)/2),#ef7d5e 0 calc(var(--L)*.5 + var(--t)/2),#0000 0 var(--L)) calc(var(--ch)*.5) 0/calc(var(--ch)*1.3) var(--L) no-repeat}
+  background:repeating-linear-gradient(#0000 0 calc(var(--L)*.5 - var(--t)/2),#e8663f 0 calc(var(--L)*.5 + var(--t)/2),#0000 0 var(--L)) calc(var(--ch)*.5) 0/calc(var(--ch)*1.3) var(--L) no-repeat}
 #profile .p-idcard .tr b,#profile .p-idcard .tr span{min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;opacity:1;font:inherit;letter-spacing:inherit;text-align:left}
-#profile .p-idcard .tr b{font-weight:700;color:#ef7d5e;text-transform:uppercase}
+#profile .p-idcard .tr b{font-weight:700;color:#e8663f;text-transform:uppercase}
 #profile .p-idcard .tr span{font-weight:600;color:#f3f6f4;font-family:"LL Bar","LL Term",monospace}
 
 /* 글자 겹 */
 #profile .p-idcard .main::before,#profile .p-idcard .photo::before,#profile .p-idcard .pav::before,#profile .p-idcard .pav::after,#profile .p-idcard .cap::after{position:absolute;left:calc(var(--ch)*1.4);white-space:pre;font-family:"LL Term",monospace;font-size:calc(var(--fs)*1.07);line-height:var(--L);letter-spacing:calc(var(--ch)*-.07);text-transform:none;pointer-events:none}
 #profile .p-idcard .main::before,#profile .p-idcard .photo::before{top:calc(var(--ch)*5.4112 + var(--L)*.5)}
 #profile .p-idcard .pav::before,#profile .p-idcard .pav::after,#profile .p-idcard .cap::after,#profile .p-idcard .photo::after{position:absolute;left:calc(var(--ch)*1.4);bottom:calc(var(--L)*0.8);height:calc(var(--L)*9);pointer-events:none}
-#profile .p-idcard .main::before{content:"PowerShell 4.0.4";color:#ef7d5e;font-weight:700}
+#profile .p-idcard .main::before{content:"PowerShell 4.0.4";color:#e8663f;font-weight:700}
 #profile .p-idcard .photo::before{content:"                 *#***##########**+\A               ######*+*+==+*####*****+\A             ##########**++*****##*******+\A      ++       #########*##*****#******####*\A    **+*#    #######***####*****###****###*+**\A   *******   #####****####**+***###***#*#**==+*\A  **+***#**#######**####***********#####*****+*+\A   ******#+#####**#*##**+++=-+***#####****###***\A   ******#**######**++-=++==+++*##*###*#*######*\A   +******#*****#*++=+*+=-+++==#####***+*******+\A    **#********#**++**++==+++########****#**+**+\A     **#*******########*+###*###########******==\A      **#*********#######**####*#########****==\A       ********#***#####*######*****+*******+*\A       +**#**#**###*##**+******####*****+++=+\A          +***##*************#**###**+======\A             =************+*******+++=--=+\A                  =**#**+=====+=+++==--=\A                   +****+==----";color:#b07f6e;font-weight:700}
-#profile .p-idcard .pav::before{content:"\A                                                               Anniversary\A \A \A \A \A \A \A ";color:#ef7d5e;font-weight:400}
-#profile .p-idcard .pav::after{content:"\A \A                                                 D-DAY\A                                                 NEXT\A \A \A \A \A PS C\3A \\Users\\Nalc>";color:#ef7d5e;font-weight:700}
+#profile .p-idcard .pav::before{content:"\A                                                               Anniversary\A \A \A \A \A \A \A ";color:#e8663f;font-weight:400}
+#profile .p-idcard .pav::after{content:"\A \A                                                 D-DAY\A                                                 NEXT\A \A \A \A \A PS C\3A \\Users\\Nalc>";color:#e8663f;font-weight:700}
 #profile .p-idcard .cap::after{content:"\A \A \A \A \A \A \A                                              @208×195 · Milan Vasilic (in Norilsk)\A ";color:#aeb4aa;font-weight:400}
 /* 아스키 아트 — 글자는 초콜릿 체리 모양, 색은 칸마다 깔린 작은 그림(초콜릿 · 필링)에서 */
 #profile .p-idcard .photo::before{top:calc(var(--ch)*5.4112 + var(--L)*3.625);font-size:calc(var(--fs)*1.12*0.85);line-height:calc(var(--L)*0.85);letter-spacing:calc(var(--ch)*-.12*0.85);
@@ -88,8 +88,8 @@
     linear-gradient(#9aa0a4 0 0) calc(var(--ch)*89.5 - var(--t)/2) calc(var(--L)*1.5)/var(--t) calc(var(--L)*0.5),
     linear-gradient(#9aa0a4 0 0) calc(var(--ch)*45.5) calc(var(--L)*4.5 - var(--t)/2)/calc(var(--ch)*44) var(--t),
     linear-gradient(#9aa0a4 0 0) calc(var(--ch)*89.5 - var(--t)/2) calc(var(--L)*4)/var(--t) calc(var(--L)*0.5),
-    linear-gradient(#ef7d5e 0 0) calc(var(--ch)*45.5 - var(--t)/2) calc(var(--L)*1.5)/var(--t) calc(var(--L)*3),
-    repeating-linear-gradient(#0000 0 calc(var(--L)*.5 - var(--t)/2),#ef7d5e 0 calc(var(--L)*.5 + var(--t)/2),#0000 0 var(--L)) calc(var(--ch)*45.5) calc(var(--L)*2)/calc(var(--ch)*1.3) calc(var(--L)*2);
+    linear-gradient(#e8663f 0 0) calc(var(--ch)*45.5 - var(--t)/2) calc(var(--L)*1.5)/var(--t) calc(var(--L)*3),
+    repeating-linear-gradient(#0000 0 calc(var(--L)*.5 - var(--t)/2),#e8663f 0 calc(var(--L)*.5 + var(--t)/2),#0000 0 var(--L)) calc(var(--ch)*45.5) calc(var(--L)*2)/calc(var(--ch)*1.3) calc(var(--L)*2);
   background-repeat:no-repeat}
 
 /* 깜빡이는 커서 */
