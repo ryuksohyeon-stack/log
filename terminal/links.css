@@ -1,7 +1,7 @@
 /* ===== 링크 카드 사진 · 열기 단추 (luvlinks 꾸미기 › 자유 CSS) =====
    터미널 프로필 CSS 맨 아래에 이어 붙여 주세요 — 둘을 합쳐도 2만 자 안이에요.
    · 사진은 링크 순서대로: 1~4번 치즈 새우, 5번 복주머니 (6번부터는 원래대로)
-   · 세로 카드는 왼쪽 네모에, 가로(넘기기) 카드는 큰 사진 칸에, 아래 링크 창은 왼쪽 네모에 들어가요 */
+   · 세로 카드는 왼쪽 네모에, 가로(넘기기) 카드는 큰 사진 칸에 들어가요 (아래 링크 창은 원래 아이콘 그대로) */
 body{
   --ll-shrimp:url(https://raw.githubusercontent.com/ryuksohyeon-stack/log/d814986244af9f235d66e74a8f5d9bce47144fda/terminal/link-shrimp.jpg);
   --ll-pouch:url(https://raw.githubusercontent.com/ryuksohyeon-stack/log/d814986244af9f235d66e74a8f5d9bce47144fda/terminal/link-pouch.jpg)}
@@ -13,8 +13,3 @@ body{
 #stage>.vcard:nth-child(-n+5) .vbadge,#stage>.card:nth-child(-n+5) .visual{background:#fff var(--ll-shrimp) 50%/cover no-repeat}
 #stage>.vcard:nth-child(5) .vbadge,#stage>.card:nth-child(5) .visual{background-image:var(--ll-pouch)}
 #stage>.vcard:nth-child(-n+5) .vbadge>.ms,#stage>.card:nth-child(-n+5) .visual>:not(img){display:none}
-
-/* 아래 링크 창의 왼쪽 네모 — 지금 가운데 카드의 사진 */
-body:has(#stage>:nth-child(-n+5).is-active) #now .badge{background:#fff var(--ll-shrimp) 50%/cover no-repeat}
-body:has(#stage>:nth-child(5).is-active) #now .badge{background-image:var(--ll-pouch)}
-body:has(#stage>:nth-child(-n+5).is-active) #now .badge>.ms{display:none}
