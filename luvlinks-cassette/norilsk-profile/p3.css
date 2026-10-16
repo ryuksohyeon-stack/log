@@ -1,0 +1,4 @@
+/* 사진 · 우표 — 톱니 가장자리 */
+.profile .p-glass .pav{width:58px;height:66px;padding:5px;border:0;border-radius:0;background:#fff;box-shadow:none;rotate:-4deg;-webkit-mask:radial-gradient(#0000 1.7px,#000 2.1px) -3px -3px/6px 6px round,linear-gradient(#000 0 0) 3px 3px/calc(100% - 6px) calc(100% - 6px) no-repeat;mask:radial-gradient(#0000 1.7px,#000 2.1px) -3px -3px/6px 6px round,linear-gradient(#000 0 0) 3px 3px/calc(100% - 6px) calc(100% - 6px) no-repeat}
+.profile .p-glass .pav img{border-radius:0}
+.profile .p-glass .pav .ms{color:var(--nr-ink);font-size:24px}

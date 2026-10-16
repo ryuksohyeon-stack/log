@@ -1,0 +1,7 @@
+/* 사진 · LP 레코드 — 사진이 레코드 가운데 라벨이 되고, 빛이 돌아요 */
+.profile .p-glass .pav{position:relative;width:64px;height:64px;border-radius:50%;border:0;background:repeating-radial-gradient(circle,#151515 0 1.2px,#262626 1.2px 2.4px);box-shadow:0 3px 8px #00000040}
+.profile .p-glass .pav img{width:46%;height:46%;border-radius:50%}
+.profile .p-glass .pav .ms{color:#fff;font-size:16px}
+.profile .p-glass .pav::before{content:"";position:absolute;z-index:2;inset:0;margin:auto;width:5px;height:5px;border-radius:50%;background:var(--nr-bg)}
+.profile .p-glass .pav::after{content:"";position:absolute;inset:0;border-radius:50%;background:conic-gradient(#0000 0 8%,#ffffff2e 14%,#0000 21% 58%,#ffffff21 64%,#0000 71%);animation:nrsp 4s linear infinite;pointer-events:none}
+@keyframes nrsp{to{rotate:1turn}}

@@ -1,0 +1,3 @@
+/* 사진 · 동그라미 */
+.profile .p-glass .pav{width:58px;height:58px;border-radius:50%;border:1px solid var(--nr-ink);background:#fff;box-shadow:none}
+.profile .p-glass .pav .ms{color:var(--nr-ink);font-size:26px}

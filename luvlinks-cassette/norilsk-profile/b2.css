@@ -1,0 +1,3 @@
+/* 소개 · 작은 제목 + 선 */
+.profile .p-glass .pbio{font-size:11.5px;line-height:1.65;font-weight:400}
+.profile .p-glass .pbio::before{content:"О СЕБЕ · 소개";display:block;width:max-content;margin:0 0 6px auto;padding-top:5px;border-top:1px solid var(--nr-ink);font:600 8px/1 ui-monospace,"SF Mono",Menlo,Consolas,monospace;letter-spacing:.16em;color:var(--nr-mu)}

@@ -1,0 +1,14 @@
+/* 라디오 · 내용 1 × 모션 2(가라오케) */
+@property --nrk{syntax:"<integer>";inherits:false;initial-value:0}
+@property --nrv{syntax:"<percentage>";inherits:false;initial-value:100%}
+.profile .p-glass .pname::before{content:"ON AIR · NOW PLAYING";display:block;padding-left:13px;font:600 9px/14px ui-monospace,"SF Mono",Menlo,Consolas,monospace;letter-spacing:.1em;color:var(--nr-ac);white-space:nowrap;overflow:hidden}
+.profile .p-glass .pname::after{content:"";position:absolute;left:0;top:4px;width:7px;height:7px;border-radius:50%;background:var(--nr-ac);animation:nrbl 1s steps(1) infinite}
+@keyframes nrbl{50%{opacity:.15}}
+.profile .p-glass>div:not([class])::before,.profile .p-glass>div:not([class])::after{position:absolute;left:0;right:0;top:calc(18px - var(--nrk)*1.5em);height:7.5em;white-space:pre;font-size:11px;line-height:1.5em;font-weight:600;overflow:hidden}
+.profile .p-glass>div:not([class])::before{content:"Кино — «Кукушка»\A Земфира — «Хочешь?»\A Сплин — «Выхода нет»\A ДДТ — «Что такое осень»\A Кино — «Группа крови»"}
+.profile .p-glass>div:not([class])::after{content:"북위 69도, 첫 곡 보내 드려요.\A 창밖은 하얀 눈, 방 안은 따뜻하게.\A 눈보라가 그칠 때까지 계속 틀어요.\A 짧은 가을이 지나가는 노릴스크예요.\A 다음 곡도 이어서 들려 드릴게요.";top:calc(18px + (1 - var(--nrk))*1.5em);font-weight:400}
+.profile .p-glass>div:not([class])::before,.profile .p-glass>div:not([class])::after{clip-path:inset(calc(var(--nrk)*1.5em) 0 calc((4 - var(--nrk))*1.5em) 0);color:#0000;background:linear-gradient(90deg,var(--nr-ac) 50%,#15151566 50%) var(--nrv) 0/200% 100%;-webkit-background-clip:text;background-clip:text;animation:nrk 30s steps(5) infinite,nrtA 6s infinite}
+.profile .p-glass>div:not([class])::after{background-image:linear-gradient(90deg,var(--nr-ink) 50%,#15151566 50%);animation-name:nrk,nrtB}
+@keyframes nrk{to{--nrk:5}}
+@keyframes nrtA{0%{--nrv:100%}44%,100%{--nrv:0%}}
+@keyframes nrtB{0%,44%{--nrv:100%}90%,100%{--nrv:0%}}

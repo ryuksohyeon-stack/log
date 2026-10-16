@@ -1,0 +1,14 @@
+/* 라디오 · 내용 1 × 모션 3(자막) */
+@property --nrk{syntax:"<integer>";inherits:false;initial-value:0}
+@property --nrv{syntax:"<percentage>";inherits:false;initial-value:100%}
+.profile .p-glass .pname::before{content:"ON AIR · NOW PLAYING";display:block;padding-left:13px;font:600 9px/14px ui-monospace,"SF Mono",Menlo,Consolas,monospace;letter-spacing:.1em;color:var(--nr-ac);white-space:nowrap;overflow:hidden}
+.profile .p-glass>div:not([class])::before,.profile .p-glass>div:not([class])::after{position:absolute;left:0;right:0;top:calc(18px - var(--nrk)*1.5em);height:7.5em;white-space:pre;font-size:11px;line-height:1.5em;font-weight:600;overflow:hidden}
+.profile .p-glass>div:not([class])::before{content:"Кино — «Кукушка»\A Земфира — «Хочешь?»\A Сплин — «Выхода нет»\A ДДТ — «Что такое осень»\A Кино — «Группа крови»"}
+.profile .p-glass>div:not([class])::after{content:"북위 69도, 첫 곡 보내 드려요.\A 창밖은 하얀 눈, 방 안은 따뜻하게.\A 눈보라가 그칠 때까지 계속 틀어요.\A 짧은 가을이 지나가는 노릴스크예요.\A 다음 곡도 이어서 들려 드릴게요.";top:calc(18px + (1 - var(--nrk))*1.5em);font-weight:400}
+.profile .p-glass .pname::after{content:"";position:absolute;left:0;top:2px;width:9px;height:10px;background:linear-gradient(var(--nr-ac),var(--nr-ac)) 0 100%/2px 40% no-repeat,linear-gradient(var(--nr-ac),var(--nr-ac)) 3.5px 100%/2px 90% no-repeat,linear-gradient(var(--nr-ac),var(--nr-ac)) 7px 100%/2px 60% no-repeat;animation:nreq .5s ease-in-out infinite alternate}
+@keyframes nreq{to{background-size:2px 90%,2px 35%,2px 100%}}
+.profile .p-glass>div:not([class])::before,.profile .p-glass>div:not([class])::after{clip-path:inset(calc(var(--nrk)*1.5em) 0 calc((4 - var(--nrk))*1.5em) 0);animation:nrk 30s steps(5) infinite,nrsA 6s infinite}
+.profile .p-glass>div:not([class])::after{animation-name:nrk,nrsB}
+@keyframes nrk{to{--nrk:5}}
+@keyframes nrsA{0%{opacity:0;translate:0 .4em}10%,88%{opacity:1;translate:0}97%,100%{opacity:0}}
+@keyframes nrsB{0%,30%{opacity:0;translate:0 .4em}42%,88%{opacity:1;translate:0}97%,100%{opacity:0}}
