@@ -1,3 +1,2 @@
 /* 날짜 · 일력 — 한 장씩 뜯는 달력 */
-.profile .p-glass::before{background-image:url(https://raw.githubusercontent.com/ryuksohyeon-stack/log/HEAD/norilsk/cal-1.png)}
-.profile .p-glass::after{content:"노릴스크";color:var(--nr-ink);font-size:13px}
+.profile .p-glass::before{background-image:url(https://raw.githubusercontent.com/ryuksohyeon-stack/log/HEAD/norilsk/cal-1.png);padding-top:0}

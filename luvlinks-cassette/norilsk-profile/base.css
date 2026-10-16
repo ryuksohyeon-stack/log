@@ -2,15 +2,17 @@
    편집 → 프로필 모양은 「글래스」로 두세요.
    왼쪽: 노릴스크 오늘 날짜(노릴스크 자정이 지나면 저절로 바뀌어요) · 오른쪽 위: 라디오 · 그 아래: 소개(오른쪽 정렬) · 오른쪽 아래: 프로필 사진.
    이름 · 핸들 · 직함 · 태그 · 머리 사진 · 공유 버튼은 이 카드에선 안 보여요. */
-.profile .p-glass{--nr-ink:#151515;--nr-ac:#ff4f14;--nr-bg:#e9ecf3;--nr-mu:#7d8392;display:grid;grid-template-columns:34% minmax(0,1fr) auto;grid-template-rows:auto minmax(0,1fr);grid-template-areas:"d r r" "d b p";gap:10px 14px;min-height:176px;padding:16px;border:1px solid var(--nr-ink);border-radius:0;background:var(--nr-bg);color:var(--nr-ink);word-break:keep-all;box-shadow:4px 4px 0 #1515151f;-webkit-backdrop-filter:none;backdrop-filter:none;overflow:hidden}
+.profile .p-glass{--nr-ink:#151515;--nr-ac:#ff4f14;--nr-bg:#e9ecf3;--nr-mu:#7d8392;display:grid;grid-template-columns:min(34%,124px) minmax(0,1fr) auto;grid-template-rows:auto minmax(0,1fr);grid-template-areas:"d r r" "d b p";gap:10px 16px;padding:14px 16px;border:1px solid var(--nr-ink);border-radius:0;background:var(--nr-bg);color:var(--nr-ink);word-break:keep-all;box-shadow:4px 4px 0 #1515151f;-webkit-backdrop-filter:none;backdrop-filter:none;overflow:hidden}
+/* 가로로 넓게: 페이지 폭(440px)보다 넓게, 폰에선 화면 폭에 맞춰요 */
+.profile{width:min(calc(100vw - 32px),600px);align-self:center}
+.profile .pcard.p-glass{width:100%;max-width:none;zoom:1}
 .profile .p-glass .share,.profile .p-glass .pcover,.profile .p-glass .ptags,.profile .p-glass .phandle,.profile .p-glass .prole{display:none}
 /* 왼쪽: 날짜 그림 */
-.profile .p-glass::before{content:"";grid-area:d;min-height:140px;padding-top:26px;background:50% 0/contain no-repeat content-box}
-.profile .p-glass::after{position:absolute;left:16px;top:15px;white-space:pre;font-size:12px;font-weight:700;line-height:1.15;letter-spacing:.02em}
+.profile .p-glass::before{content:"";grid-area:d;min-height:118px;padding-top:0;background:50% 0/contain no-repeat content-box}
 /* 오른쪽 위: 라디오 */
-.profile .p-glass>div:not([class]){grid-area:r;position:relative;min-width:0;height:54px;overflow:hidden;font-size:11px}
+.profile .p-glass>div:not([class]){grid-area:r;position:relative;min-width:0;height:50px;overflow:hidden;container-type:inline-size}
 .profile .p-glass .pname{position:relative;height:14px;margin:0;font-size:0;line-height:14px}
 /* 오른쪽 아래: 소개 · 사진 */
 .profile .p-glass .pbio{grid-area:b;align-self:center;margin:0;text-align:right;color:var(--nr-ink);opacity:1}
-.profile .p-glass .pav{grid-area:p;align-self:end;margin:0}
+.profile .p-glass .pav{grid-area:p;align-self:center;margin:0}
 .profile .p-glass.has-cover{padding-top:16px}.profile .p-glass.has-cover .pav{margin-top:0}

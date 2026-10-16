@@ -1,3 +1,2 @@
 /* 날짜 · 플립 시계 — 넘어가는 숫자판 */
-.profile .p-glass::before{background-image:url(https://raw.githubusercontent.com/ryuksohyeon-stack/log/HEAD/norilsk/cal-3.png);padding-top:26px}
-.profile .p-glass::after{content:"● 노릴스크";color:var(--nr-ink);font-size:12px}
+.profile .p-glass::before{background-image:url(https://raw.githubusercontent.com/ryuksohyeon-stack/log/HEAD/norilsk/cal-3.png);padding-top:0}

@@ -1,3 +1,2 @@
 /* 날짜 · 한 달 달력 — 오늘에 동그라미 */
-.profile .p-glass::before{background-image:url(https://raw.githubusercontent.com/ryuksohyeon-stack/log/HEAD/norilsk/cal-2.png);padding-top:32px}
-.profile .p-glass::after{content:"노릴스크";padding-bottom:4px;border-bottom:2px solid var(--nr-ink);font-size:13px}
+.profile .p-glass::before{background-image:url(https://raw.githubusercontent.com/ryuksohyeon-stack/log/HEAD/norilsk/cal-2.png);padding-top:0}
