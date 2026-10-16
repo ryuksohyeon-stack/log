@@ -30,7 +30,7 @@ body{--nr-bg:#FEFCF8;--nr-ac:#FF4500}
 #now .badge .ms{visibility:hidden}
 .page:has(.card:nth-child(2).is-active) #now .badge{width:40px;border-radius:var(--r-sm,10px);background:url(https://raw.githubusercontent.com/ryuksohyeon-stack/log/HEAD/norilsk/link-2.jpg) 50%/cover}
 .page:has(.card:nth-child(2).is-active) #now .badge .ms{visibility:hidden}
-/* 폰: 소개 글씨를 작게 */
-@media (max-width:700px){.profile .pcard.p-glass .pbio{font-size:7px;line-height:1.55}}
-/* 배경 음악(유튜브) · 폰 · 태블릿에선 「화면 누르면 재생」이 소리 없이 켜져요(바만 움직여요). 노래가 아직 안 나왔을 때만 첫 터치가 ▶ 단추에 닿게 투명 막을 깔아요 (터치 화면이 있으면 다 · S펜 · 트랙패드가 있어도) */
-@media (any-pointer:coarse){body:not(.editing):not(:has(>iframe[title="BGM"])) #bgm.yt:not(.on):not([data-style="term"]) .bgm-btn::after{content:"";position:absolute;inset:-300vh -300vw;z-index:2;background:#0000;animation:none}#bgm .bgm-btn{-webkit-tap-highlight-color:#0000}}
+/* 폰: 소개 · 노래 글씨를 작게 (노래 칸은 줄 맞춤이 안 깨지게 칸째로 줄여요 · 크롬이 글씨를 저절로 키우지 않게) */
+@media (max-width:700px){.profile .pcard.p-glass{-webkit-text-size-adjust:none;text-size-adjust:none}.profile .pcard.p-glass .pbio{font-size:6px;line-height:1.5}.profile .pcard.p-glass>div:not([class]){zoom:.75}}
+/* 배경 음악(유튜브) · 「화면 누르면 재생」이 폰 · 태블릿에선 소리 없이 켜져요(바만 움직여요). 노래가 아직 안 나왔을 때만 첫 터치 · 첫 클릭이 ▶ 단추에 닿게 투명 막을 깔아요 (모든 기기) */
+body:not(.editing):not(:has(>iframe[title="BGM"])) #bgm.yt:not(.on):not([data-style="term"]) .bgm-btn::after{content:"";position:absolute;inset:-300vh -300vw;z-index:2;background:#0000;cursor:auto;animation:none}#bgm .bgm-btn{-webkit-tap-highlight-color:#0000}
