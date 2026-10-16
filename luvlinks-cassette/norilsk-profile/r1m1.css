@@ -6,7 +6,7 @@
 @keyframes nrbl{50%{opacity:.15}}
 .profile .p-glass>div:not([class])::before,.profile .p-glass>div:not([class])::after{position:absolute;left:0;right:0;white-space:pre;overflow:hidden}
 .profile .p-glass>div:not([class])::before{content:"Кино — «Кукушка»\A Земфира — «Хочешь?»\A Сплин — «Выхода нет»\A ДДТ — «Что такое осень»\A Кино — «Группа крови»";top:calc(18px - var(--nrk)*17px);height:85px;font-size:min(11.5px,calc(100cqi / 20));line-height:17px;font-weight:600}
-.profile .p-glass>div:not([class])::after{content:"북위 69도, 첫 곡 보내 드려요.\A 창밖은 하얀 눈, 방 안은 따뜻하게.\A 눈보라가 그칠 때까지 계속 틀어요.\A 짧은 가을이 지나가는 노릴스크예요.\A 다음 곡도 이어서 들려 드릴게요.";top:calc(35px - var(--nrk)*15px);height:75px;font-size:min(11px,calc(100cqi / 17));line-height:15px;font-weight:400;color:#4f5462}
+.profile .p-glass>div:not([class])::after{content:"북위 69도, 첫 곡 보내 드려요.\A 창밖은 하얀 눈, 방 안은 따뜻하게.\A 눈보라가 그칠 때까지 계속 틀어요.\A 짧은 가을이 지나가는 노릴스크예요.\A 다음 곡도 이어서 들려 드릴게요.";top:calc(35px - var(--nrk)*15px);height:75px;font-size:min(11px,calc(100cqi / 17));line-height:15px;font-weight:400;color:#5c5547}
 .profile .p-glass>div:not([class])::before,.profile .p-glass>div:not([class])::after{animation:nrk 30s steps(5) infinite,nrtA 6s infinite}
 .profile .p-glass>div:not([class])::before{clip-path:inset(calc(var(--nrk)*17px) var(--nrv) calc((4 - var(--nrk))*17px) 0)}
 .profile .p-glass>div:not([class])::after{clip-path:inset(calc(var(--nrk)*15px) var(--nrv) calc((4 - var(--nrk))*15px) 0);animation-name:nrk,nrtB}

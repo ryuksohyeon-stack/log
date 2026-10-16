@@ -6,7 +6,7 @@
 @keyframes nrbl{50%{opacity:.15}}
 .profile .p-glass>div:not([class])::before,.profile .p-glass>div:not([class])::after{position:absolute;left:0;right:0;white-space:pre;overflow:hidden}
 .profile .p-glass>div:not([class])::before{content:"Калинка, калинка, калинка моя!\A В саду ягода малинка, малинка моя!\A Ах, под сосною, под зелёною,\A Спать положите вы меня!\A Ах, сосёнушка ты зелёная,\A Не шуми же надо мной!\A Ах, красавица, душа-девица,\A Полюби же ты меня!";top:calc(18px - var(--nrk)*17px);height:136px;font-size:min(11.5px,calc(100cqi / 20));line-height:17px;font-weight:600}
-.profile .p-glass>div:not([class])::after{content:"칼린카, 칼린카, 나의 칼린카!\A 정원에 열린 산딸기, 나의 산딸기!\A 아, 푸른 소나무 아래\A 나를 눕혀 재워 주오!\A 아, 푸른 작은 소나무야,\A 내 위에서 소리 내지 말아 다오!\A 아, 아름다운 이여, 고운 아가씨여,\A 나를 사랑해 주오!";top:calc(35px - var(--nrk)*15px);height:120px;font-size:min(11px,calc(100cqi / 17));line-height:15px;font-weight:400;color:#4f5462}
+.profile .p-glass>div:not([class])::after{content:"칼린카, 칼린카, 나의 칼린카!\A 정원에 열린 산딸기, 나의 산딸기!\A 아, 푸른 소나무 아래\A 나를 눕혀 재워 주오!\A 아, 푸른 작은 소나무야,\A 내 위에서 소리 내지 말아 다오!\A 아, 아름다운 이여, 고운 아가씨여,\A 나를 사랑해 주오!";top:calc(35px - var(--nrk)*15px);height:120px;font-size:min(11px,calc(100cqi / 17));line-height:15px;font-weight:400;color:#5c5547}
 .profile .p-glass>div:not([class])::before,.profile .p-glass>div:not([class])::after{animation:nrk 48s steps(8) infinite,nrtA 6s infinite}
 .profile .p-glass>div:not([class])::before{clip-path:inset(calc(var(--nrk)*17px) var(--nrv) calc((7 - var(--nrk))*17px) 0)}
 .profile .p-glass>div:not([class])::after{clip-path:inset(calc(var(--nrk)*15px) var(--nrv) calc((7 - var(--nrk))*15px) 0);animation-name:nrk,nrtB}

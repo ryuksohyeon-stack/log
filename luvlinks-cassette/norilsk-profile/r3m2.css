@@ -6,7 +6,7 @@
 @keyframes nrbl{50%{opacity:.15}}
 .profile .p-glass>div:not([class])::before,.profile .p-glass>div:not([class])::after{position:absolute;left:0;right:0;white-space:pre;overflow:hidden}
 .profile .p-glass>div:not([class])::before{content:"2021.11.30 · 극야 시작\A 2025.11.19 · 교통 속보\A 2021.12.09 · 아침 뉴스\A 2021.12.24 · 기상 특보\A 2023.01.16 · 시민 인터뷰";top:calc(18px - var(--nrk)*17px);height:85px;font-size:min(11.5px,calc(100cqi / 20));line-height:17px;font-weight:600}
-.profile .p-glass>div:not([class])::after{content:"오늘부터 해가 뜨지 않습니다.\A 눈보라로 모든 차량이 통제됩니다.\A 120명이 문화센터에서 잤습니다.\A 새해 트리가 바람에 두 동강 났습니다.\A “극야는 이틀 전에 끝났어요.”";top:calc(35px - var(--nrk)*15px);height:75px;font-size:min(11px,calc(100cqi / 17));line-height:15px;font-weight:400;color:#4f5462}
+.profile .p-glass>div:not([class])::after{content:"오늘부터 해가 뜨지 않습니다.\A 눈보라로 모든 차량이 통제됩니다.\A 120명이 문화센터에서 잤습니다.\A 새해 트리가 바람에 두 동강 났습니다.\A “극야는 이틀 전에 끝났어요.”";top:calc(35px - var(--nrk)*15px);height:75px;font-size:min(11px,calc(100cqi / 17));line-height:15px;font-weight:400;color:#5c5547}
 .profile .p-glass>div:not([class])::before{clip-path:inset(calc(var(--nrk)*17px) 0 calc((4 - var(--nrk))*17px) 0);color:#0000;background:linear-gradient(90deg,var(--nr-ac) 50%,#15151561 50%) var(--nrv) 0/200% 100%;-webkit-background-clip:text;background-clip:text;animation:nrk 30s steps(5) infinite,nrkA 6s infinite}
 .profile .p-glass>div:not([class])::after{clip-path:inset(calc(var(--nrk)*15px) 0 calc((4 - var(--nrk))*15px) 0);animation:nrk 30s steps(5) infinite,nrkB 6s infinite}
 @keyframes nrk{to{--nrk:5}}

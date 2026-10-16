@@ -28,7 +28,7 @@ const EN = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
 const dd = String(d).padStart(2, '0');
 
 const base = `<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600&family=IBM+Plex+Mono:wght@500;600&display=block">
-<style>*{box-sizing:border-box;margin:0}html,body{background:transparent}body{--ink:#151515;--ac:#ff4f14;--pa:#fbfbf8;--mu:#7d8392;font-family:'IBM Plex Mono',monospace;color:var(--ink)}
+<style>*{box-sizing:border-box;margin:0}html,body{background:transparent}body{--ink:#151515;--ac:#FF4500;--pa:#fbfbf8;--mu:#7d8392;font-family:'IBM Plex Mono',monospace;color:var(--ink)}
 .o{font-family:Oswald,sans-serif}#c{position:relative;display:inline-block}</style>`;
 
 // 1 · 일력 — 한 장씩 뜯는 달력
