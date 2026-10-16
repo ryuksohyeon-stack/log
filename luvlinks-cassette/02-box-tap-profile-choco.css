@@ -1,0 +1,113 @@
+/* ═══ LUVLINKS CASSETTE PACKAGE · 형식 2 「3D BOX 입체 진열」 ═══
+   스킨 글래스 · 배치 가로 에서 써 주세요. 프로필 카드는 안 건드려요.
+   링크 순서 = 판넬 순서, 링크마다 올린 사진이 그 칸에 꽉 차게 들어가요.
+   1 케이스(카세트+수록곡) · 2 옆면 · 3 뒷면 · 4, 5, 6… 가사지(3번에 이어 붙어요)
+   케이스와 옆면이 하나의 입체 상자가 되고, 뒷면부터 가사지는 지그재그로 서 있어요.
+   카탈로그는 6번(뚜껑 열기)처럼 접혀 있어요: 3번은 살짝 접힌 채 서 있고 4 · 5…는 그 옆에 접혀 있다가,
+   누른 장이 펼쳐져요. 3번을 누르면 3번이 앞으로 조금 펼쳐지고, 4번을 누르면 4번만, 5번을 누르면 5번이 펼쳐져서
+   카탈로그가 전부 펼쳐져요(원래 2번처럼 3 · 4 · 5가 나란히 서요). 앞 판넬로 돌아가면 다시 접혀요.
+   */
+
+/* ✏️ 바꾸고 싶으면 여기 */
+body{--bgc:#e4e4e0}   /* 바탕 색 */
+
+/* ── 공통: 판넬 줄 · 사진 칸 · 투명 케이스 (1em = 판넬 높이의 1%) ── */
+@property --t{syntax:"<angle>";inherits:true;initial-value:0deg}
+@property --f{syntax:"<angle>";inherits:true;initial-value:0deg}
+body{overflow-x:clip}
+.glow{display:none}
+.carousel{margin-inline:calc(50% - 50vw)}
+@media (min-width:900px){body.editing .carousel{margin-inline:calc(50% - 50vw + 210px)}}
+.stage{--H:var(--panel,clamp(260px,min(78vw,62dvh),440px));--W:calc(var(--H)*.64);--u:calc(var(--H)/100);font-size:var(--u);height:auto!important;display:flex;align-items:center;overflow:auto hidden;padding:8em 16px 10em;perspective:calc(var(--H)*4);touch-action:pan-x pan-y;cursor:auto;border-radius:0;scroll-snap-type:x proximity;scrollbar-width:none}
+.stage::-webkit-scrollbar{display:none}
+.stage .card{position:relative!important;inset:auto;margin:0;flex:none;width:var(--W);height:100em;transform:none!important;opacity:1!important;pointer-events:auto!important;z-index:1!important;display:block;padding:0;border:0;border-radius:0;background:none;box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none;overflow:visible;scroll-snap-align:center;transition:translate .35s}
+.stage .card:first-child{margin-left:auto}
+.stage .card:last-child{margin-right:auto}
+.stage .card:nth-child(2){width:16em}
+.stage .card .meta,.stage .card .orb,.stage .card .ms{display:none}
+/* 사진 칸: 링크 사진이 꽉 차게, 사진이 없으면 빈 칸 색만 */
+.stage .card .visual{position:absolute;inset:0;margin:0;border-radius:0;background:var(--empty);display:block;overflow:hidden}
+.stage .card .visual img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+/* 투명 케이스 (1번 앞면 · 2번 옆면) */
+.stage .card:nth-child(1){border-radius:2.4em;background:var(--shell);box-shadow:inset 0 0 0 1px var(--rim),inset 0 0 0 .8em var(--lip),inset 0 0 0 calc(.8em + 1px) var(--rim),var(--drop)}
+.stage .card:nth-child(1) .visual{inset:3em 2.8em 3em 3.2em;border-radius:.3em;box-shadow:0 0 0 .55em var(--lip),0 0 0 calc(.55em + 1px) var(--rim)}
+.stage .card:nth-child(1)::before{content:"";position:absolute;inset:0;z-index:5;border-radius:inherit;pointer-events:none;background:linear-gradient(112deg,#fff0 16%,var(--glare) 22%,#fff0 30%),linear-gradient(112deg,#fff0 60%,var(--glare2) 64%,#fff0 70%),radial-gradient(90% 50% at 0 0,var(--glare2),#fff0 60%)}
+.stage .card:nth-child(1)::after{content:"";position:absolute;inset:0;z-index:6;border-radius:inherit;pointer-events:none;background:radial-gradient(circle,#0000 0 .8em,var(--rim) .9em 1.05em,#0000 1.15em) 1.2em 1.2em/2.6em 2.6em no-repeat,linear-gradient(var(--rim),var(--rim)) .2em 20%/.7em 7em no-repeat,linear-gradient(var(--rim),var(--rim)) .2em 80%/.7em 7em no-repeat}
+.stage .card:nth-child(2){border-radius:1.6em;background:linear-gradient(90deg,var(--glare2),#fff0 22% 78%,var(--glare2)),var(--shell);box-shadow:inset 0 0 0 1px var(--rim),var(--drop)}
+.stage .card:nth-child(2) .visual{inset:2.6em 2.6em;border-radius:.2em;box-shadow:0 0 0 .4em var(--lip),0 0 0 calc(.4em + 1px) var(--rim)}
+.stage .card:nth-child(2)::before{content:"";position:absolute;inset:0;z-index:5;border-radius:inherit;pointer-events:none;background:linear-gradient(90deg,#fff0 18%,var(--glare) 34%,#fff0 50%),linear-gradient(var(--rim),var(--rim)) 50% 1.3em/60% 1px no-repeat,linear-gradient(var(--rim),var(--rim)) 50% calc(100% - 1.3em)/60% 1px no-repeat}
+/* 가사지 순번 (4번 링크 = 1) — 접히는 각도 계산용 */
+.stage .card:nth-child(n+3){--k:0;--s:1}
+.stage .card:nth-child(4){--k:1}.stage .card:nth-child(5){--k:2}.stage .card:nth-child(6){--k:3}.stage .card:nth-child(7){--k:4}.stage .card:nth-child(8){--k:5}.stage .card:nth-child(9){--k:6}.stage .card:nth-child(10){--k:7}.stage .card:nth-child(11){--k:8}.stage .card:nth-child(12){--k:9}.stage .card:nth-child(13){--k:10}.stage .card:nth-child(14){--k:11}.stage .card:nth-child(15){--k:12}.stage .card:nth-child(16){--k:13}.stage .card:nth-child(17){--k:14}.stage .card:nth-child(18){--k:15}.stage .card:nth-child(19){--k:16}.stage .card:nth-child(20){--k:17}
+.stage .card:nth-child(2n+5){--s:-1}
+/* 사진이 마우스로 끌려가면 밀기 방향이 거꾸로 잡혀서, 사진은 끌리지 않게 */
+.stage .card,.stage .card img{-webkit-user-drag:none;user-select:none}
+.stage .card img{pointer-events:none}
+
+body{--shell:#ffffff5c;--lip:#ffffff3d;--rim:#0000001f;--glare:#ffffffb8;--glare2:#ffffff55;--drop:0 2.4em 4em #0000002b;--empty:#cfcfca;background:linear-gradient(#f5f5f3,var(--bgc) 58%,#cfcfca) var(--bgc)}
+.stage{align-items:flex-end;padding-bottom:16em}
+.stage .card{-webkit-box-reflect:below .4em linear-gradient(#0000 72%,#0000001f)}
+/* 옆면이 상자의 왼쪽 면, 케이스가 앞면 */
+.stage .card:nth-child(2){order:-1;margin-left:auto;transform-origin:100% 50%;transform:rotateY(-56deg)!important;filter:brightness(.84)}
+.stage .card:nth-child(1){margin-left:0;transform-origin:0 50%;transform:rotateY(34deg)!important;margin-right:-2em}
+.stage .card:nth-child(1).is-active,.stage .card:nth-child(2).is-active{translate:0 -1.4em}
+/* 3~ · 서 있는 지그재그 종이: 3번은 살짝 접힌 채 서 있다가 누르면 앞으로 조금 펼쳐지고, 4번부터는 6번처럼 접혀 있다가 그 장을 누르면 펼쳐져요 */
+@property --A{syntax:"<number>";inherits:true;initial-value:0}
+.stage{--A:0;--al:30deg;--ph:84deg;--r3:45deg;transition:--A .9s cubic-bezier(.3,.7,.2,1)}
+/* 폰처럼 화면이 좁으면: 손으로 스크롤하는 대신 밀 때마다 한 칸씩, 고른 판넬이 화면 안으로 따라와요 (화면에 다 들어오면 그대로) */
+.stage{--n:5;--T:calc(78em + (var(--n) - 2)*var(--W)*cos(var(--al)));--sur:calc(100cqw - 32px - var(--T));--shift:clamp(min(var(--sur),0px),50cqw - 16px - 78em - (var(--A) - .5)*var(--W)*cos(var(--al)),0px);container-type:inline-size;overflow:hidden;touch-action:pan-y;scroll-snap-type:none}
+.stage:has(.card:nth-child(3):last-child){--n:3}.stage:has(.card:nth-child(4):last-child){--n:4}.stage:has(.card:nth-child(5):last-child){--n:5}.stage:has(.card:nth-child(6):last-child){--n:6}.stage:has(.card:nth-child(7):last-child){--n:7}.stage:has(.card:nth-child(8):last-child){--n:8}.stage:has(.card:nth-child(9):last-child){--n:9}.stage:has(.card:nth-child(10):last-child){--n:10}.stage:has(.card:nth-child(11):last-child){--n:11}.stage:has(.card:nth-child(12):last-child){--n:12}.stage:has(.card:nth-child(13):last-child){--n:13}.stage:has(.card:nth-child(14):last-child){--n:14}.stage:has(.card:nth-child(15):last-child){--n:15}.stage:has(.card:nth-child(16):last-child){--n:16}.stage:has(.card:nth-child(17):last-child){--n:17}.stage:has(.card:nth-child(18):last-child){--n:18}.stage:has(.card:nth-child(19):last-child){--n:19}.stage:has(.card:nth-child(20):last-child){--n:20}
+.stage .card{left:var(--shift)}
+.stage:has(.card:nth-child(3).is-active){--A:1}.stage:has(.card:nth-child(4).is-active){--A:2}.stage:has(.card:nth-child(5).is-active){--A:3}.stage:has(.card:nth-child(6).is-active){--A:4}.stage:has(.card:nth-child(7).is-active){--A:5}.stage:has(.card:nth-child(8).is-active){--A:6}.stage:has(.card:nth-child(9).is-active){--A:7}.stage:has(.card:nth-child(10).is-active){--A:8}.stage:has(.card:nth-child(11).is-active){--A:9}.stage:has(.card:nth-child(12).is-active){--A:10}.stage:has(.card:nth-child(13).is-active){--A:11}.stage:has(.card:nth-child(14).is-active){--A:12}.stage:has(.card:nth-child(15).is-active){--A:13}.stage:has(.card:nth-child(16).is-active){--A:14}.stage:has(.card:nth-child(17).is-active){--A:15}.stage:has(.card:nth-child(18).is-active){--A:16}.stage:has(.card:nth-child(19).is-active){--A:17}.stage:has(.card:nth-child(20).is-active){--A:18}
+.stage .card:nth-child(n+3){--s:1;--n0:round(down,var(--A),1);--fr:calc(var(--A) - var(--n0));--tp:calc(var(--ph) + (var(--al) - var(--ph))*var(--fr));--co:min(var(--k),var(--n0));--pb:clamp(0,var(--k) - var(--n0),1);--fb:calc(var(--k) - var(--co) - var(--pb));--tj:calc(var(--ph) + (var(--al) - var(--ph))*clamp(0,var(--A) - var(--k),1));--a0:calc(var(--r3) + (var(--al) - var(--r3))*clamp(0,var(--A),1));--g0:calc(var(--ph) + (var(--al) - var(--ph))*clamp(0,var(--A),1));--m:min(var(--k),1);--kx:var(--k);height:96em;box-shadow:0 2em 3.6em -1em #0000003d;transform-origin:0 50%;translate:calc(var(--W)*(var(--co)*cos(var(--al)) + var(--m)*(cos(var(--a0)) - cos(var(--g0))) + var(--pb)*cos(var(--tp)) + var(--fb)*cos(var(--ph)) - var(--kx)) - var(--dx,3.9em)) 0 calc(var(--W)*-1*(sin(var(--al))*mod(var(--co),2) + var(--m)*(sin(var(--a0)) - sin(var(--g0))) + var(--pb)*(1 - 2*mod(var(--n0),2))*sin(var(--tp)) + sin(var(--ph))*(mod(var(--k),2) - mod(min(var(--k),var(--n0) + 1),2)) + sin(34deg)));rotate:y calc(var(--s)*var(--tj));transition:none}
+.stage .card:nth-child(3){--tj:var(--a0)}
+.stage .card:nth-child(2n+4){--s:-1}
+.stage .card:nth-child(n+3)::before{content:"";position:absolute;inset:0;z-index:9;pointer-events:none;background:linear-gradient(90deg,#0000001a,#00000052);opacity:sin(var(--tj))}
+.stage .card:nth-child(2n+4)::before{background:linear-gradient(90deg,#ffffff38,#0000000d)}
+/* 폰: 1 · 2 · 카탈로그가 다 펼쳐져도 한 화면에 다 들어오게 크기를 맞춰요 (밀려나지 않아요)
+   카탈로그는 카세트 케이스 오른쪽 끝과 같은 깊이에 서요 (앞으로 튀어나오지 않고 바닥선이 맞아요) */
+@media (max-width:700px){.stage{--H:var(--panel,min(clamp(260px,min(78vw,62dvh),440px),calc((100vw - 32px)*100/(78 + (var(--n) - 2)*64*cos(var(--al))))));--shift:0px;justify-content:center}.stage .card:nth-child(2){margin-left:0}.stage .card:nth-child(n+3),.stage .card:nth-child(n+3):last-child{margin-right:calc(var(--W)*(cos(var(--al)) - 1))}.stage .card:nth-child(n+3){--kx:calc(var(--k)*cos(var(--al)))}}
+
+/* ═══ 프로필 카드 · 시안 3 「베어 먹은 초콜릿」 ═══
+   편집 → 프로필 모양을 「글래스」로 두세요. 글은 직접 쓴 칸(이름 · 핸들 · 직함 · 태그 · 소개)만 들어가요.
+   펼친 종이 상자 위에 악보 종이가 깔려 있고, 오른쪽에 한 입 베어 먹은 판초콜릿이 놓여 있어요.
+   베어 먹은 자리로 아래 오선이 보여요. 머리 사진은 왼쪽 위 칸에 들어가요. */
+.profile .p-glass{--ch:#4a2a1f;--ch-w:35%;--fl:#ebebe7;display:flex;flex-direction:column;align-items:flex-start;gap:0;word-break:keep-all;min-height:216px;padding:34px calc(var(--ch-w) + 34px) 34px 24px;border:0;border-radius:0;color:#1b1b1d;-webkit-backdrop-filter:none;backdrop-filter:none;box-shadow:none;overflow:visible;filter:drop-shadow(0 10px 14px #00000024) drop-shadow(0 1px 1px #0000001f);background:
+ linear-gradient(135deg,#0000 9px,var(--fl) 0) 28px 0/calc(50% - 27px) 15px no-repeat,
+ linear-gradient(225deg,#0000 9px,var(--fl) 0) calc(100% - 28px) 0/calc(50% - 27px) 15px no-repeat,
+ linear-gradient(45deg,#0000 9px,var(--fl) 0) 28px 100%/calc(50% - 27px) 15px no-repeat,
+ linear-gradient(315deg,#0000 9px,var(--fl) 0) calc(100% - 28px) 100%/calc(50% - 27px) 15px no-repeat,
+ linear-gradient(90deg,#0000 11px,#00000012 11px 12px,#0000 12px calc(100% - 12px),#00000012 calc(100% - 12px) calc(100% - 11px),#0000 0) 0 15px/100% calc(100% - 30px) no-repeat,
+ repeating-linear-gradient(#0000 0 4px,#00000038 4px 5px) calc(100% - 18px) 44px/calc(var(--ch-w) + 22px) 25px no-repeat,
+ repeating-linear-gradient(#0000 0 4px,#00000038 4px 5px) calc(100% - 18px) 84px/calc(var(--ch-w) + 22px) 25px no-repeat,
+ radial-gradient(farthest-side,#00000038,#0000) calc(100% - 14px) calc(100% - 22px)/calc(var(--ch-w) + 8px) 16px no-repeat,
+ linear-gradient(#00000014 1px,#0000 1px calc(100% - 1px),#00000014 0) 0 15px/100% calc(100% - 30px) no-repeat,
+ linear-gradient(170deg,#fbfbf9,#f1f1ee) 0 15px/100% calc(100% - 30px) no-repeat}
+/* 판초콜릿 (2칸 × 3줄, 칸마다 오선이 새겨져 있어요) — 왼쪽 위를 한 입 베어 먹었어요 */
+.profile .p-glass::after{content:"";position:absolute;z-index:2;top:30px;bottom:30px;right:18px;width:var(--ch-w);border-radius:3px;pointer-events:none;clip-path:polygon(100% 0,100% 100%,0 100%,0.0% 29.3%,2.1% 30.1%,4.6% 30.7%,7.3% 31.4%,9.7% 31.2%,12.2% 31.1%,14.3% 30.4%,16.1% 29.2%,17.9% 28.3%,20.2% 28.0%,23.3% 28.8%,26.0% 28.9%,28.6% 28.9%,31.0% 28.7%,33.2% 28.1%,34.2% 26.7%,35.3% 25.5%,37.3% 25.0%,40.7% 25.4%,43.5% 25.4%,46.0% 25.1%,48.7% 24.9%,49.5% 23.6%,51.2% 22.9%,51.2% 21.4%,51.3% 20.0%,54.5% 20.0%,57.9% 20.0%,61.1% 19.9%,62.5% 19.0%,64.4% 18.4%,65.1% 17.3%,64.8% 15.9%,64.5% 14.6%,65.9% 13.9%,69.0% 13.5%,71.9% 13.1%,74.5% 12.5%,75.3% 11.6%,75.5% 10.5%,75.4% 9.3%,74.2% 8.0%,74.1% 7.0%,77.8% 6.5%,80.2% 5.8%,81.4% 4.9%,82.9% 4.0%,82.8% 3.0%,82.5% 1.9%,80.8% 0.7%,78.5% 0.0%);background:
+ linear-gradient(#0000 calc(100% - 4px),#2a150e 0),
+ linear-gradient(90deg,#24120b 0 2px,#ffffff1c 2px 3px,#0000 3px) 0 0/50% 100%,
+ linear-gradient(#24120b 0 2px,#ffffff1c 2px 3px,#0000 3px) 0 0/100% 33.34%,
+ linear-gradient(155deg,#ffffff2b,#0000 24%,#0000 68%,#0000003d) 0 0/50% 33.34%,
+ linear-gradient(90deg,var(--ch) 0 16%,#0000 16% 84%,var(--ch) 84%) 0 0/50% 100%,
+ linear-gradient(#0000 34%,#2a160e 34% 35.6%,#0000 35.6% 42%,#2a160e 42% 43.6%,#0000 43.6% 50%,#2a160e 50% 51.6%,#0000 51.6% 58%,#2a160e 58% 59.6%,#0000 59.6% 66%,#2a160e 66% 67.6%,#0000 67.6%) 0 0/50% 33.34%,
+ var(--ch)}
+/* 베어 먹은 단면 */
+.profile .p-glass::before{content:"";position:absolute;z-index:1;top:30px;bottom:30px;right:18px;width:var(--ch-w);border-radius:3px;pointer-events:none;clip-path:polygon(100% 0,100% 100%,0 100%,0.0% 24.1%,1.8% 24.8%,4.2% 25.4%,6.6% 26.0%,8.8% 25.8%,11.0% 25.7%,12.9% 25.1%,14.5% 24.1%,16.1% 23.3%,18.2% 23.1%,21.0% 23.8%,23.4% 23.9%,25.8% 23.9%,28.0% 23.7%,29.9% 23.3%,30.8% 22.0%,31.8% 21.0%,33.6% 20.6%,36.7% 21.0%,39.2% 21.0%,41.5% 20.8%,43.9% 20.6%,44.7% 19.5%,46.3% 19.0%,46.3% 17.6%,46.3% 16.4%,49.3% 16.5%,52.3% 16.5%,55.3% 16.4%,56.6% 15.7%,58.2% 15.2%,58.9% 14.3%,58.6% 13.1%,58.4% 12.1%,59.7% 11.4%,62.5% 11.2%,65.2% 10.8%,67.6% 10.4%,68.4% 9.6%,68.5% 8.7%,68.5% 7.7%,67.4% 6.6%,67.4% 5.7%,70.8% 5.4%,73.0% 4.8%,74.2% 4.1%,75.5% 3.3%,75.5% 2.4%,75.3% 1.5%,73.7% 0.6%,71.7% 0.0%);background:radial-gradient(120% 90% at 0 0,#8a5640,#6b3d2b 60%,#5a3224)}
+.profile .p-glass>*{position:relative;z-index:3}
+/* 프로필 사진 · 악보 제목처럼 쓴 이름 */
+.profile .p-glass .pav{width:46px;height:46px;margin:0 0 12px;border:1px solid #0000001f;background:#e6e6e2;box-shadow:none}
+.profile .p-glass .pav .ms{color:#1b1b1d;font-size:24px}
+.profile .p-glass>div:not([class]){width:100%;display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:2px 10px}
+.profile .p-glass .pname{flex:0 0 100%;margin:0 0 8px;font-family:"Bodoni 72","Didot","Bodoni Moda","Playfair Display","Times New Roman",serif;font-size:25px;font-weight:400;line-height:1.02;letter-spacing:-.015em;text-transform:uppercase;overflow-wrap:anywhere}
+.profile .p-glass .phandle{margin:0;font:italic 11.5px/1.4 "Times New Roman","Bodoni 72",serif;color:#3a3a3d}
+.profile .p-glass .prole{margin:0;font-size:10.5px;line-height:1.4;color:#3a3a3d;opacity:1}
+.profile .p-glass .ptags{margin:10px 0 0;gap:4px 10px}
+.profile .p-glass .ptags span{padding:0;border:0;border-radius:0;background:none;color:#555559;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase}
+.profile .p-glass .pbio{margin:10px 0 0;font-size:11px;line-height:1.6;color:#2e2e31;opacity:1}
+.profile .p-glass .share{position:absolute;z-index:3;top:28px;right:calc(var(--ch-w) + 30px);width:26px;height:26px;border-radius:4px;background:#fff;border:1px solid #0000001f;color:#1b1b1d;box-shadow:none}
+/* 머리 사진 → 왼쪽 위 칸 */
+.profile .p-glass .pcover,.profile .p-glass .pcover.fade{position:absolute;z-index:3;top:28px;left:22px;right:calc(var(--ch-w) + 32px);height:64px;border-radius:2px;-webkit-mask-image:none;mask-image:none}
+.profile .p-glass.has-cover{padding-top:76px}
+.profile .p-glass.has-cover .pav{margin-top:0;margin-left:10px;border:3px solid #fbfbf9;width:50px;height:50px}
+.profile .p-glass.has-cover .share{top:34px;right:calc(var(--ch-w) + 38px)}
