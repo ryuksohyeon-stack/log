@@ -25,6 +25,8 @@ body{--nr-bg:#FEFCF8;--nr-ac:#FF4500}
 #now .url{color:#6d6553}
 #now .open,#now .open .ms{color:#151515}
 #now .open{background:var(--nr-ac);border-color:var(--nr-ac)}
-/* 링크 칸 사진: 그 링크를 고르면 아이콘 대신 사진이 떠요 · 사진을 더 넣으려면 nth-child(번호)와 주소만 바꿔 한 줄씩 더해요 */
+/* 링크 칸 사진: 아이콘 대신 사진이 떠요 · 모든 링크는 link-all, 2번만 link-2 · 다른 번호도 따로 하려면 nth-child(번호)와 주소만 바꿔 두 줄씩 더해요 */
+#now .badge{background:url(https://raw.githubusercontent.com/ryuksohyeon-stack/log/HEAD/norilsk/link-all.jpg) 50%/cover}
+#now .badge .ms{visibility:hidden}
 .page:has(.card:nth-child(2).is-active) #now .badge{background:url(https://raw.githubusercontent.com/ryuksohyeon-stack/log/HEAD/norilsk/link-2.jpg) 50%/cover}
 .page:has(.card:nth-child(2).is-active) #now .badge .ms{visibility:hidden}
