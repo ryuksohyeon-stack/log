@@ -27,8 +27,8 @@ const WS = ['ПН', 'ВТ', 'СР', 'ЧТ', 'ПТ', 'СБ', 'ВС'];
 const EN = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
 const dd = String(d).padStart(2, '0');
 
-const base = `<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600&family=IBM+Plex+Mono:wght@500;600&display=block">
-<style>*{box-sizing:border-box;margin:0}html,body{background:transparent}body{--ink:#151515;--ac:#FF4500;--pa:#fbfbf8;--mu:#7d8392;font-family:'IBM Plex Mono',monospace;color:var(--ink)}
+const base = `<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600&family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans+KR:wght@600&display=block">
+<style>*{box-sizing:border-box;margin:0}html,body{background:transparent}body{--pn:#1f2a4d;--ink:#151515;--ac:#FF4500;--pa:#fbfbf8;--mu:#7d8392;font-family:'IBM Plex Mono',monospace;color:var(--ink)}
 .o{font-family:Oswald,sans-serif}#c{position:relative;display:inline-block}</style>`;
 
 // 1 · 일력 — 한 장씩 뜯는 달력
@@ -41,17 +41,20 @@ const d1 = `<div id="c" style="width:120px;height:154px;padding:4px 4px 8px">
  <div style="text-align:center;font:500 7.5px/1 'IBM Plex Mono';letter-spacing:.18em;color:var(--mu);margin-top:5px">${EN[wd]} · ${y}</div>
 </div></div>`;
 
-// 2 · 한 달 달력 — 오늘에 동그라미
+// 2 · 한 달 달력 — 오늘에 동그라미, 극야(11.30 – 1.13)인 날은 밤색 동그라미
+const PN = { from: [11, 30], to: [1, 13] };
+const polar = (mm, dd2) => (mm === PN.from[0] && dd2 >= PN.from[1]) || mm === 12 || (mm === PN.to[0] && dd2 <= PN.to[1]);
 let cells = '';
 for (let i = 0; i < first; i++) cells += '<span></span>';
 for (let k = 1; k <= days; k++) {
-  const col = (first + k - 1) % 7, we = col >= 5, on = k === d;
-  cells += `<span style="${we ? 'color:var(--ac);' : ''}${on ? 'background:var(--ac);color:#fff;border-radius:50%;font-weight:600;' : ''}">${k}</span>`;
+  const col = (first + k - 1) % 7, we = col >= 5, on = k === d, pn = polar(m, k);
+  cells += `<span style="${we ? 'color:var(--ac);' : ''}${pn ? 'background:var(--pn);color:#fff;border-radius:50%;' : ''}${on ? 'background:var(--ac);color:#fff;border-radius:50%;font-weight:600;' : ''}">${k}</span>`;
 }
 const d2 = `<div id="c" style="width:156px;padding:4px">
  <div style="display:flex;align-items:baseline;justify-content:space-between;border-bottom:2px solid var(--ac);padding-bottom:4px"><b class="o" style="font-weight:600;font-size:19px;letter-spacing:.02em">${MON[m - 1]}</b><span style="font:600 11px 'IBM Plex Mono';letter-spacing:.06em">${y}</span></div>
  <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px 0;margin-top:6px;text-align:center;font:600 8px/13px 'IBM Plex Mono';color:var(--mu);letter-spacing:0">${WS.map((w, i) => `<span style="${i >= 5 ? 'color:var(--ac)' : ''}">${w}</span>`).join('')}</div>
- <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px 1px;margin-top:2px;text-align:center;font:600 11px/19px 'IBM Plex Mono'">${cells}</div>
+ <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:1px;margin-top:1px;text-align:center;font:600 11px/17px 'IBM Plex Mono'">${cells}</div>
+ <div style="display:flex;align-items:center;gap:5px;margin-top:4px;padding-top:4px;border-top:1px solid #15151524;font:600 13px/1 'IBM Plex Sans KR',sans-serif;letter-spacing:.02em"><i style="width:11px;height:11px;border-radius:50%;background:var(--pn)"></i>극야<span style="font:600 12.5px/1 'IBM Plex Mono';letter-spacing:.02em">11.30 – 1.13</span></div>
 </div>`;
 
 // 3 · 플립 시계 — 넘어가는 숫자판
