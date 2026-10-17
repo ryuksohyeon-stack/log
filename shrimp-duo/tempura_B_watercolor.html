@@ -154,7 +154,7 @@ body{background:var(--page-bg);font-family:var(--f-body);color:var(--ink)}
 /* =========================================================
    설정 (시안마다 다름)
    ========================================================= */
-var CFG = {"sticker": true, "stickerInk": "#111111", "aces": false, "exposure": 1.0, "outline": null, "outlineW": 0.0, "toonSteps": [150, 205, 255], "shrimpY": 0.06, "shrimpScale": 1.0, "failText": "3D를 불러오지 못했어요 · 새우 자리를 눌러 보세요", "style": "water", "envWall": "#f2e8e4", "envFloor": "#ffc2a0", "light": {"sky": "#fff6f0", "ground": "#c8664a", "hemi": 0.5, "key": 0.95, "fill": 0.2, "fillColor": "#ffe2d2", "rim": 0.35}, "gloss": {"shell": {"rough": 0.55, "env": 0.3}, "peeled": {"rough": 0.88, "env": 0.1, "spec": 0, "tint": "#e2e2e2"}, "tempura": {"rough": 0.85, "env": 0.15, "spec": 0, "tint": "#dcdcdc"}}, "rim": {"shell": {"color": "#ffe6da", "s": 0.1, "p": 2.2}, "peeled": {"color": "#fff0e2", "s": 0, "p": 2.2}, "tempura": {"color": "#fff2d6", "s": 0.1, "p": 2.2}}, "spec": 0.2, "edge": {"peeled": {"color": "#a82424", "s": 0.85}}, "parts": {"shell": {"body": {"ventral": "#f59a5c", "side": "#ec6528", "dorsal": "#de441a", "stripe": "#ffae6a", "stripeDark": "#b51f0a", "stripeAmt": 0.8, "band": [0.03, 0.15], "blobs": ["#ffcdb0", "#ffe6d6", "#ff8a4e", "#c8290e", "#ee5a24", "#e0441a"], "blobN": 540, "blobA": 0.55, "hard": 0.75, "blobSize": 0.6, "seam": "#701204", "seamA": 0.5, "seamHi": 0.35, "hlN": 40, "hlA": 0.6, "face": "#f2b598", "charN": 3}, "tail": {"base": "#f0602a", "mid": "#d63616", "tip": "#b01e0b", "edge": "#650e04", "blobs": ["#ff8a4a", "#c42a12", "#841505"]}}, "peeled": {"body": {"ventral": "#f39a4a", "side": "#f3802a", "dorsal": "#ef6d1c", "stripe": "#f6b04a", "stripeDark": "#d8341c", "stripeAmt": 0.9, "band": [0.02, 0.1], "blobs": ["#f29a98", "#e0401e", "#f6b545"], "blobN": 70, "blobA": 0.55, "hard": 0.95, "blobSize": 0.9, "seam": "#a8201c", "seamA": 0.8, "seamW": 5, "seamHi": 0, "hlN": 0, "hlA": 0, "strokes": 1100, "strokeA": 0.7, "strokeCols": ["#f2852c", "#f59a32", "#e8642a", "#e0401e", "#d0301c", "#f6b545", "#f29a98", "#f4a3a0", "#ef7a26"], "face": "#f3dfc0", "faceU": 0.13, "fluff": true, "herb": ["#2f6b22", "#6faa3a", "#8cc84a", "#4f8f2e"], "herbN": 75, "joint": "#efd2bc"}, "tail": {"base": "#f5a03c", "mid": "#f2783a", "tip": "#e8586a", "edge": "#b03040", "blobs": ["#fbc070", "#f48a6a", "#e05a3a"]}}, "tempura": {"body": {"light": "#e09a40", "base": "#cf7524", "top": "#b9621a", "blobs": ["#e8a24a", "#d9862c", "#bf6a1c", "#9c5014", "#d27a26"], "blobN": 600, "blobA": 0.55, "hard": 0.75, "speck": "#6e340c", "speckN": 700, "hlN": 0, "hlA": 0, "fibers": 5000, "fiberDark": "#94481a", "fiberLight": "#f3aa52", "flakeBase": "#8a4414", "flakeTip": "#f6ac4c", "tailShell": {"ventral": "#f59a5c", "side": "#ec6528", "dorsal": "#de441a", "stripe": "#ffae6a", "stripeDark": "#b51f0a", "stripeAmt": 0.8, "band": [0.03, 0.15], "blobs": ["#ffc89e", "#ff9150", "#d23312", "#ee5720", "#a01c0a"], "blobN": 300, "blobA": 0.4, "hard": 0.35, "blobSize": 0.6, "seam": "#701204", "seamA": 0.75, "seamHi": 0.35, "hlN": 14, "hlA": 0.5, "face": "#f2b598", "charN": 3}}, "tail": {"base": "#f08236", "mid": "#e0561f", "tip": "#c23a12", "edge": "#7a1c06", "blobs": ["#ffa860", "#d4481a", "#9a2a0a"]}}}, "left": {"kind": "peeled", "home": [-8, -14, 0], "mirror": true}, "right": {"kind": "tempura", "home": [-6, 10, 0], "mirror": false}};
+var CFG = {"sticker": true, "stickerInk": "#111111", "aces": false, "exposure": 1.0, "outline": null, "outlineW": 0.0, "toonSteps": [150, 205, 255], "shrimpY": 0.06, "shrimpScale": 1.0, "failText": "3D를 불러오지 못했어요 · 새우 자리를 눌러 보세요", "style": "water", "envWall": "#f2e8e4", "envFloor": "#ffc2a0", "light": {"sky": "#fff6f0", "ground": "#c8664a", "hemi": 0.5, "key": 0.95, "fill": 0.2, "fillColor": "#ffe2d2", "rim": 0.35}, "gloss": {"shell": {"rough": 0.55, "env": 0.3}, "peeled": {"rough": 0.88, "env": 0.1, "spec": 0, "tint": "#e2e2e2"}, "tempura": {"rough": 0.85, "env": 0.15, "spec": 0, "tint": "#dcdcdc"}}, "rim": {"shell": {"color": "#ffe6da", "s": 0.1, "p": 2.2}, "peeled": {"color": "#fff0e2", "s": 0, "p": 2.2}, "tempura": {"color": "#fff2d6", "s": 0.1, "p": 2.2}}, "spec": 0.2, "edge": {"peeled": {"color": "#a82424", "s": 0.85}}, "parts": {"shell": {"body": {"ventral": "#f59a5c", "side": "#ec6528", "dorsal": "#de441a", "stripe": "#ffae6a", "stripeDark": "#b51f0a", "stripeAmt": 0.8, "band": [0.03, 0.15], "blobs": ["#ffcdb0", "#ffe6d6", "#ff8a4e", "#c8290e", "#ee5a24", "#e0441a"], "blobN": 540, "blobA": 0.55, "hard": 0.75, "blobSize": 0.6, "seam": "#701204", "seamA": 0.5, "seamHi": 0.35, "hlN": 40, "hlA": 0.6, "face": "#f2b598", "charN": 3}, "tail": {"base": "#f0602a", "mid": "#d63616", "tip": "#b01e0b", "edge": "#650e04", "blobs": ["#ff8a4a", "#c42a12", "#841505"]}}, "peeled": {"body": {"ventral": "#f39a4a", "side": "#f3802a", "dorsal": "#ef6d1c", "stripe": "#f6b04a", "stripeDark": "#d8341c", "stripeAmt": 0.9, "band": [0.02, 0.1], "blobs": ["#f29a98", "#e0401e", "#f6b545"], "blobN": 70, "blobA": 0.55, "hard": 0.95, "blobSize": 0.9, "seam": "#a8201c", "seamA": 0.8, "seamW": 5, "seamHi": 0, "hlN": 0, "hlA": 0, "strokes": 1100, "strokeA": 0.7, "strokeCols": ["#f2852c", "#f59a32", "#e8642a", "#e0401e", "#d0301c", "#f6b545", "#f29a98", "#f4a3a0", "#ef7a26"], "face": "#f3dfc0", "faceU": 0.13, "fluff": true, "herb": ["#2f6b22", "#6faa3a", "#8cc84a", "#4f8f2e"], "herbN": 75, "joint": "#efd2bc"}, "tail": {"base": "#f5a03c", "mid": "#f2783a", "tip": "#e8586a", "edge": "#b03040", "blobs": ["#fbc070", "#f48a6a", "#e05a3a"]}}, "tempura": {"body": {"light": "#e08a28", "base": "#c86812", "top": "#b05a10", "blobs": ["#f6b547", "#ee8f21", "#da610c", "#be5d12", "#923105"], "blobN": 600, "blobA": 0.55, "hard": 0.75, "speck": "#923105", "speckN": 700, "hlN": 0, "hlA": 0, "fibers": 5000, "fiberDark": "#be5d12", "fiberLight": "#f3c86d", "flakeBase": "#b4500c", "flakeTip": "#e8962a", "tailShell": {"ventral": "#f59a5c", "side": "#ec6528", "dorsal": "#de441a", "stripe": "#ffae6a", "stripeDark": "#b51f0a", "stripeAmt": 0.8, "band": [0.03, 0.15], "blobs": ["#ffc89e", "#ff9150", "#d23312", "#ee5720", "#a01c0a"], "blobN": 300, "blobA": 0.4, "hard": 0.35, "blobSize": 0.6, "seam": "#701204", "seamA": 0.75, "seamHi": 0.35, "hlN": 14, "hlA": 0.5, "face": "#f2b598", "charN": 3}}, "tail": {"base": "#f08236", "mid": "#e0561f", "tip": "#c23a12", "edge": "#7a1c06", "blobs": ["#ffa860", "#d4481a", "#9a2a0a"]}}}, "left": {"kind": "peeled", "home": [-8, -14, 0], "mirror": true}, "right": {"kind": "tempura", "home": [-6, 10, 0], "mirror": false}};
 
 var THREE_SRC = [
   'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js',
@@ -355,43 +355,60 @@ function crumbGeometry(P, n, seed) {
   return geo;
 }
 
-// 빵가루 조각 (표면에서 비스듬히 튀어나온 얇은 조각들)
-function flakeGeometry(P, n, seed, pal) {
-  var R = rng(seed), pos = [], nor = [], col = [];
-  var cb = new T.Color(pal.flakeBase), ct = new T.Color(pal.flakeTip), c0 = new T.Color(), c1 = new T.Color();
-  var out = new T.Vector3(), up = new T.Vector3(), side = new T.Vector3(), rnd = new T.Vector3(), nrm = new T.Vector3();
-  var cs = 0, ca = 0, cd = [0, 0, 0], left = 0;   // 뭉치(가닥 여러 개가 같은 방향으로 모인 덩어리)
+// 빵가루 조각 — 사진처럼 들쭉날쭉한 굵은 조각. 표면에 겹겹이 붙은 납작한 조각 + 바깥으로 삐죽 솟은 조각
+// o.len / o.wid : [최소, 더하는 폭] · o.tilt : [표면 바깥 방향에서 기운 각도 최소, 더하는 폭] · o.clump : 같은 쪽으로 뻗는 뭉치 크기
+// o.surf(R) 가 있으면 그 표면(꼬리 마디 등)에, 없으면 몸통 표면에 붙여요
+function flakeGeometry(P, n, seed, pal, o) {
+  var R = rng(seed), pos = [], nor = [], col = [], sMax = o.sMax || 0.92;
+  var cb = new T.Color(pal.flakeBase), ct = new T.Color(pal.flakeTip), c0 = new T.Color(), c1 = new T.Color(), cv = new T.Color();
+  var base = new T.Vector3(), out = new T.Vector3(), up = new T.Vector3(), side = new T.Vector3(), rnd = new T.Vector3(), nrm = new T.Vector3(), q = new T.Vector3(), v = new T.Vector3();
+  var cs = 0, ca = 0, cd = [0, 0, 0], left = 0;
   for (var i = 0; i < n; i++) {
-    var s, a;
-    if (P.clump && left > 0) { s = Math.min(0.92, Math.max(0, cs + (R() - 0.5) * 0.035)); a = ca + (R() - 0.5) * 0.4; left--; }
+    if (o.surf) o.surf(R, base, out);
     else {
-      s = R() * 0.92; a = (R() - 0.5) * Math.PI * 2;
-      if (R() > baseRadius(s, P) / P.R0) { i--; continue; }   // 굵은 곳일수록 빵가루가 많이
-      if (P.clump) { cs = s; ca = a; cd = [R() - 0.5, R() - 0.5, R() - 0.5]; left = P.clump - 1; }
+      var s, a;
+      if (o.clump && left > 0) { s = Math.min(sMax, Math.max(0, cs + (R() - 0.5) * 0.03)); a = ca + (R() - 0.5) * 0.35; left--; }
+      else {
+        s = R() * sMax; a = (R() - 0.5) * Math.PI * 2;
+        if (R() > baseRadius(s, P) / P.R0) { i--; continue; }   // 굵은 곳일수록 빵가루가 많이
+        if (o.clump) { cs = s; ca = a; cd = [R() - 0.5, R() - 0.5, R() - 0.5]; left = o.clump - 1; }
+      }
+      var F = frameAt(s, P.sh), r = baseRadius(s, P), ca2 = Math.cos(a);
+      var cap = s < P.sh.capH ? Math.sqrt(Math.max(0, 1 - Math.pow((P.sh.capH - s) / P.sh.capH, 2))) : 1;
+      out.set(0, 0, 0).addScaledVector(F.n, ca2 * (ca2 < 0 ? P.vent : 1)).addScaledVector(F.b, Math.sin(a) * P.width);
+      var bump = P.bumps ? P.bumps * (1 - smooth(0.82, 0.92, s)) : 0;   // 몸통 울퉁불퉁과 같은 높이에 붙도록
+      if (bump) { q.copy(F.c).addScaledVector(out, P.R0); r *= 1 + bump * crunch(q); }
+      base.copy(F.c).addScaledVector(out, r * cap);
+      out.set(0, 0, 0).addScaledVector(F.n, ca2).addScaledVector(F.b, Math.sin(a)).multiplyScalar(cap).addScaledVector(F.t, -(1 - cap)).normalize();
     }
-    var F = frameAt(s, P.sh), r = baseRadius(s, P);
-    var cap = s < P.sh.capH ? Math.sqrt(Math.max(0, 1 - Math.pow((P.sh.capH - s) / P.sh.capH, 2))) : 1;
-    var base = F.c.clone().addScaledVector(F.n, Math.cos(a) * r * cap * (Math.cos(a) < 0 ? P.vent : 1)).addScaledVector(F.b, Math.sin(a) * r * cap * P.width);
-    out.set(0, 0, 0).addScaledVector(F.n, Math.cos(a)).addScaledVector(F.b, Math.sin(a)).multiplyScalar(cap).addScaledVector(F.t, -(1 - cap)).normalize();
-    if (P.clump) rnd.set(cd[0] + (R() - 0.5) * 0.35, cd[1] + (R() - 0.5) * 0.35, cd[2] + (R() - 0.5) * 0.35);
+    if (o.clump && !o.surf) rnd.set(cd[0] + (R() - 0.5) * 0.4, cd[1] + (R() - 0.5) * 0.4, cd[2] + (R() - 0.5) * 0.4);
     else rnd.set(R() - 0.5, R() - 0.5, R() - 0.5);
     rnd.addScaledVector(out, -rnd.dot(out)).normalize();
-    var tilt = (P.tilt || [0.65, 0.65])[0] + R() * (P.tilt || [0.65, 0.65])[1];
+    var tilt = o.tilt[0] + R() * o.tilt[1];
     up.copy(out).multiplyScalar(Math.cos(tilt)).addScaledVector(rnd, Math.sin(tilt)).normalize();
     side.crossVectors(up, out); if (side.lengthSq() < 1e-6) side.set(1, 0, 0); side.normalize();
-    var fl = P.strand || [0.05, 0.09, 0.03, 0.035];
-    var len = fl[0] + R() * fl[1], wid = fl[2] + R() * fl[3], tw = wid * (0.35 + R() * 0.5);
-    base.addScaledVector(out, -0.02);
-    var p0 = base.clone().addScaledVector(side, -wid), p1 = base.clone().addScaledVector(side, wid);
-    var p2 = base.clone().addScaledVector(up, len).addScaledVector(side, tw + (R() - 0.5) * wid);
-    var p3 = base.clone().addScaledVector(up, len * (0.65 + R() * 0.35)).addScaledVector(side, -tw);
+    var len = o.len[0] + Math.pow(R(), 1.4) * o.len[1], wid = o.wid[0] + R() * o.wid[1];
+    base.addScaledVector(out, -0.012);
     nrm.crossVectors(side, up).normalize(); if (nrm.dot(out) < 0) nrm.negate();
-    nrm.addScaledVector(out, 0.6).normalize();
-    c0.copy(cb).offsetHSL((R() - 0.5) * 0.03, 0, (R() - 0.5) * 0.1).convertSRGBToLinear();
-    c1.copy(ct).offsetHSL((R() - 0.5) * 0.03, 0, (R() - 0.5) * 0.08).convertSRGBToLinear();
-    [[p0, c0], [p1, c0], [p2, c1], [p0, c0], [p2, c1], [p3, c1]].forEach(function (q) {
-      pos.push(q[0].x, q[0].y, q[0].z); nor.push(nrm.x, nrm.y, nrm.z); col.push(q[1].r, q[1].g, q[1].b);
-    });
+    nrm.addScaledVector(out, 0.7).normalize();
+    // 조각마다 밝기를 크게 달리 — 깊은 틈은 진하게, 끝은 노랗게 반짝
+    var lt = (R() - 0.5) * 0.18;
+    c0.copy(cb).offsetHSL((R() - 0.5) * 0.025, 0, lt - R() * 0.06).convertSRGBToLinear();
+    c1.copy(ct).offsetHSL((R() - 0.5) * 0.025, 0, lt * 0.6).convertSRGBToLinear();
+    // 들쭉날쭉한 테두리 (밑동 → 끝), 밑동 가운데에서 부채꼴로
+    var pts = [[-1, 0], [-1 + R() * 0.2, 0.45 + R() * 0.15], [-0.7 + R() * 0.3, 0.85 + R() * 0.15], [-0.15 + R() * 0.3, 0.72 + R() * 0.2],
+               [0.35 + R() * 0.3, 0.9 + R() * 0.1], [0.9 + R() * 0.1, 0.5 + R() * 0.2], [1, 0]];   // 끝이 뭉툭하고 들쭉날쭉하게 찢어진 빵가루
+    var P0 = base.clone().addScaledVector(up, len * 0.12);
+    // 삼각형 앞면이 바깥(nrm)을 보게 감는 방향을 맞춰요 — 뒷면이 보이면 그늘처럼 칙칙해져서
+    var ccw = q.crossVectors(side, up).dot(nrm) < 0;
+    for (var k = 0; k < pts.length - 1; k++) {
+      [[0, 0.12], ccw ? pts[k] : pts[k + 1], ccw ? pts[k + 1] : pts[k]].forEach(function (pt, m) {
+        v.copy(base).addScaledVector(side, pt[0] * wid).addScaledVector(up, pt[1] * len);
+        if (m === 0) v.copy(P0);
+        cv.copy(c0).lerp(c1, Math.min(1, pt[1] * 1.1));
+        pos.push(v.x, v.y, v.z); nor.push(nrm.x, nrm.y, nrm.z); col.push(cv.r, cv.g, cv.b);
+      });
+    }
   }
   var g = new T.BufferGeometry();
   g.setAttribute('position', new T.Float32BufferAttribute(pos, 3));
@@ -557,9 +574,9 @@ function paintBody(pal, kind, seed) {
     herbs(g, R, W, H, 22, 2, fx - 10, pal.herb);
     herbs(g, R, W, H, pal.herbN, fx, W * 0.9, pal.herb);
   }
-  if (kind !== 'shell' && pal.tailShell) {
+  if (kind === 'peeled' && pal.tailShell) {   // 새우튀김은 꼬리 마디까지 튀김옷
     // 깐 새우 / 새우튀김도 꼬리 쪽 마지막 마디는 껍질이 남아 있음
-    var x0 = W * (kind === 'tempura' ? 0.935 : 0.885), sp = pal.tailShell;
+    var x0 = W * (kind === 'tempura' ? 0.975 : 0.885), sp = pal.tailShell;
     var S = mkCanvas(W, H), sg = S.getContext('2d');
     paintShellRegion(sg, R, W, H, sp, x0 - 30, W);
     sg.globalCompositeOperation = 'destination-in';
@@ -662,7 +679,10 @@ function makeMat(map, kind, part) {
     m = new T.MeshPhysicalMaterial({ map: map, roughness: gl.rough, metalness: 0, clearcoat: gl.coat, clearcoatRoughness: 0.18, envMapIntensity: gl.env });
   }
   if (part === 'tail') m.side = T.DoubleSide;
-  if (part === 'flake') { m.side = T.DoubleSide; m.vertexColors = true; }
+  if (part === 'flake') {   // 빵가루는 코팅 반사 없이 — 조각마다 하얗게 번쩍이지 않게
+    m.side = T.DoubleSide; m.vertexColors = true;
+    if (m.isMeshStandardMaterial) { m.clearcoat = 0; m.roughness = Math.max(m.roughness, 0.8); m.envMapIntensity *= 0.12; }
+  }
   addFx(m, CFG.rim[kind], gl && gl.spec != null ? gl.spec : CFG.spec, CFG.edge && CFG.edge[kind]);
   return m;
 }
@@ -690,11 +710,12 @@ function makeShrimp(kind, V, seed, def) {
   var model = new T.Group();
   var body = new T.Mesh(bodyGeometry(P), makeMat(texture(paintBody(V.body, kind, seed)), kind, 'body'));
   model.add(body); addOutline(body, CFG.outlineW);
+  var flakeMat = P.fry ? makeMat(null, kind, 'flake') : null;
   if (P.fry) {
     if (P.crumbs) { var crumbs = new T.Mesh(crumbGeometry(P, P.crumbs, seed + 3), body.material); model.add(crumbs); addOutline(crumbs, CFG.outlineW * 0.5); }
-    // 빵가루 가닥: 짧고 넓은 조각 + 가늘고 긴 가닥 두 겹
-    model.add(new T.Mesh(flakeGeometry(merge(P, { strand: [0.05, 0.08, 0.02, 0.03] }), 1600, seed + 9, V.body), makeMat(null, kind, 'flake')));
-    model.add(new T.Mesh(flakeGeometry(P, P.flakes || 2600, seed + 19, V.body), makeMat(null, kind, 'flake')));
+    // 빵가루 (사진처럼): 표면에 겹겹이 납작하게 붙은 조각 + 바깥으로 삐죽삐죽 솟은 조각 뭉치
+    model.add(new T.Mesh(flakeGeometry(P, 3200, seed + 9, V.body, { len: [0.07, 0.1], wid: [0.02, 0.03], tilt: [1.05, 0.45], sMax: 0.975 }), flakeMat));
+    model.add(new T.Mesh(flakeGeometry(P, 2400, seed + 19, V.body, { len: [0.09, 0.15], wid: [0.02, 0.03], tilt: [0.35, 0.8], clump: 4, sMax: 0.975 }), flakeMat));
   }
 
   // 꼬리 부채
@@ -713,9 +734,15 @@ function makeShrimp(kind, V, seed, def) {
     leaf.position.set(-0.08, 0, L[1]); leaf.scale.x = P.fanLen || 1;
     tail.add(leaf); addOutline(leaf, CFG.outlineW * 0.6);
   });
-  var joint = new T.Mesh(new T.SphereGeometry(0.17, 24, 16), tailMat);
+  // 새우튀김은 꼬리 마디까지 튀김옷이 덮여 있어요 (사진처럼)
+  var jg = new T.SphereGeometry(0.17, 24, 16);
+  if (P.fry) { var ju = jg.attributes.uv; for (var u = 0; u < ju.count; u++) ju.setX(u, 0.35 + ju.getX(u) * 0.3); }   // 튀김옷 무늬 쪽만 쓰게
+  var joint = new T.Mesh(jg, P.fry ? body.material : tailMat);
   joint.scale.set(1.3, 1, 0.85); joint.position.set(-0.04, 0, 0);
   tail.add(joint);
+  if (P.fry) tail.add(new T.Mesh(flakeGeometry(P, 320, seed + 29, V.body, { len: [0.05, 0.08], wid: [0.025, 0.03], tilt: [0.4, 0.9],
+    surf: function (R, base, out) { var u = R() * 2 - 1, th = R() * Math.PI * 2, rr = Math.sqrt(1 - u * u), dx = rr * Math.cos(th), dy = rr * Math.sin(th);
+      base.set(-0.04 + dx * 0.221, dy * 0.17, u * 0.1445); out.set(dx / 1.3, dy, u / 0.85).normalize(); } }), flakeMat));
   model.add(tail);
 
   // 회전 중심을 새우 가운데로
@@ -822,7 +849,7 @@ function extent(s) {
   s.holder.traverse(function (o) {
     if (!o.isMesh || o.material.side === T.BackSide) return;
     var p = o.geometry.attributes.position;
-    for (var i = 0; i < p.count; i += 3) {
+    for (var i = 0; i < p.count; i++) {   // 꼭짓점을 다 재야 빵가루 끝까지 크기에 들어가요
       v.fromBufferAttribute(p, i).applyMatrix4(o.matrixWorld).sub(o0);
       if (v.x < e.x[0]) e.x[0] = v.x; if (v.x > e.x[1]) e.x[1] = v.x;
       if (v.y < e.y[0]) e.y[0] = v.y; if (v.y > e.y[1]) e.y[1] = v.y;
