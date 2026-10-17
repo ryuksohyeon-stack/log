@@ -14,6 +14,13 @@ body{
 #stage>.vcard .vbadge>.ms{display:none}
 /* 맨 아래 러브링크 로고와 글씨 */
 #foot{color:var(--ll-accent)}
+/* 폰 — 세로 링크 카드 위아래 빈 여백을 줄여 프로필 · 카드 · 아래 링크 창을 가깝게.
+   비어 있는 무대 가장자리는 손가락이 그냥 지나가게(페이지 스크롤), 카드는 그대로 눌려요 */
+@media (max-width:600px){
+  #stage.vertical{margin:-20px 0;pointer-events:none}
+  #stage.vertical:has(>:nth-child(5)){margin:-40px 0}   /* 링크 5개 이상이면 여백이 더 커서 더 당겨요 */
+  #stage.vertical>.vcard{pointer-events:auto}
+}
 
 /* 맨 아래 링크 창의 왼쪽 네모 — 지금 가운데 링크의 사진 */
 body:has(#stage>:nth-child(-n+5).is-active) #now .badge{background:#fff var(--ll-shrimp) 50%/cover no-repeat}
