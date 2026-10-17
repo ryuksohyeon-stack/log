@@ -81,8 +81,6 @@ body{background:var(--page-bg);font-family:var(--f-body);color:var(--ink)}
    화면 크기가 바뀔 때마다 paintDots() 가 다시 그려요 */
 .v-b .bg{background:#fff}
 .bg .dots{position:absolute;inset:0;width:100%;height:100%;display:block}
-/* 망점 위에서도 잘 읽히게 안내 문구에 흰 바탕 */
-.v-b .hint{background:rgba(255,255,255,.9);padding:5px 12px;border-radius:999px;color:#9a8a84}
 .v-b .title-b{text-align:center;color:#2e2724;white-space:nowrap}
 .v-b .tb-v{position:relative;padding:8px 14px}
 .v-b .tb-v span{display:block;font:100 62px/1.08 'Gothic A1',sans-serif}
@@ -119,7 +117,6 @@ body{background:var(--page-bg);font-family:var(--f-body);color:var(--ink)}
   <section id="info" aria-live="polite"></section>
 
   <div class="loading">loading…</div>
-  <div class="hint">새우를 눌러 보세요</div>
 </div>
 
 <!-- =========================================================
@@ -172,7 +169,7 @@ var THREE_SRC = [
 
 var $ = function (q, el) { return (el || document).querySelector(q); };
 var app = $('#app'), canvas = $('#scene'), info = $('#info');
-var hint = $('.hint'), loading = $('.loading');
+var hint = $('.hint') || document.createElement('div'), loading = $('.loading');   // 안내 문구는 없앴어요
 var L = { W: 1220, H: 640, D: 390, k: 1, vw: 1, vh: 1 };
 var current = 0;
 var T, renderer, scene, camera, shrimps = [], KEYDIR, dq, tmpV;
@@ -241,6 +238,7 @@ function placeInfo() {
   a.holder.scale.setScalar(sc); b.holder.scale.setScalar(sc);
   a.holder.position.set(-g - a.ext.x[1] * sc, my, 0);
   b.holder.position.set(g - b.ext.x[0] * sc, my, 0);
+  shrimps.forEach(function (s) { if (s.rack) placeRack(s, sc); });
   L.D = Math.round((b.holder.position.x - a.holder.position.x) * 50);
   app.style.setProperty('--D', L.D);
   app.style.setProperty('--info-h', Math.round(L.vh - 40) + 'px');
@@ -887,9 +885,40 @@ function init() {
     b.base.scale.multiplyScalar(k); b.hitR *= k;
     b.ext = extent(b);
   })();
+  shrimps.forEach(function (s) { s.rack = makeRack(); scene.add(s.rack); });
   layout();
   bindInput();
   loading.classList.add('done');
+}
+/* ---------------------------------------------------------
+   튀김망 : 새우 밑에 놓인 스테인리스 기름 빼는 망 (돌려도 망은 그대로)
+   가로 1 기준으로 만들고 새우 너비에 맞춰 키워요. 살짝 앞으로 기울여서 위에서 내려다본 것처럼
+   --------------------------------------------------------- */
+var RACK_D = 0.6;
+function makeRack() {
+  var pos = [], nor = [], up = new T.Vector3(0, 1, 0), q = new T.Quaternion(), m = new T.Matrix4(), d = new T.Vector3();
+  function rod(ax, ay, az, bx, by, bz, r) {   // 두 점을 잇는 철사 한 가닥
+    var a = new T.Vector3(ax, ay, az), b = new T.Vector3(bx, by, bz), len = d.subVectors(b, a).length();
+    var g = new T.CylinderGeometry(r, r, len, 10, 1, false).toNonIndexed();
+    q.setFromUnitVectors(up, d.normalize()); m.compose(a.clone().add(b).multiplyScalar(0.5), q, new T.Vector3(1, 1, 1)); g.applyMatrix4(m);
+    Array.prototype.push.apply(pos, g.attributes.position.array); Array.prototype.push.apply(nor, g.attributes.normal.array);
+  }
+  var W = 0.5, D = RACK_D / 2, F = 0.016, t = 0.0075, step = 0.06, x, z;
+  rod(-W, 0, -D, W, 0, -D, F); rod(-W, 0, D, W, 0, D, F); rod(-W, 0, -D, -W, 0, D, F); rod(W, 0, -D, W, 0, D, F);   // 테두리
+  for (z = -D + step; z < D - step * 0.4; z += step) rod(-W, 0.006, z, W, 0.006, z, t);   // 가로 철사
+  for (x = -W + step; x < W - step * 0.4; x += step) rod(x, 0, -D, x, 0, D, t);           // 세로 철사
+  [[-1, -1], [1, -1], [-1, 1], [1, 1]].forEach(function (c) { rod(c[0] * (W - 0.04), 0, c[1] * (D - 0.03), c[0] * (W - 0.04), -0.07, c[1] * (D - 0.03), F * 0.9); });   // 다리
+  var geo = new T.BufferGeometry();
+  geo.setAttribute('position', new T.Float32BufferAttribute(pos, 3)); geo.setAttribute('normal', new T.Float32BufferAttribute(nor, 3));
+  // 하얀 바탕에 묻히지 않게 조금 어두운 은색 + 또렷한 반사
+  var rack = new T.Mesh(geo, new T.MeshStandardMaterial({ color: '#7e8892', metalness: 0.9, roughness: 0.26, envMapIntensity: 0.65 }));
+  rack.rotation.x = 0.8;
+  return rack;
+}
+function placeRack(s, sc) {
+  var e = s.ext, w = (e.x[1] - e.x[0]) * sc;
+  s.rack.scale.setScalar(w * 1.08);
+  s.rack.position.set(s.holder.position.x + (e.x[0] + e.x[1]) / 2 * sc, s.holder.position.y + e.y[0] * sc + w * 0.03, 0);
 }
 function extent(s) {
   var e = { x: [Infinity, -Infinity], y: [Infinity, -Infinity] }, v = new T.Vector3(), o0 = s.holder.position;
