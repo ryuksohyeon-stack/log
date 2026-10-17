@@ -77,11 +77,11 @@ body{background:var(--page-bg);font-family:var(--f-body);color:var(--ink)}
   --btn-radius:2px;--btn-border:1px solid #2e2724;--btn-ink:#2e2724;--btn-shadow:none;--close-bg:transparent;--close-ink:#2e2724}
 .v-b{--sub-ink:#8a7d76;--rule:#eee5e0}
 .v-b .c-title{font-size:21px}
-.v-b .bg{background:#fff;overflow:hidden}
-/* 레드오렌지 스머징 — 넓게 번진 물감(soft) 위에 문지른 결(grain)을 한 겹 더 */
-.bg .smudge{position:absolute;inset:0;width:100%;height:100%}
-.bg .smudge.soft{filter:blur(26px);transform:scale(1.08)}
-.bg .smudge.grain{filter:blur(1.2px);opacity:.7;mix-blend-mode:multiply}
+/* 배경: 흰 바탕, 가장자리만 맑고 연한 레드오렌지가 안쪽으로 부드럽게 번지는 테두리.
+   두께(--edge)는 화면 짧은 변에 맞춰 layout() 에서 정해요 */
+.v-b .bg{background:#fff;--edge:90px;
+  box-shadow:inset 0 0 calc(var(--edge) * .3) calc(var(--edge) * .1) rgba(255,128,96,.2),
+             inset 0 0 calc(var(--edge) * 1.25) calc(var(--edge) * .14) rgba(255,128,96,.32)}
 .v-b .title-b{text-align:center;color:#2e2724;white-space:nowrap}
 .v-b .tb-v{position:relative;padding:8px 14px}
 .v-b .tb-v span{display:block;font:100 62px/1.08 'Gothic A1',sans-serif}
@@ -97,7 +97,7 @@ body{background:var(--page-bg);font-family:var(--f-body);color:var(--ink)}
 <body class="v-b">
 
 <div id="app">
-  <div class="bg"><canvas class="smudge soft" aria-hidden="true"></canvas><canvas class="smudge grain" aria-hidden="true"></canvas></div>
+  <div class="bg"></div>
 
   <div class="stage stage-back">
     <div class="anchor l"></div>
@@ -179,47 +179,9 @@ var T, renderer, scene, camera, shrimps = [], KEYDIR, dq, tmpV;
 /* ---------------------------------------------------------
    화면 크기에 맞춰 전체를 자동으로 맞춤
    --------------------------------------------------------- */
-/* ---------------------------------------------------------
-   배경 : 흰 바탕에 레드오렌지를 손가락으로 문지른 듯한 번짐
-   (같은 씨앗값으로 그려서 늘 같은 모양, 화면 크기가 바뀔 때만 다시 그림)
-   --------------------------------------------------------- */
-var smudgeSize = '';
-function paintSmudge(W, H) {
-  var soft = $('.smudge.soft'), grain = $('.smudge.grain');
-  if (!soft || smudgeSize === W + 'x' + H) return;
-  smudgeSize = W + 'x' + H;
-  [soft, grain].forEach(function (c) { c.width = Math.max(1, Math.round(W / 2)); c.height = Math.max(1, Math.round(H / 2)); });   // 반 해상도 — 흐리게 쓰니 티가 안 나요
-  var R = rng(77), gs = soft.getContext('2d'), gg = grain.getContext('2d'), w = soft.width, h = soft.height, u = Math.min(w, h);
-  function dab(g, x, y, r, col, a) { var rg = g.createRadialGradient(x, y, 0, x, y, r); rg.addColorStop(0, rgba(col, a)); rg.addColorStop(1, rgba(col, 0)); g.fillStyle = rg; g.beginPath(); g.arc(x, y, r, 0, Math.PI * 2); g.fill(); }
-  // 문지른 자국: 휘어진 길을 따라 둥근 얼룩을 촘촘히 찍고, 끝으로 갈수록 옅고 가늘게. 진행 방향으로 가는 결도 함께
-  function smear(x0, y0, x1, y1, bend, r0, col, a) {
-    var n = 70, dx = (x1 - x0) / n, dy = (y1 - y0) / n, nx = -(y1 - y0), ny = x1 - x0, L = Math.hypot(nx, ny) || 1; nx /= L; ny /= L;
-    for (var i = 0; i <= n; i++) {
-      var t = i / n, k = Math.sin(Math.PI * t) * bend, x = x0 + (x1 - x0) * t + nx * k, y = y0 + (y1 - y0) * t + ny * k;
-      var r = r0 * (1 - 0.6 * t) * (0.85 + R() * 0.3), aa = a * (1 - 0.65 * t) * (0.7 + R() * 0.5);
-      dab(gs, x, y, r, col, aa * 0.45);
-      for (var j = 0; j < 4; j++) {
-        var o = (R() - 0.5) * r * 1.5;
-        gg.strokeStyle = rgba(col, aa * (0.15 + R() * 0.3)); gg.lineWidth = 0.8 + R() * 2.2; gg.lineCap = 'round';
-        gg.beginPath(); gg.moveTo(x + nx * o, y + ny * o); gg.lineTo(x + nx * o + dx * 2.2, y + ny * o + dy * 2.2); gg.stroke();
-      }
-    }
-  }
-  var C = ['#ff4a2a', '#ff633a', '#ff7f4e', '#ffa07a'];
-  smear(-0.06 * w, 0.02 * h, 0.36 * w, 0.3 * h, 0.08 * u, 0.24 * u, C[0], 0.6);
-  smear(1.06 * w, 0.98 * h, 0.62 * w, 0.68 * h, -0.1 * u, 0.26 * u, C[1], 0.55);
-  smear(0.8 * w, -0.05 * h, 1.03 * w, 0.3 * h, 0.05 * u, 0.13 * u, C[2], 0.42);
-  smear(-0.03 * w, 1.0 * h, 0.2 * w, 0.8 * h, 0.04 * u, 0.11 * u, C[2], 0.38);
-  for (var i = 0; i < 16; i++) dab(gs, R() * w, R() * h, (0.02 + R() * 0.05) * u, C[(R() * C.length) | 0], 0.1 + R() * 0.14);
-  // 가운데 글자리는 하얗게 걷어 내서 글이 잘 읽히게
-  var cx = w / 2, cy = h / 2, cr = 0.42 * u;
-  var wg = gs.createRadialGradient(cx, cy, 0, cx, cy, cr); wg.addColorStop(0, 'rgba(255,255,255,.95)'); wg.addColorStop(0.6, 'rgba(255,255,255,.6)'); wg.addColorStop(1, 'rgba(255,255,255,0)');
-  gs.fillStyle = wg; gs.fillRect(0, 0, w, h);
-  gg.globalCompositeOperation = 'destination-out'; gg.fillStyle = wg; gg.fillRect(0, 0, w, h); gg.globalCompositeOperation = 'source-over';
-}
 function layout() {
   var vw = app.clientWidth || innerWidth, vh = app.clientHeight || innerHeight;
-  paintSmudge(vw, vh);
+  $('.bg', app).style.setProperty('--edge', Math.round(Math.min(vw, vh) * 0.14) + 'px');   // 테두리 번짐 두께 = 짧은 변의 14% (보내 준 그림 비율)
   var mobile = vw < 760;
   L.vw = vw; L.vh = vh; L.mobile = mobile;
   // 가로 화면: 좌우 배치 / 세로 화면: 위아래 배치 (D = 가운데에서 새우 중심까지, 디자인 px)
