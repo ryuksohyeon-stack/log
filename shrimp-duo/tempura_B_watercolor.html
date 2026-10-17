@@ -705,7 +705,7 @@ function makeShrimp(kind, V, seed, def) {
     shell: { sh: SHAPES.curl, shell: true, R0: 0.5, width: 0.82, vent: 0.9, ridge: 0.1 },
     peeled: { sh: SHAPES.ring, ring: true, shingle: true, R0: 0.5, width: 0.86, vent: 0.9, ridge: 0.1, fluff: 0.24, fan: 0.6, fanLen: 1.2 },
     // 새우튀김도 왼쪽 새우와 같은 O자 자세·통통함 (튀김옷 두께만큼 속은 살짝 가늘게)
-    tempura: { sh: SHAPES.ring, ring: true, fry: true, R0: 0.42, taper: 0.38, width: 0.86, vent: 0.9, bumps: 0.22, fan: 0.55, fanLen: 1.0,
+    tempura: { sh: SHAPES.ring, ring: true, fry: true, R0: 0.53, taper: 0.3, width: 0.86, vent: 0.9, bumps: 0.22, fan: 0.55, fanLen: 1.0,
       flakes: 7500, clump: 9, strand: [0.05, 0.12, 0.01, 0.02], tilt: [0.55, 0.95] }
   }[kind];
   var model = new T.Group();
