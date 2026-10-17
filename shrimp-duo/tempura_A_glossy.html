@@ -243,8 +243,6 @@ var SHAPES = {
   curl: { phi0: 124 * Math.PI / 180, sweep: 286 * Math.PI / 180, rho0: 0.86, rho1: 1.02, rhoT: 0.2, capH: 0.09, capT: 0.035 },
   ring: { phi0: 132 * Math.PI / 180, sweep: 300 * Math.PI / 180, rho0: 0.98, rho1: 1.02, rhoT: 0.12, capH: 0.085, capT: 0.035 },
   // 새우튀김: 사진처럼 머리(얼굴)는 왼쪽 가운데, 아래로 둥글게 돌아 꼬리는 오른쪽에서 위로 솟음
-  // 사진 속 새우튀김: 머리는 왼쪽 가운데에서 크고 둥글게, 아래로 240° 돌아 오른쪽으로 올라가며 가늘어지고, 꼬리는 위로 살짝 벌어져요
-  photoFry: { phi0: 198 * Math.PI / 180, sweep: 226 * Math.PI / 180, rho0: 1.15, rho1: 1.2, rhoT: 0.42, flareA: 0.76, capH: 0.13, capT: 0.04 },
   ringFry: { phi0: 184 * Math.PI / 180, sweep: 268 * Math.PI / 180, rho0: 1.18, rho1: 1.02, rhoT: 0.9, flareA: 0.66, capH: 0.125, capT: 0.035 },
   ebi: { phi0: 195 * Math.PI / 180, sweep: 252 * Math.PI / 180, rho0: 1.3, rho1: 1.05, rhoT: 0.95, capH: 0.12, capT: 0.03 }
 };
@@ -264,7 +262,6 @@ function frameAt(s, SH) {
   return { c: c, t: t, n: n, b: b };
 }
 function baseRadius(s, P) {
-  if (P.photo) return P.R0 * (1 - 0.06 * s - 0.48 * smooth(0.62, 1.0, s)) * (1 + 0.24 * Math.exp(-Math.pow((s - 0.09) / 0.12, 2)));   // 머리 쪽이 크고 둥글게 부풀어요   // 머리 굵기의 1/4 까지 고르게 가늘어짐 (사진에서 잰 굵기)
   if (P.ring) return P.R0 * (1 - (P.taper || 0.38) * smooth(0.62, 1.0, s)) * (1 + 0.04 * Math.exp(-Math.pow((s - 0.2) / 0.15, 2)));
   if (P.fry) return P.R0 * (1 + 0.05 * Math.exp(-Math.pow((s - 0.12) / 0.12, 2)) - 0.25 * smooth(0.12, 0.6, s) - 0.38 * smooth(0.6, 0.95, s));
   var r = P.R0 * (1 - 0.56 * smooth(0.28, 1.0, s));
@@ -704,7 +701,7 @@ function makeShrimp(kind, V, seed, def) {
     shell: { sh: SHAPES.curl, shell: true, R0: 0.5, width: 0.82, vent: 0.9, ridge: 0.1 },
     peeled: { sh: SHAPES.ring, ring: true, shingle: true, R0: 0.5, width: 0.86, vent: 0.9, ridge: 0.1, fluff: 0.24, fan: 0.6, fanLen: 1.2 },
     // 새우튀김도 왼쪽 새우와 같은 O자 자세·통통함 (튀김옷 두께만큼 속은 살짝 가늘게)
-    tempura: { sh: SHAPES.photoFry, photo: true, fry: true, R0: 0.47, width: 0.9, vent: 0.95, bumps: 0.27, fan: 0.5, fanLen: 0.8,
+    tempura: { sh: SHAPES.ring, ring: true, fry: true, R0: 0.42, taper: 0.38, width: 0.86, vent: 0.9, bumps: 0.22, fan: 0.55, fanLen: 1.0,
       flakes: 7500, clump: 9, strand: [0.05, 0.12, 0.01, 0.02], tilt: [0.55, 0.95] }
   }[kind];
   var model = new T.Group();
@@ -723,7 +720,10 @@ function makeShrimp(kind, V, seed, def) {
   // 꼬리 부채
   var tailTex = texture(paintTail(V.tail, seed + 7)), tailMat = makeMat(tailTex, kind, 'tail');
   var F = frameAt(0.985, P.sh), beta = 70 * Math.PI / 180;
+  // 새우튀김은 꼬리를 바깥(위)으로 세워요 — 머리 위로 눕지 않아 얼굴이 가려지지 않게 (사진처럼 꼬리가 위로)
+  if (P.fry) F.t.multiplyScalar(Math.cos(0.9)).addScaledVector(F.n, Math.sin(0.9)).normalize();
   var Wd = new T.Vector3().addScaledVector(F.b, Math.cos(beta)).addScaledVector(F.n, Math.sin(beta)).normalize();
+  Wd.addScaledVector(F.t, -Wd.dot(F.t)).normalize();
   var Zd = new T.Vector3().crossVectors(F.t, Wd).normalize();
   var tail = new T.Group();
   tail.matrix.makeBasis(F.t, Wd, Zd); tail.matrix.setPosition(F.c); tail.matrixAutoUpdate = false;
@@ -737,7 +737,7 @@ function makeShrimp(kind, V, seed, def) {
     tail.add(leaf); addOutline(leaf, CFG.outlineW * 0.6);
   });
   // 새우튀김은 꼬리 마디까지 튀김옷이 덮여 있어요 (사진처럼)
-  var jr = P.photo ? 0.1 : 0.17, jg = new T.SphereGeometry(jr, 24, 16);
+  var jr = 0.17, jg = new T.SphereGeometry(jr, 24, 16);
   if (P.fry) { var ju = jg.attributes.uv; for (var u = 0; u < ju.count; u++) ju.setX(u, 0.35 + ju.getX(u) * 0.3); }   // 튀김옷 무늬 쪽만 쓰게
   var joint = new T.Mesh(jg, P.fry ? body.material : tailMat);
   joint.scale.set(1.3, 1, 0.85); joint.position.set(-0.04, 0, 0);
