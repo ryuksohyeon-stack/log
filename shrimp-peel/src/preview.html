@@ -1,0 +1,116 @@
+<title>껍질 속 편지</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/*@FONT@*/
+/* 한 단 가운데 정렬 — 위에 시안 고르기, 가운데 3D 접시, 아래 설명(시안 3은 글 판) */
+:root{--bg:#fff1f5;--ink:#3b2731;--sub:#8a6474;--pink:#ff6f91;--soft:#ffd8e3;--card:#ffffff;--line:#f6c4d3;--ft:'Pretendard',system-ui,-apple-system,'Apple SD Gothic Neo',sans-serif;color-scheme:light}
+html,body{background:var(--bg);color:var(--ink)}
+body{font-family:var(--ft);word-break:keep-all;-webkit-font-smoothing:antialiased}
+.wrap{max-width:980px;margin:0 auto;padding-block:28px 40px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:18px}
+h1{margin:0;font-size:clamp(24px,4.4vw,34px);font-weight:700;letter-spacing:-.02em;text-wrap:balance}
+.lede{margin:6px 0 0;color:var(--sub);font-size:15px;line-height:1.6;max-width:60ch}
+.tabs{display:flex;flex-wrap:wrap;gap:8px}
+.tab{appearance:none;border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:9px 14px;font:700 14px/1.2 var(--ft);cursor:pointer;display:flex;gap:8px;align-items:center}
+.tab b{display:grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--soft);color:var(--pink);font-size:12px}
+.tab[aria-selected=true]{background:var(--pink);border-color:var(--pink);color:#fff}
+.tab[aria-selected=true] b{background:#fff;color:var(--pink)}
+.tab:focus-visible,.btn:focus-visible{outline:3px solid #ffb3c7;outline-offset:2px}
+.sian{display:grid;gap:12px}
+.stage{position:relative;width:100%;max-width:100%;aspect-ratio:16/10;border-radius:22px;overflow:hidden;background:#ffa3ba;box-shadow:0 0 0 1.5px var(--line),0 14px 30px rgb(160 60 90/.14)}
+.stage canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none;cursor:grab}
+.stage canvas:active{cursor:grabbing}
+.chip{position:absolute;left:14px;top:12px;padding:7px 12px;border-radius:999px;background:rgb(255 255 255/.88);font:700 13px/1.2 var(--ft);color:var(--ink);pointer-events:none}
+.count{position:absolute;right:14px;top:12px;padding:7px 12px;border-radius:999px;background:var(--ink);color:#fff;font:700 13px/1.2 var(--ft);font-variant-numeric:tabular-nums;pointer-events:none}
+.btns{position:absolute;right:14px;bottom:12px;display:flex;gap:8px}
+.btn{appearance:none;border:0;border-radius:999px;padding:9px 14px;font:700 13px/1.2 var(--ft);cursor:pointer;background:#fff;color:var(--ink);box-shadow:0 2px 0 rgb(160 60 90/.25)}
+.btn.main{background:var(--pink);color:#fff}
+.load{position:absolute;inset:0;display:grid;place-items:center;font:700 15px var(--ft);color:#fff;background:#ffa3ba}
+.note{margin:0;color:var(--sub);font-size:14px;line-height:1.65}
+.note b{color:var(--ink)}
+.letter{display:grid;gap:4px;padding:18px 20px;border-radius:18px;background:var(--card);box-shadow:0 0 0 1.5px var(--line)}
+.letter h2{margin:0 0 6px;font-size:16px;font-weight:700;color:var(--pink)}
+.letter p{margin:0;font-size:16px;line-height:1.8;transition:filter .5s,opacity .5s}
+.letter p.hide{filter:blur(6px);opacity:.35}
+.foot{margin:0;font-size:13px;color:var(--sub)}
+@media (max-width:640px){.stage{aspect-ratio:4/3.4}.chip{font-size:12px}.btn{padding:8px 12px}}
+@media (prefers-reduced-motion:reduce){.letter p{transition:none}}
+</style>
+<div class="wrap">
+  <header>
+    <h1>껍질 속 편지</h1>
+    <p class="lede">쿠킹마마 식탁에 올린 익은 새우예요. 껍질을 톡 누르면 한 장씩 벗겨지고, 안에 적어 둔 글이 나와요. 끌면 새우가 빙글 돌아가요. 마음에 드는 시안을 골라 주세요.</p>
+  </header>
+  <div class="tabs" role="tablist" aria-label="시안">
+    <button class="tab" role="tab" id="t1" aria-selected="true" aria-controls="s1"><b>1</b>꽃 접시 · 속살에 쓴 글</button>
+    <button class="tab" role="tab" id="t2" aria-selected="false" aria-controls="s2"><b>2</b>네모 접시 · 껍질 낱말 카드</button>
+    <button class="tab" role="tab" id="t3" aria-selected="false" aria-controls="s3"><b>3</b>노란 테 접시 · 한 장에 한 줄</button>
+  </div>
+
+  <section class="sian" id="s1" role="tabpanel" aria-labelledby="t1" data-setting="flower" data-mode="flesh">
+    <div class="stage"><canvas aria-label="새우 3D — 껍질을 눌러 벗기고, 끌어서 돌려요"></canvas><div class="load">새우 삶는 중…</div><span class="chip">껍질을 톡 · 끌면 빙글</span><span class="count">0 / 6</span><div class="btns"><button class="btn" data-act="all" type="button">한 번에 벗기기</button><button class="btn main" data-act="reset" type="button">다시 입히기</button></div></div>
+    <p class="note"><b>속살에 쓴 글</b> — 하와이 꽃 접시에 꽃무늬 냅킨, 잎 줄기, 레몬 한 조각. 껍질을 다 벗기면 새우 살 위에 써 둔 두 줄이 보여요. 돌려 보면 글이 새우 굽이를 따라 휘어 있어요.</p>
+  </section>
+
+  <section class="sian" id="s2" role="tabpanel" aria-labelledby="t2" data-setting="square" data-mode="shell" hidden>
+    <div class="stage"><canvas aria-label="새우 3D — 껍질을 눌러 벗기고, 끌어서 돌려요"></canvas><div class="load">새우 삶는 중…</div><span class="chip">껍질을 톡 · 끌면 빙글</span><span class="count">0 / 6</span><div class="btns"><button class="btn" data-act="all" type="button">한 번에 벗기기</button><button class="btn main" data-act="reset" type="button">다시 입히기</button></div></div>
+    <p class="note"><b>껍질 낱말 카드</b> — 흰 네모 접시와 민트 냅킨. 벗긴 껍질이 날아오르며 납작하게 펴지고, 안쪽에 적힌 낱말이 보여요. 여섯 장이 두 줄로 모이면 한 문장이 돼요.</p>
+  </section>
+
+  <section class="sian" id="s3" role="tabpanel" aria-labelledby="t3" data-setting="round" data-mode="shell" hidden>
+    <div class="stage"><canvas aria-label="새우 3D — 껍질을 눌러 벗기고, 끌어서 돌려요"></canvas><div class="load">새우 삶는 중…</div><span class="chip">껍질을 톡 · 끌면 빙글</span><span class="count">0 / 6</span><div class="btns"><button class="btn" data-act="all" type="button">한 번에 벗기기</button><button class="btn main" data-act="reset" type="button">다시 입히기</button></div></div>
+    <div class="letter" aria-live="polite">
+      <h2>껍질 한 장, 글 한 줄</h2>
+      <p class="hide">오늘은 새우를 삶았어요.</p>
+      <p class="hide">껍질을 한 장씩 벗길 때마다</p>
+      <p class="hide">하고 싶었던 말이 하나씩 나와요.</p>
+      <p class="hide">급하게 까지 않아도 괜찮아요.</p>
+      <p class="hide">천천히, 한 마디씩.</p>
+      <p class="hide">다 벗기면 그게 오늘의 편지예요.</p>
+    </div>
+    <p class="note"><b>한 장에 한 줄</b> — 노란 테 두른 둥근 접시. 껍질 안쪽에는 낱말 하나, 아래 글 판에는 그 껍질의 한 줄이 흐린 데서 또렷해져요. 긴 글을 읽히기에 좋아요.</p>
+  </section>
+
+  <p class="foot">고른 시안은 luvinfo HTML 페이지에 붙여 넣는 코드로 다듬어 드릴게요. 글은 그때 원하는 문장으로 바꿀 수 있어요.</p>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+/*@SHRIMP@*/
+(() => {
+  const CFG = {
+    s1: { fleshText: ['껍질 속에 숨겨 둔 말', '오늘도 정말 수고했어'] },
+    s2: { words: ['껍질', '속에', '숨겨 둔', '작은', '편지', '하나'] },
+    s3: { words: ['오늘', '한 장씩', '하고 싶던 말', '괜찮아요', '천천히', '편지'] },
+  };
+  const made = {};
+  function make(sec) {
+    if (made[sec.id] || !window.THREE) return;
+    const stage = sec.querySelector('.stage'), load = sec.querySelector('.load'), count = sec.querySelector('.count');
+    const go = () => {
+      try {
+        const ck = ckPeel(THREE, stage, Object.assign({ setting: sec.dataset.setting, mode: sec.dataset.mode, font: 'Pretendard' }, CFG[sec.id]));
+        made[sec.id] = ck; load.hidden = true;
+        const lines = [...sec.querySelectorAll('.letter p')];
+        stage.addEventListener('peel', (e) => { count.textContent = `${e.detail.count} / ${e.detail.total}`; lines.forEach((p, i) => p.classList.toggle('hide', i >= e.detail.count)); });
+        sec.querySelectorAll('[data-act]').forEach((b) => b.addEventListener('click', () => { if (b.dataset.act === 'reset') ck.reset(); else { let k = 0; const t = setInterval(() => { ck.peel(); if (++k >= 6) clearInterval(t); }, 260); } }));
+      } catch (err) { load.textContent = '이 브라우저에서는 3D 를 그릴 수 없어요'; }
+    };
+    document.fonts.load('700 64px Pretendard').then(() => setTimeout(go, 30), () => setTimeout(go, 30));
+  }
+  const tabs = [...document.querySelectorAll('.tab')];
+  function show(id) {
+    tabs.forEach((t) => { const on = t.getAttribute('aria-controls') === id; t.setAttribute('aria-selected', on); t.tabIndex = on ? 0 : -1; });
+    document.querySelectorAll('.sian').forEach((s) => { s.hidden = s.id !== id; });
+    make(document.getElementById(id));
+    try { localStorage.setItem('ck-sian', id); } catch (e) { }
+  }
+  tabs.forEach((t, i) => {
+    t.addEventListener('click', () => show(t.getAttribute('aria-controls')));
+    t.addEventListener('keydown', (e) => { if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return; const n = tabs[(i + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length]; n.focus(); show(n.getAttribute('aria-controls')); });
+  });
+  const hash = (location.hash || '').slice(1);
+  let first = ['s1', 's2', 's3'].includes(hash) ? hash : 's1';
+  if (!hash) { try { const m = localStorage.getItem('ck-sian'); if (m && document.getElementById(m)) first = m; } catch (e) { } }
+  show(first);
+  addEventListener('hashchange', () => { const h = location.hash.slice(1); if (['s1', 's2', 's3'].includes(h)) show(h); });
+})();
+</script>
