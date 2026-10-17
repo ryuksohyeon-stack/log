@@ -674,7 +674,9 @@ function makeMat(map, kind, part) {
     }
     m = new T.MeshToonMaterial({ map: map, gradientMap: toonGrad });
   } else if (st === 'water') {
-    m = new T.MeshStandardMaterial({ map: map, roughness: gl.rough, metalness: 0, envMapIntensity: gl.env });
+    // coat 이 있으면 A(반짝) 시안처럼 얇은 코팅 광택을 살짝 얹어요
+    m = gl.coat ? new T.MeshPhysicalMaterial({ map: map, roughness: gl.rough, metalness: 0, clearcoat: gl.coat, clearcoatRoughness: 0.3, envMapIntensity: gl.env })
+      : new T.MeshStandardMaterial({ map: map, roughness: gl.rough, metalness: 0, envMapIntensity: gl.env });
     if (gl.tint) m.color.set(gl.tint);
   } else {
     m = new T.MeshPhysicalMaterial({ map: map, roughness: gl.rough, metalness: 0, clearcoat: gl.coat, clearcoatRoughness: 0.18, envMapIntensity: gl.env });
