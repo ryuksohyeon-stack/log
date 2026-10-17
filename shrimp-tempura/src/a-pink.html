@@ -1,0 +1,69 @@
+<!-- 새우튀김 만들기 · 시안 A 「핑크 깅엄」
+     luvinfo › 새 HTML 페이지에 이 파일을 통째로 붙여 넣어요.
+     · 컴퓨터: 페이지 폭을 「넓게」나 「화면 꽉 채움」으로 고르면 요리가 왼쪽, 글이 오른쪽에 나란히 놓여요.
+     · 폰: 요리가 위, 글이 아래. 화면 폭에 맞춰 통째로 줄어요.
+     · 글은 아래 <article> 안만 고치면 돼요. -->
+<style>
+/*@ENGINE_CSS@*/
+.ckA,.ckA *{box-sizing:border-box}
+.ckA{--ink:#2b3467;--pink:#ff5c8a;--soft:#ffe6ee;container-type:inline-size;position:relative;margin:0 auto;padding:0 0 22px;border-radius:30px;overflow:hidden;color:var(--ink);
+  font-family:'IyagiGGC',sans-serif;font-synthesis:none;word-break:keep-all;
+  background:linear-gradient(90deg,rgb(255 140 178/.3) 50%,transparent 0) 0 0/30px 30px,linear-gradient(rgb(255 140 178/.3) 50%,transparent 0) 0 0/30px 30px,#ffeef3}
+/* 차양 — 줄무늬 + 물결 끝 */
+.ckA-awn{height:44px;background:linear-gradient(90deg,#ff7ea4 50%,#fff 0) 0 0/56px 100%;position:relative;margin-bottom:26px}
+.ckA-awn:after{content:"";position:absolute;left:0;right:0;top:100%;height:18px;background:radial-gradient(circle at 14px 0,#ff7ea4 13px,transparent 13.5px) 0 0/56px 18px,radial-gradient(circle at 42px 0,#fff 13px,transparent 13.5px) 0 0/56px 18px;filter:drop-shadow(0 3px 0 rgb(43 52 103/.15))}
+.ckA-grid{display:grid;gap:22px;padding:0 12px}
+.ckA-frame{padding:6px;border-radius:24px;background:#fff;box-shadow:0 0 0 4px #8fd6f2,0 0 0 7px #fff,0 0 0 10px var(--ink),0 9px 0 6px var(--ink),0 18px 26px 6px rgb(122 42 72/.25);margin:10px 10px 0}
+.ckA-frame .ck-stage{border-radius:18px}
+.ckA-cap{display:flex;flex-wrap:wrap;justify-content:center;gap:6px 4px;margin:26px 0 0;font:13px/1.5 'IyagiGGC',sans-serif;color:#b24a6c}
+.ckA-cap b{padding:2px 9px;border-radius:99px;background:#fff;box-shadow:0 0 0 2px var(--ink);color:var(--ink);font-weight:400}
+.ckA .ck-memo{position:relative;margin:22px 4px 0;padding:16px 18px 14px;border-radius:20px;background:#fffbe3;box-shadow:0 0 0 3px var(--ink),0 6px 0 3px var(--ink)}
+.ckA .ck-memo-t{position:absolute;left:18px;top:-13px;margin:0;padding:3px 12px;border-radius:99px;background:var(--pink);color:#fff;font:13px/1.3 'IyagiGGC',sans-serif;letter-spacing:.06em;box-shadow:0 0 0 2.5px var(--ink)}
+.ckA .ck-memo ul{list-style:none;margin:6px 0 10px;padding:0}
+.ckA .ck-memo li{display:flex;gap:8px;margin:0 0 6px;font-size:14px;line-height:1.6}
+.ckA .ck-memo li b{flex:none;min-width:46px;font:400 14px/1.6 'IyagiGGC',sans-serif;color:var(--pink)}
+.ckA .ck-best{margin:0;padding-top:9px;border-top:2px dashed #ffc2d3;font:15px/1.4 'IyagiGGC',sans-serif}
+.ckA .ck-best b{font-weight:400;color:var(--pink)}
+/* 글 카드 */
+.ckA .ck-post{position:relative;padding:28px 22px 28px;border-radius:26px;background:#fff;box-shadow:0 0 0 3px var(--ink),0 8px 0 3px var(--ink),0 18px 28px rgb(122 42 72/.18)}
+.ckA .ck-post:before{content:"";position:absolute;inset:9px;border:2px dashed #ffb3c9;border-radius:19px;pointer-events:none}
+.ckA .ck-kicker{display:inline-block;margin:0 0 12px;padding:5px 13px;border-radius:99px;background:#fff1a6;box-shadow:0 0 0 2px var(--ink);font:14px/1.2 'IyagiGGC',sans-serif}
+.ckA .ck-h1{margin:0 0 14px;font:400 clamp(30px,8cqi,42px)/1.12 'IyagiGGC',sans-serif;color:var(--pink);letter-spacing:-.01em;
+  text-shadow:3px 0 #fff,-3px 0 #fff,0 3px #fff,0 -3px #fff,2px 2px #fff,-2px -2px #fff,2px -2px #fff,-2px 2px #fff,4px 5px 0 var(--ink)}
+.ckA .ck-lead{margin:0 0 6px;font-size:16px;line-height:1.85;color:#4a5280}
+.ckA .ck-sec{position:relative;margin:18px -12px 0;padding:14px 12px 4px;border-radius:18px;transition:background .3s,box-shadow .3s}
+.ckA .ck-h2{display:flex;align-items:center;gap:10px;margin:0 0 8px;font:400 22px/1.2 'IyagiGGC',sans-serif;color:var(--ink)}
+.ckA .ck-h2 b{display:grid;place-items:center;width:34px;height:34px;flex:none;border-radius:50%;background:#ffd53d;box-shadow:inset 0 -3px 0 rgb(0 0 0/.12),0 0 0 2.5px var(--ink);font-weight:400;font-size:19px}
+.ckA .ck-sec p{margin:0 0 10px;font-size:16px;line-height:1.85}
+.ckA .ck-sec.ck-now{background:#fff7d6;box-shadow:inset 0 0 0 2px #ffd53d}
+.ckA .ck-sec.ck-now:after{content:"요리 중 🍤";position:absolute;right:12px;top:16px;padding:3px 9px;border-radius:99px;background:var(--pink);color:#fff;font:13px/1.3 'IyagiGGC',sans-serif}
+.ckA .ck-outro{margin:22px 0 14px;font:18px/1.5 'IyagiGGC',sans-serif;color:#b24a6c;text-align:center}
+.ckA .ck-go{display:block;margin:0 auto 4px;padding:13px 26px 15px;border:0;border-radius:99px;cursor:pointer;font:20px/1 'IyagiGGC',sans-serif;color:var(--ink);
+  background:linear-gradient(#fff7b8,#ffd53d 55%,#ffc21a);box-shadow:inset 0 -4px 0 rgb(0 0 0/.12),inset 0 3px 0 rgb(255 255 255/.7),0 0 0 4px #fff,0 0 0 7px var(--ink),0 8px 0 4px var(--ink);transition:transform .12s}
+.ckA .ck-go:active{transform:translateY(4px)}
+@container (min-width:720px){
+  .ckA{padding-bottom:30px}
+  .ckA-grid{grid-template-columns:minmax(0,1.08fr) minmax(0,1fr);align-items:start;gap:30px;padding:0 26px}
+  .ckA-frame{padding:9px;border-radius:30px;box-shadow:0 0 0 5px #8fd6f2,0 0 0 9px #fff,0 0 0 12px var(--ink),0 12px 0 8px var(--ink),0 22px 30px 8px rgb(122 42 72/.25);margin:12px 12px 0}
+  .ckA-frame .ck-stage{border-radius:22px}
+  .ckA-cap{font-size:15px;margin-top:34px}
+  .ckA .ck-memo{margin:26px 12px 0}
+  .ckA .ck-post{padding:36px 34px 34px}
+}
+</style>
+<div class="ckA">
+  <div class="ckA-awn"></div>
+  <div class="ckA-grid">
+    <div class="ckA-cook">
+      <div class="ckA-frame">
+        /*@STAGE@*/
+      </div>
+      <p class="ckA-cap"><b>1 손질</b> → <b>2 튀김옷</b> → <b>3 튀기기</b> → <b>4 플레이팅</b></p>
+      /*@MEMO@*/
+    </div>
+    /*@ARTICLE@*/
+  </div>
+</div>
+<script>
+/*@ENGINE_JS@*/
+</script>

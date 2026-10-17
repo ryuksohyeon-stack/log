@@ -1,0 +1,985 @@
+<!-- 새우튀김 만들기 · 시안 A 「핑크 깅엄」
+     luvinfo › 새 HTML 페이지에 이 파일을 통째로 붙여 넣어요.
+     · 컴퓨터: 페이지 폭을 「넓게」나 「화면 꽉 채움」으로 고르면 요리가 왼쪽, 글이 오른쪽에 나란히 놓여요.
+     · 폰: 요리가 위, 글이 아래. 화면 폭에 맞춰 통째로 줄어요.
+     · 글은 아래 <article> 안만 고치면 돼요. -->
+<style>
+/* 글꼴 — 이야기 굵은체 (깃허브 저장소의 파일을 커밋 번호로 불러요) */
+@font-face{font-family:'IyagiGGC';font-display:swap;src:url(https://cdn.jsdelivr.net/gh/ryuksohyeon-stack/log@7eec37e4f112b4141d9ef7edd20f57f0ad6f49f0/shrimp-tempura/fonts/IyagiGGC.woff2) format('woff2'),url(https://raw.githubusercontent.com/ryuksohyeon-stack/log/7eec37e4f112b4141d9ef7edd20f57f0ad6f49f0/shrimp-tempura/fonts/IyagiGGC.woff2) format('woff2'),url(https://cdn.jsdelivr.net/gh/ryuksohyeon-stack/log@7eec37e4f112b4141d9ef7edd20f57f0ad6f49f0/shrimp-tempura/fonts/IyagiGGC.woff) format('woff')}
+/* 게임 무대 (세 시안 공통) — 크기는 무대 폭 기준(cqi)이라 폰에서도 통째로 줄어요 */
+.ck-stage{--ck-g0:#ffd9e3;--ck-g1:#ff9dba;--ck-wall:#ffaac0;--ck-wall2:#ff8fac;--ck-ink:#2b3467;--ck-accent:#ff5c8a;--ck-title:#ff6f96;--ck-board:#b9e4f4;--ck-board-l:#e6f7fd;--ck-board-d:#7cbcd6;--ck-pot:#6fcfb9;--ck-pot-l:#c9f3e8;--ck-pot-d:#2f8c78;--ck-stove:#a6e0f4;--ck-stove-d:#6cbfdf;--ck-gframe:#c7ef7a;--ck-clock:#ff9f43;--ck-fd:'IyagiGGC',sans-serif;
+  position:relative;width:100%;aspect-ratio:6/5;container-type:inline-size;font-synthesis:none;overflow:hidden;cursor:pointer;outline:none;
+  user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.ck-stage:focus-visible{box-shadow:0 0 0 3px #fff,0 0 0 6px var(--ck-accent)}
+.ck-svg{position:absolute;inset:0;width:100%;height:100%;display:block}
+.ck-svg text{font-family:var(--ck-fd);paint-order:stroke fill;stroke-linejoin:round}
+.ck-ui{position:absolute;inset:0;pointer-events:none}
+.ck-ui button{pointer-events:auto;font-family:var(--ck-fd);cursor:pointer;border:0;margin:0;line-height:1}
+.ck-btn{padding:2.3cqi 6.4cqi 2.6cqi;border-radius:99px;font-size:5cqi;color:var(--ck-ink);background:linear-gradient(#fff7b8,#ffd53d 55%,#ffc21a);
+  box-shadow:inset 0 -.8cqi 0 rgb(0 0 0/.12),inset 0 .6cqi 0 rgb(255 255 255/.7),0 0 0 .7cqi #fff,0 0 0 1.25cqi var(--ck-ink),0 1.8cqi 0 .6cqi var(--ck-ink);
+  transition:transform .12s}
+.ck-btn:active{transform:translateY(.8cqi)}
+.ck-sub{background:linear-gradient(#ffffff,#e8eefc)}
+.ck-start{position:absolute;left:50%;bottom:4.6cqi;transform:translateX(-50%);white-space:nowrap;font-size:5.2cqi}
+.ck-start:active{transform:translate(-50%,.8cqi)}
+.ck-tools{position:absolute;left:2.6cqi;bottom:2.4cqi;gap:1.8cqi}
+.ck-tool{width:8.4cqi;height:8.4cqi;border-radius:50%;font-size:4.2cqi;color:#fff;background:radial-gradient(circle at 35% 30%,#8fe0ff,#2d8fe6);
+  box-shadow:0 0 0 .55cqi #fff,0 0 0 1cqi var(--ck-ink),0 .7cqi 0 .9cqi var(--ck-ink)}
+.ck-tool.ck-off{background:radial-gradient(circle at 35% 30%,#d9dde8,#8a93a8);text-decoration:line-through}
+.ck-end{position:absolute;left:0;right:0;bottom:4.4cqi;justify-content:center;gap:4cqi}
+.ck-start,.ck-tools,.ck-end{display:none}
+.ck-stage[data-mode=title] .ck-start{display:block}
+.ck-stage[data-mode=intro] .ck-tools,.ck-stage[data-mode=play] .ck-tools,.ck-stage[data-mode=stepEnd] .ck-tools{display:flex}
+.ck-stage[data-mode=final] .ck-end{display:flex}
+.ck-blink{animation:ckBlink .7s ease-in-out infinite alternate}
+.ck-steam{opacity:0;animation:ckSteam 2.4s ease-in-out infinite}
+.ck-twk{animation:ckTwk 1.8s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+.ck-tap{animation:ckTap .6s ease-in-out infinite alternate;transform-box:fill-box;transform-origin:center}
+@keyframes ckBlink{to{opacity:.35}}
+@keyframes ckSteam{0%{transform:translateY(8px);opacity:0}40%{opacity:.8}100%{transform:translateY(-16px);opacity:0}}
+@keyframes ckTwk{0%,100%{transform:scale(.3);opacity:.2}50%{transform:scale(1);opacity:1}}
+@keyframes ckTap{to{transform:scale(1.1)}}
+@media (prefers-reduced-motion:reduce){.ck-steam,.ck-twk,.ck-tap,.ck-blink{animation:none}.ck-steam{opacity:.6}}
+.ckA,.ckA *{box-sizing:border-box}
+.ckA{--ink:#2b3467;--pink:#ff5c8a;--soft:#ffe6ee;container-type:inline-size;position:relative;margin:0 auto;padding:0 0 22px;border-radius:30px;overflow:hidden;color:var(--ink);
+  font-family:'IyagiGGC',sans-serif;font-synthesis:none;word-break:keep-all;
+  background:linear-gradient(90deg,rgb(255 140 178/.3) 50%,transparent 0) 0 0/30px 30px,linear-gradient(rgb(255 140 178/.3) 50%,transparent 0) 0 0/30px 30px,#ffeef3}
+/* 차양 — 줄무늬 + 물결 끝 */
+.ckA-awn{height:44px;background:linear-gradient(90deg,#ff7ea4 50%,#fff 0) 0 0/56px 100%;position:relative;margin-bottom:26px}
+.ckA-awn:after{content:"";position:absolute;left:0;right:0;top:100%;height:18px;background:radial-gradient(circle at 14px 0,#ff7ea4 13px,transparent 13.5px) 0 0/56px 18px,radial-gradient(circle at 42px 0,#fff 13px,transparent 13.5px) 0 0/56px 18px;filter:drop-shadow(0 3px 0 rgb(43 52 103/.15))}
+.ckA-grid{display:grid;gap:22px;padding:0 12px}
+.ckA-frame{padding:6px;border-radius:24px;background:#fff;box-shadow:0 0 0 4px #8fd6f2,0 0 0 7px #fff,0 0 0 10px var(--ink),0 9px 0 6px var(--ink),0 18px 26px 6px rgb(122 42 72/.25);margin:10px 10px 0}
+.ckA-frame .ck-stage{border-radius:18px}
+.ckA-cap{display:flex;flex-wrap:wrap;justify-content:center;gap:6px 4px;margin:26px 0 0;font:13px/1.5 'IyagiGGC',sans-serif;color:#b24a6c}
+.ckA-cap b{padding:2px 9px;border-radius:99px;background:#fff;box-shadow:0 0 0 2px var(--ink);color:var(--ink);font-weight:400}
+.ckA .ck-memo{position:relative;margin:22px 4px 0;padding:16px 18px 14px;border-radius:20px;background:#fffbe3;box-shadow:0 0 0 3px var(--ink),0 6px 0 3px var(--ink)}
+.ckA .ck-memo-t{position:absolute;left:18px;top:-13px;margin:0;padding:3px 12px;border-radius:99px;background:var(--pink);color:#fff;font:13px/1.3 'IyagiGGC',sans-serif;letter-spacing:.06em;box-shadow:0 0 0 2.5px var(--ink)}
+.ckA .ck-memo ul{list-style:none;margin:6px 0 10px;padding:0}
+.ckA .ck-memo li{display:flex;gap:8px;margin:0 0 6px;font-size:14px;line-height:1.6}
+.ckA .ck-memo li b{flex:none;min-width:46px;font:400 14px/1.6 'IyagiGGC',sans-serif;color:var(--pink)}
+.ckA .ck-best{margin:0;padding-top:9px;border-top:2px dashed #ffc2d3;font:15px/1.4 'IyagiGGC',sans-serif}
+.ckA .ck-best b{font-weight:400;color:var(--pink)}
+/* 글 카드 */
+.ckA .ck-post{position:relative;padding:28px 22px 28px;border-radius:26px;background:#fff;box-shadow:0 0 0 3px var(--ink),0 8px 0 3px var(--ink),0 18px 28px rgb(122 42 72/.18)}
+.ckA .ck-post:before{content:"";position:absolute;inset:9px;border:2px dashed #ffb3c9;border-radius:19px;pointer-events:none}
+.ckA .ck-kicker{display:inline-block;margin:0 0 12px;padding:5px 13px;border-radius:99px;background:#fff1a6;box-shadow:0 0 0 2px var(--ink);font:14px/1.2 'IyagiGGC',sans-serif}
+.ckA .ck-h1{margin:0 0 14px;font:400 clamp(30px,8cqi,42px)/1.12 'IyagiGGC',sans-serif;color:var(--pink);letter-spacing:-.01em;
+  text-shadow:3px 0 #fff,-3px 0 #fff,0 3px #fff,0 -3px #fff,2px 2px #fff,-2px -2px #fff,2px -2px #fff,-2px 2px #fff,4px 5px 0 var(--ink)}
+.ckA .ck-lead{margin:0 0 6px;font-size:16px;line-height:1.85;color:#4a5280}
+.ckA .ck-sec{position:relative;margin:18px -12px 0;padding:14px 12px 4px;border-radius:18px;transition:background .3s,box-shadow .3s}
+.ckA .ck-h2{display:flex;align-items:center;gap:10px;margin:0 0 8px;font:400 22px/1.2 'IyagiGGC',sans-serif;color:var(--ink)}
+.ckA .ck-h2 b{display:grid;place-items:center;width:34px;height:34px;flex:none;border-radius:50%;background:#ffd53d;box-shadow:inset 0 -3px 0 rgb(0 0 0/.12),0 0 0 2.5px var(--ink);font-weight:400;font-size:19px}
+.ckA .ck-sec p{margin:0 0 10px;font-size:16px;line-height:1.85}
+.ckA .ck-sec.ck-now{background:#fff7d6;box-shadow:inset 0 0 0 2px #ffd53d}
+.ckA .ck-sec.ck-now:after{content:"요리 중 🍤";position:absolute;right:12px;top:16px;padding:3px 9px;border-radius:99px;background:var(--pink);color:#fff;font:13px/1.3 'IyagiGGC',sans-serif}
+.ckA .ck-outro{margin:22px 0 14px;font:18px/1.5 'IyagiGGC',sans-serif;color:#b24a6c;text-align:center}
+.ckA .ck-go{display:block;margin:0 auto 4px;padding:13px 26px 15px;border:0;border-radius:99px;cursor:pointer;font:20px/1 'IyagiGGC',sans-serif;color:var(--ink);
+  background:linear-gradient(#fff7b8,#ffd53d 55%,#ffc21a);box-shadow:inset 0 -4px 0 rgb(0 0 0/.12),inset 0 3px 0 rgb(255 255 255/.7),0 0 0 4px #fff,0 0 0 7px var(--ink),0 8px 0 4px var(--ink);transition:transform .12s}
+.ckA .ck-go:active{transform:translateY(4px)}
+@container (min-width:720px){
+  .ckA{padding-bottom:30px}
+  .ckA-grid{grid-template-columns:minmax(0,1.08fr) minmax(0,1fr);align-items:start;gap:30px;padding:0 26px}
+  .ckA-frame{padding:9px;border-radius:30px;box-shadow:0 0 0 5px #8fd6f2,0 0 0 9px #fff,0 0 0 12px var(--ink),0 12px 0 8px var(--ink),0 22px 30px 8px rgb(122 42 72/.25);margin:12px 12px 0}
+  .ckA-frame .ck-stage{border-radius:22px}
+  .ckA-cap{font-size:15px;margin-top:34px}
+  .ckA .ck-memo{margin:26px 12px 0}
+  .ckA .ck-post{padding:36px 34px 34px}
+}
+</style>
+<div class="ckA">
+  <div class="ckA-awn"></div>
+  <div class="ckA-grid">
+    <div class="ckA-cook">
+      <div class="ckA-frame">
+        <div class="ck-stage" id="ckStage" data-mode="title" tabindex="0" role="application" aria-label="새우튀김 만들기 미니 게임 — 시작 버튼을 누른 뒤 화면을 눌러 타이밍을 맞춰요">
+      <svg class="ck-svg" viewBox="0 0 480 400" aria-hidden="true"></svg>
+      <div class="ck-ui">
+        <button type="button" class="ck-btn ck-start" data-ck="start">▶ 게임 시작</button>
+        <div class="ck-tools"><button type="button" class="ck-tool" data-ck="exit" aria-label="그만하기">✕</button><button type="button" class="ck-tool" data-ck="sound" aria-label="소리 끄기">♪</button></div>
+        <div class="ck-end"><button type="button" class="ck-btn" data-ck="again">다시 하기</button><button type="button" class="ck-btn ck-sub" data-ck="exit">그만하기</button></div>
+      </div>
+    </div>
+      </div>
+      <p class="ckA-cap"><b>1 손질</b> → <b>2 튀김옷</b> → <b>3 튀기기</b> → <b>4 플레이팅</b></p>
+      <div class="ck-memo">
+        <p class="ck-memo-t">HOW TO PLAY</p>
+        <ul>
+          <li><b>TAP</b>화면을 누르면 다음 단계로 넘어가요. 컴퓨터는 스페이스 · 엔터도 돼요.</li>
+          <li><b>타이밍</b>칼 · 바늘 · 튀김이 딱 맞는 자리에 왔을 때 눌러요. 튀김은 너무 늦으면 타요!</li>
+          <li><b>메달</b>네 단계 점수를 모아 금 · 은 · 동메달.</li>
+        </ul>
+        <p class="ck-best">내 최고 기록 <b data-ck-best>아직 없어요</b></p>
+      </div>
+    </div>
+    <article class="ck-post">
+      <!-- ✏️ 여기부터 글이에요. 제목 · 문단은 마음대로 고쳐 쓰세요.
+           data-ck-step="1~4" 가 붙은 문단은 게임에서 그 단계를 하는 동안 살짝 강조돼요(지워도 괜찮아요). -->
+      <header class="ck-head">
+        <p class="ck-kicker">오늘의 요리 · 20분 · 2인분</p>
+        <h1 class="ck-h1">바삭바삭 새우튀김</h1>
+        <p class="ck-lead">튀김은 타이밍이 전부예요. 기름 온도, 반죽을 입히는 순간, 그리고 건져 올리는 그때. 하나라도 놓치면 눅눅해지거나 금세 타 버려요. 그러니까 오늘은 천천히, 한 단계씩.</p>
+      </header>
+      <section class="ck-sec" data-ck-step="1">
+        <h2 class="ck-h2"><b>1</b>새우 손질</h2>
+        <p>껍질을 벗기고 꼬리 한 마디만 남겨요. 등에 있는 내장은 이쑤시개로 쏙 빼내고, 꼬리 끝은 비스듬히 잘라 물기를 훑어 내요. 기름이 덜 튀어요.</p>
+        <p>배 쪽에 칼집을 서너 번 넣고 꾹 눌러 펴 주면, 튀겨도 둥글게 말리지 않고 곧게 서요.</p>
+      </section>
+      <section class="ck-sec" data-ck-step="2">
+        <h2 class="ck-h2"><b>2</b>튀김옷 입히기</h2>
+        <p>새우에 마른 튀김가루를 얇게 묻혀 털어 낸 뒤, 얼음물에 푼 반죽에 꼬리만 남기고 퐁당. 반죽은 덜 섞인 듯 멍울이 남아 있어야 바삭해요.</p>
+      </section>
+      <section class="ck-sec" data-ck-step="3">
+        <h2 class="ck-h2"><b>3</b>튀기기</h2>
+        <p>기름은 170~180℃. 반죽 한 방울을 떨어뜨렸을 때 중간쯤 가라앉았다가 바로 떠오르면 딱 좋아요.</p>
+        <p>넣고 2분쯤, 기포가 잦아들고 소리가 가벼워지면 건져요. 조금만 더 두면 금방 갈색이 돼요.</p>
+      </section>
+      <section class="ck-sec" data-ck-step="4">
+        <h2 class="ck-h2"><b>4</b>플레이팅</h2>
+        <p>키친타월에 잠깐 기름을 빼고, 시소잎을 깐 접시에 비스듬히 기대어 담아요. 레몬 한 조각과 간 무를 곁들이면 끝.</p>
+      </section>
+      <p class="ck-outro">다 읽었다면, 이번엔 직접 튀겨 볼까요?</p>
+      <button type="button" class="ck-go" data-ck-go>🍤 새우튀김 게임 하기</button>
+    </article>
+  </div>
+</div>
+<script>
+/* 새우튀김 만들기 — 게임 엔진 (세 시안 공통)
+   · #ckStage 안 svg 한 장에 장면과 HUD 를 그려요. 화면을 누르면(스페이스 · 엔터도) 그 순간의 타이밍을 재요.
+   · 소품은 쿠킹마마처럼 외곽선 없이 빛 · 그늘 · 광택으로 그려요.
+   · 시안마다 다른 화면(정보창 · 글 강조)은 window.ckHooks 로 받아요. */
+(() => {
+  'use strict';
+  const stage = document.getElementById('ckStage');
+  if (!stage || stage.dataset.ckOn) return;
+  stage.dataset.ckOn = '1';
+  const svg = stage.querySelector('.ck-svg');
+  const H = window.ckHooks || {};
+  const NS = 'http://www.w3.org/2000/svg';
+
+  /* ---------- 도우미 ---------- */
+  const clamp = (v, a = 0, b = 1) => (v < a ? a : v > b ? b : v);
+  const lerp = (a, b, t) => a + (b - a) * t;
+  const easeOut = (t) => 1 - (1 - t) ** 3;
+  const tri = (t, T) => { const x = (((t / T) % 1) + 1) % 1; return x < 0.5 ? x * 2 : 2 - x * 2; };
+  const N = (n) => Math.round(n * 10) / 10;
+  const C = (x, y, r) => `<circle cx="${N(x)}" cy="${N(y)}" r="${N(r)}"/>`;
+  const rng = (s) => () => ((s = (s * 1664525 + 1013904223) >>> 0) / 4294967296);
+  const hex = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
+  const mixHex = (a, b, t) => { const A = hex(a), B = hex(b); return 'rgb(' + A.map((v, i) => Math.round(lerp(v, B[i], t))).join(',') + ')'; };
+  const q = (sel, r = svg) => r.querySelector(sel);
+  const qa = (sel, r = svg) => [...r.querySelectorAll(sel)];
+  function mk(tag, attrs, parent) { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; }
+  function put(parent, html) { parent.insertAdjacentHTML('beforeend', html); return parent.lastElementChild; }
+
+  /* ---------- 소리 (WebAudio 로 짧게 합성 · ♪ 버튼으로 끔) ---------- */
+  const SND = { on: true, ctx: null, siz: null };
+  function actx() {
+    if (!SND.ctx) { try { SND.ctx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { return null; } }
+    if (SND.ctx.state === 'suspended') SND.ctx.resume();
+    return SND.ctx;
+  }
+  function tone(f, d, type, v, t0 = 0, f2 = 0) {
+    if (!SND.on) return; const c = actx(); if (!c) return;
+    const t = c.currentTime + t0, o = c.createOscillator(), g = c.createGain();
+    o.type = type; o.frequency.setValueAtTime(f, t); if (f2) o.frequency.exponentialRampToValueAtTime(f2, t + d);
+    g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(v, t + 0.01); g.gain.exponentialRampToValueAtTime(0.0001, t + d);
+    o.connect(g); g.connect(c.destination); o.start(t); o.stop(t + d + 0.03);
+  }
+  let noiseBuf = null;
+  function noiseSrc(c) {
+    if (!noiseBuf) { noiseBuf = c.createBuffer(1, c.sampleRate, c.sampleRate); const d = noiseBuf.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1; }
+    const s = c.createBufferSource(); s.buffer = noiseBuf; return s;
+  }
+  function noise(d, v, fq, t0 = 0) {
+    if (!SND.on) return; const c = actx(); if (!c) return;
+    const t = c.currentTime + t0, s = noiseSrc(c), f = c.createBiquadFilter(), g = c.createGain();
+    f.type = 'bandpass'; f.frequency.value = fq; f.Q.value = 0.8;
+    g.gain.setValueAtTime(v, t); g.gain.exponentialRampToValueAtTime(0.0001, t + d);
+    s.connect(f); f.connect(g); g.connect(c.destination); s.start(t); s.stop(t + d + 0.03);
+  }
+  function sizzle(v) {   // 튀기는 소리 — 계속 이어지는 잡음, v 로 크기만 바꿔요
+    const c = SND.ctx;
+    if (!SND.on || !c || v <= 0) { if (SND.siz) { try { SND.siz.s.stop(); } catch (e) { } SND.siz = null; } return; }
+    if (!SND.siz) {
+      const s = noiseSrc(c), f = c.createBiquadFilter(), g = c.createGain();
+      s.loop = true; f.type = 'highpass'; f.frequency.value = 3200; g.gain.value = 0;
+      s.connect(f); f.connect(g); g.connect(c.destination); s.start(); SND.siz = { s, g };
+    }
+    SND.siz.g.gain.setTargetAtTime(v * (0.75 + Math.random() * 0.5), c.currentTime, 0.05);
+  }
+  const sfx = {
+    chop: () => noise(0.06, 0.35, 2600),
+    P: () => { tone(988, 0.12, 'triangle', 0.13); tone(1319, 0.2, 'triangle', 0.13, 0.08); },
+    G: () => tone(784, 0.15, 'triangle', 0.12),
+    B: () => tone(240, 0.22, 'square', 0.05, 0, 170),
+    M: () => tone(200, 0.3, 'square', 0.05, 0, 120),
+    pop: () => tone(520, 0.09, 'sine', 0.12, 0, 980),
+    plop: () => { tone(300, 0.12, 'sine', 0.14, 0, 120); noise(0.1, 0.12, 900); },
+    splash: () => noise(0.45, 0.3, 1400),
+    step: () => [659, 880].forEach((f, i) => tone(f, 0.14, 'triangle', 0.1, i * 0.09)),
+    fanfare: () => [523, 659, 784, 1047, 1319].forEach((f, i) => tone(f, i === 4 ? 0.5 : 0.18, 'triangle', 0.11, i * 0.11)),
+  };
+
+  /* ---------- 그림 재료 — 외곽선 없이 빛과 그늘로 (쿠킹마마 소품처럼) ---------- */
+  const BODY = 'M2,-15C40,-21 90,-16 122,-9L122,9C90,14 40,19 2,16C-9,13 -9,-12 2,-15Z';
+  const lg = (id, stops, v = 1, extra = '') => `<linearGradient id="${id}" x1="0" y1="0" x2="${v ? 0 : 1}" y2="${v ? 1 : 0}"${extra}>${stops.map(([o, c, a]) => `<stop offset="${o}" ${c.startsWith('var') ? `style="stop-color:${c}"` : `stop-color="${c}"`}${a !== undefined ? ` stop-opacity="${a}"` : ''}/>`).join('')}</linearGradient>`;
+  const rg = (id, stops, at = 'cx=".4" cy=".35" r=".75"') => `<radialGradient id="${id}" ${at}>${stops.map(([o, c, a]) => `<stop offset="${o}" ${c.startsWith('var') ? `style="stop-color:${c}"` : `stop-color="${c}"`}${a !== undefined ? ` stop-opacity="${a}"` : ''}/>`).join('')}</radialGradient>`;
+  svg.innerHTML = '<defs>'
+    + '<filter id="ckSh" x="-40%" y="-80%" width="180%" height="260%"><feGaussianBlur stdDeviation="7"/></filter>'
+    + '<filter id="ckSh2" x="-40%" y="-80%" width="180%" height="260%"><feGaussianBlur stdDeviation="3"/></filter>'
+    + '<filter id="ckGl" x="-30%" y="-60%" width="160%" height="220%"><feGaussianBlur stdDeviation="1.4"/></filter>'
+    + '<pattern id="ckGing" width="26" height="26" patternUnits="userSpaceOnUse"><rect width="26" height="26" style="fill:var(--ck-g0)"/><rect width="13" height="26" style="fill:var(--ck-g1)" opacity=".42"/><rect width="26" height="13" style="fill:var(--ck-g1)" opacity=".42"/><path d="M0 3.3h26M0 9.8h26M0 16.3h26M0 22.8h26" stroke="#fff" stroke-width=".6" opacity=".3"/><path d="M3.3 0v26M9.8 0v26M16.3 0v26M22.8 0v26" stroke="#fff" stroke-width=".6" opacity=".16"/></pattern>'
+    + '<pattern id="ckWeave" width="20" height="20" patternUnits="userSpaceOnUse" patternTransform="rotate(-8)"><rect width="20" height="20" fill="#d9a23e"/><g fill="#f6d27e"><rect x=".6" y=".6" width="8.8" height="3.9" rx="1.5"/><rect x=".6" y="5.5" width="8.8" height="3.9" rx="1.5"/><rect x="10.6" y="10.6" width="8.8" height="3.9" rx="1.5"/><rect x="10.6" y="15.5" width="8.8" height="3.9" rx="1.5"/><rect x="10.6" y=".6" width="3.9" height="8.8" rx="1.5"/><rect x="15.5" y=".6" width="3.9" height="8.8" rx="1.5"/><rect x=".6" y="10.6" width="3.9" height="8.8" rx="1.5"/><rect x="5.5" y="10.6" width="3.9" height="8.8" rx="1.5"/></g><g fill="#fff6d2" opacity=".8"><rect x="1.5" y="1.2" width="7" height="1"/><rect x="1.5" y="6.1" width="7" height="1"/><rect x="11.5" y="11.2" width="7" height="1"/><rect x="11.5" y="16.1" width="7" height="1"/><rect x="11.2" y="1.5" width="1" height="7"/><rect x="16.1" y="1.5" width="1" height="7"/><rect x="1.2" y="11.5" width="1" height="7"/><rect x="6.1" y="11.5" width="1" height="7"/></g></pattern>'
+    + lg('ckHaze', [[0.1, '#fff', 0.6], [0.55, '#fff', 0], [1, '#6a2040', 0.12]])
+    + lg('ckWall', [[0, 'var(--ck-wall)'], [1, 'var(--ck-wall2)']])
+    + lg('ckRaw', [[0, '#fde7e2'], [0.45, '#f1bcb4'], [1, '#d38b84']])
+    + lg('ckShell', [[0, '#f5eef3'], [0.5, '#d2c2cf'], [1, '#a594a6']])
+    + lg('ckTail', [[0, '#ffa457'], [0.55, '#ff5d2e'], [1, '#cf2b1b']], 0)
+    + lg('ckTShade', [[0, '#fff', 0.62], [0.38, '#fff', 0], [0.55, '#3a1400', 0], [1, '#3a1400', 0.42]])
+    + lg('ckBlade', [[0, '#ffffff'], [0.3, '#cdd6df'], [0.55, '#f6f9fb'], [1, '#97a5b4']], 0)
+    + lg('ckSteel', [[0, '#f6f8fa'], [1, '#93a0ae']])
+    + lg('ckWood', [[0, '#7d4520'], [0.35, '#cf8f55'], [0.52, '#ecb980'], [1, '#9d5c2a']], 0)
+    + lg('ckStick', [[0, '#b7814a'], [0.45, '#f3d29b'], [1, '#c18c52']], 0)
+    + lg('ckBoardTop', [[0, 'var(--ck-board-l)'], [1, 'var(--ck-board)']], 1, ' x2="1"')
+    + lg('ckBoardSide', [[0, 'var(--ck-board)'], [1, 'var(--ck-board-d)']])
+    + rg('ckBatter', [[0, '#fffbee'], [0.65, '#f8e7b8'], [1, '#e6cb8e']], 'cx=".45" cy=".4" r=".7"')
+    + lg('ckBowl', [[0, '#c5d2e0'], [0.28, '#ffffff'], [0.62, '#f2f6fa'], [1, '#b5c4d5']], 0)
+    + lg('ckBowlIn', [[0, '#ffffff'], [1, '#c9d6e3']])
+    + lg('ckGlaze', [[0, '#5577c8'], [1, '#1f3577']])
+    + rg('ckOil', [[0, '#ffeeb0'], [0.45, '#f7c450'], [1, '#cf8418']], 'cx=".42" cy=".36" r=".72"')
+    + lg('ckPotRim', [[0, 'var(--ck-pot-l)'], [0.55, 'var(--ck-pot)'], [1, 'var(--ck-pot-d)']])
+    + lg('ckPotIn', [[0, '#8e9ab5'], [1, '#353d55']])
+    + lg('ckKnob', [[0, '#5d6787'], [1, '#262c42']])
+    + lg('ckStoveF', [[0, 'var(--ck-stove)'], [1, 'var(--ck-stove-d)']])
+    + lg('ckStoveT', [[0, '#ffffff'], [1, '#e9f3f8']])
+    + lg('ckPlateTop', [[0, '#ffffff'], [1, '#e7edf3']])
+    + rg('ckPlate', [[0, '#ffffff'], [0.7, '#f4f7fa'], [1, '#dbe3ec']], 'cx=".5" cy=".45" r=".6"')
+    + lg('ckLeaf', [[0, '#a3e47a'], [0.55, '#4fa543'], [1, '#2c7429']], 1, ' x2="1"')
+    + lg('ckLemRind', [[0, '#fff27e'], [0.5, '#ffd31f'], [1, '#e6a400']])
+    + rg('ckLemFlesh', [[0, '#fffde8'], [0.6, '#fff1a6'], [1, '#ffe168']], 'cx=".5" cy=".05" r=".9"')
+    + rg('ckDai', [[0, '#ffffff'], [0.6, '#f0f3e8'], [1, '#cdd7c4']], 'cx=".4" cy=".3" r=".8"')
+    + lg('ckBar', [[0, '#7fdcff'], [1, '#2f7cf6']])
+    + lg('ckDrop', [[0, '#c9f1ff'], [1, '#45b8f2']])
+    + rg('ckAu', [[0, '#fff6c2'], [0.5, '#ffd23f'], [1, '#e09a00']], 'cx=".35" cy=".3" r=".8"')
+    + rg('ckAg', [[0, '#ffffff'], [0.5, '#d9e1ea'], [1, '#9aa8b8']], 'cx=".35" cy=".3" r=".8"')
+    + rg('ckCu', [[0, '#ffe0c2'], [0.5, '#e9a066'], [1, '#b0612a']], 'cx=".35" cy=".3" r=".8"')
+    + `<clipPath id="ckBodyClip"><path d="${BODY}"/></clipPath><clipPath id="ckBatterClip"><rect x="0" y="0" width="480" height="304"/></clipPath>`
+    + '</defs>';
+  const DEFS = q('defs');
+  const L = {};
+  ['bg', 'scene', 'hud', 'fx', 'over'].forEach((k) => { L[k] = mk('g', { class: 'ck-l-' + k }, svg); });
+
+  // 분홍 벽 띠 + 깅엄 식탁 (멀수록 뿌옇게)
+  const BG = '<rect width="480" height="400" fill="url(#ckGing)"/><rect width="480" height="400" fill="url(#ckHaze)"/>'
+    + '<rect width="480" height="66" fill="url(#ckWall)"/><rect y="26" width="480" height="16" fill="#fff" opacity=".3" filter="url(#ckSh2)"/>'
+    + '<rect width="480" height="11" fill="#f1f9fb"/><rect y="11" width="480" height="3" fill="#bfe2ee"/><rect y="63" width="480" height="9" fill="#5a1f36" opacity=".12" filter="url(#ckSh2)"/>';
+  const shadow = (cx, cy, rx, ry, o = 0.22, f = 'ckSh') => `<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="#3a1226" opacity="${o}" filter="url(#${f})"/>`;
+  const glint = (d, w = 4, o = 0.6) => `<path d="${d}" stroke="#fff" stroke-width="${w}" stroke-linecap="round" fill="none" opacity="${o}" filter="url(#ckGl)"/>`;
+
+  // 새우 꼬리 · 생새우 · 껍질
+  const TAIL = '<path d="M116,-8L146,-22Q154,-11 147,-3L158,0L147,3Q154,11 146,22L116,8Z" fill="url(#ckTail)"/>'
+    + '<path d="M121,-5L146,-17M121,5L146,17M124,0L152,0" stroke="#ffd08a" stroke-width="2.2" stroke-linecap="round" opacity=".75" fill="none"/>'
+    + '<path d="M141,-19L148,-5M141,19L148,5" stroke="#a81d12" stroke-width="2.2" opacity=".45" stroke-linecap="round"/>'
+    + glint('M119,-6L139,-15', 2.4, 0.6);
+  const artRaw = () => TAIL + `<path d="${BODY}" fill="url(#ckRaw)"/>`
+    + '<g clip-path="url(#ckBodyClip)" fill="none" stroke-linecap="round"><path d="M24,-22q7,22 0,44M44,-22q7,22 0,44M64,-22q7,22 0,44M84,-22q7,22 0,44M103,-22q6,22 0,44" stroke="#a9625c" stroke-width="3" opacity=".26" filter="url(#ckGl)"/>'
+    + '<path d="M29,-21q6,21 0,42M49,-21q6,21 0,42M69,-21q6,21 0,42M89,-21q6,21 0,42M107,-21q5,21 0,42" stroke="#fff" stroke-width="2.6" opacity=".28"/>'
+    + '<path d="M0,15C40,21 90,16 124,10L124,26L0,26Z" fill="#9c5550" stroke="none" opacity=".22" filter="url(#ckGl)"/></g>'
+    + glint('M12,-10C40,-15 80,-13 112,-6', 4, 0.75) + glint('M30,-6L38,-7M70,-5L76,-6', 2.4, 0.6);
+  const bez = (a, b, c, d, t) => (1 - t) ** 3 * a + 3 * (1 - t) ** 2 * t * b + 3 * (1 - t) * t * t * c + t ** 3 * d;
+  function edge(x, top) {   // 몸통 윗선 · 아랫선의 x 자리 높이
+    const X = top ? [2, 40, 90, 122] : [122, 90, 40, 2], Y = top ? [-15, -21, -16, -9] : [9, 14, 19, 16];
+    let lo = 0, hi = 1;
+    for (let i = 0; i < 18; i++) { const m = (lo + hi) / 2; if ((bez(...X, m) < x) === top) lo = m; else hi = m; }
+    return bez(...Y, (lo + hi) / 2);
+  }
+  const artShell = () => '<g class="ck-legs" fill="none" stroke="#e39b80" stroke-width="2.6" stroke-linecap="round"><path d="M20,16l-5,10M36,17l-4,10M52,17l-3,10M68,16l-2,10M84,14l-1,9"/></g>'
+    + [0, 1, 2, 3, 4, 5].map((i) => {
+      const a = Math.max(2, i * 20.3), b = Math.min(122, a + 22), m = (a + b) / 2;
+      return `<g class="ck-pl"><path d="M${N(a)},${N(edge(a, 1) - 1.5)}Q${N(m)},${N(edge(m, 1) - 4.5)} ${N(b)},${N(edge(b, 1) - 1.5)}L${N(b)},${N(edge(b, 0) + 1.5)}Q${N(m)},${N(edge(m, 0) + 3.5)} ${N(a)},${N(edge(a, 0) + 1.5)}Z" fill="url(#ckShell)" fill-opacity=".95"/>`
+        + `<path d="M${N(b - 1)},${N(edge(b, 1))}V${N(edge(b, 0))}" stroke="#8c7a8d" stroke-width="1.6" opacity=".45" filter="url(#ckGl)"/>${glint(`M${N(a + 3)},${N(edge(a + 3, 1) + 3.5)}Q${N(m)},${N(edge(m, 1) + 1)} ${N(b - 4)},${N(edge(b - 4, 1) + 3.5)}`, 2.6, 0.8)}</g>`;
+    }).join('');
+  // 튀김옷 — 울퉁불퉁한 반죽 알갱이 + 전체 입체 그늘. 색은 --fc(겉) · --fd(그늘)로 바꿔요
+  const seenCoat = new Set();
+  function artCoat(seed) {
+    const R = rng(seed);
+    let lo = '', hi = '', hl = '', sp = '';
+    for (let x = -3; x <= 110; x += 5.2) {
+      const r = lerp(19.5, 12.5, clamp(x / 110)) + R() * 2.2, y = (R() - 0.5) * 2.4;
+      lo += C(x, y + 2, r + 0.8); hi += C(x, y, r);
+      for (const s of [-1, 1]) {
+        if (R() < 0.85) {
+          const br = 3 + R() * 3.6, bx = x + (R() - 0.5) * 5, by = y + s * (r - 1 + R() * 2.4);
+          lo += C(bx, by + 1.4, br + 0.6); hi += C(bx, by, br);
+          if (s < 0) hl += C(bx - br * 0.25, by - br * 0.35, br * 0.42);
+        }
+      }
+    }
+    for (let i = 0; i < 22; i++) sp += C(R() * 110, (R() - 0.4) * 22, 0.8 + R() * 1.6);
+    for (let i = 0; i < 12; i++) hl += C(6 + R() * 100, -2 - R() * 10, 1 + R() * 1.6);
+    if (!seenCoat.has(seed)) { seenCoat.add(seed); DEFS.insertAdjacentHTML('beforeend', `<clipPath id="ckTc${seed}">${hi}</clipPath>`); }
+    return `<g style="fill:var(--fd)">${lo}</g><g style="fill:var(--fc)">${hi}</g><g style="fill:var(--fd)" opacity=".45">${sp}</g>`
+      + `<rect x="-30" y="-36" width="160" height="72" fill="url(#ckTShade)" clip-path="url(#ckTc${seed})"/>`
+      + `<g fill="#fff" opacity=".6" filter="url(#ckGl)">${hl}</g>` + glint('M4,-11C36,-17 70,-14 102,-8', 4, 0.42);
+  }
+  const FRY = [[0, '#fbf3dc', '#e3cf9f'], [0.35, '#f9e39c', '#dcb258'], [0.6, '#f8c24c', '#d98c1f'], [0.74, '#efa232', '#c06b16'], [0.86, '#c9732a', '#8e4813'], [1, '#6a3918', '#3b1d0a']];
+  function fryCol(p) {
+    p = clamp(p);
+    for (let i = 1; i < FRY.length; i++) {
+      if (p <= FRY[i][0]) { const a = FRY[i - 1], b = FRY[i], t = (p - a[0]) / (b[0] - a[0]); return [mixHex(a[1], b[1], t), mixHex(a[2], b[2], t)]; }
+    }
+    return [FRY[5][1], FRY[5][2]];
+  }
+  const fryStyle = (p) => { const c = fryCol(p); return `--fc:${c[0]};--fd:${c[1]}`; };
+  function setFry(g, p) { const c = fryCol(p); g.style.setProperty('--fc', c[0]); g.style.setProperty('--fd', c[1]); }
+  const artTempura = (seed, p) => `<g class="ck-tmp" style="${fryStyle(p)}">${TAIL}${artCoat(seed)}</g>`;
+  const artLemon = () => shadow(3, 18, 30, 7, 0.25, 'ckSh2') + '<path d="M-32,0A32,27 0 0 0 32,0Z" fill="url(#ckLemRind)"/><path d="M-27,0A27,21 0 0 0 27,0Z" fill="url(#ckLemFlesh)"/>'
+    + '<path d="M0,1L-18,12M0,1L-7,19M0,1L7,19M0,1L18,12" stroke="#fffbe2" stroke-width="2.4" stroke-linecap="round" opacity=".95"/><path d="M-32,0H32" stroke="#fff6b8" stroke-width="2.6" stroke-linecap="round"/>'
+    + glint('M-24,9A26,19 0 0 0 -8,19', 3, 0.85) + glint('M-12,5L-9,6M8,7L11,8', 2, 0.9);
+  const artDaikon = () => shadow(2, 10, 26, 7, 0.22, 'ckSh2') + '<path d="M-25,8C-27,-7 -14,-20 0,-20C14,-20 27,-7 25,8C16,14 -16,14 -25,8Z" fill="url(#ckDai)"/>'
+    + `<g fill="#dfe5d4" filter="url(#ckGl)">${C(-8, -4, 3.4)}${C(7, -9, 3)}${C(11, 2, 3.4)}${C(-15, 4, 2.4)}${C(0, 5, 2.6)}</g>`
+    + glint('M-12,-11C-6,-16 5,-17 10,-13', 4, 0.9) + '<ellipse cx="3" cy="-18" rx="6.5" ry="3.8" fill="#f8a35c"/>' + glint('M0,-19.5L5,-19.5', 1.6, 0.8);
+  function artLeaf() {
+    const top = [], bot = [], n = 20;
+    for (let i = 0; i <= n; i++) {
+      const t = i / n, x = lerp(-62, 70, t), w = 40 * Math.pow(Math.sin(Math.PI * Math.min(1, t * 1.04)), 0.75) * (1 - 0.25 * t), z = i % 2 ? 0.86 : 1;
+      top.push(N(x) + ',' + N(-w * z)); bot.push(N(x) + ',' + N(w * z));
+    }
+    return '<path d="M-60,0L-84,5" stroke="#4d9a3c" stroke-width="3.4" stroke-linecap="round"/>'
+      + `<path d="M${top.join('L')}L${bot.reverse().join('L')}Z" fill="url(#ckLeaf)"/>`
+      + '<path d="M-60,0Q0,-4 66,0" stroke="#c8f0a6" stroke-width="2.4" fill="none" stroke-linecap="round" opacity=".85"/><path d="M-36,-1L-20,-22M-10,-2L6,-27M16,-2L32,-23M42,-1L55,-14M-36,1L-20,21M-10,2L6,25M16,2L32,21M42,1L55,12" stroke="#bfeaa0" stroke-width="1.5" fill="none" stroke-linecap="round" opacity=".6"/>'
+      + glint('M-40,-14C-20,-24 10,-26 30,-20', 3.5, 0.45);
+  }
+  // 노란 테 두른 둥근 접시 + 대나무 깔개
+  const PC = { x: 240, y: 286 };
+  const artMat = () => shadow(244, 300, 214, 96, 0.18) + '<path d="M58,152L452,170L420,390L26,372Z" fill="url(#ckWeave)"/><path d="M58,152L452,170L420,390L26,372Z" fill="url(#ckHaze)" opacity=".5"/><path d="M58,152L452,170M26,372L420,390" stroke="#b97f22" stroke-width="5" opacity=".7"/><path d="M58,156L452,174" stroke="#fff3c4" stroke-width="2" opacity=".7"/>';
+  const artPlate = () => shadow(PC.x + 8, PC.y + 18, 192, 84, 0.3)
+    + `<ellipse cx="${PC.x}" cy="${PC.y + 8}" rx="194" ry="90" fill="#cdd7e1"/><ellipse cx="${PC.x}" cy="${PC.y}" rx="194" ry="88" fill="url(#ckPlateTop)"/>`
+    + `<ellipse cx="${PC.x}" cy="${PC.y}" rx="178" ry="80" fill="none" stroke="#ffd54a" stroke-width="8"/><ellipse cx="${PC.x}" cy="${PC.y}" rx="168" ry="75.5" fill="none" stroke="#f5a623" stroke-width="2.4"/>`
+    + `<ellipse cx="${PC.x}" cy="${PC.y + 4}" rx="152" ry="66" fill="url(#ckPlate)"/><ellipse cx="${PC.x}" cy="${PC.y + 1}" rx="150" ry="63" fill="none" stroke="#c7d1dc" stroke-width="3" opacity=".7" filter="url(#ckGl)"/>`
+    + glint(`M${PC.x - 160},${PC.y - 30}Q${PC.x - 110},${PC.y - 82} ${PC.x - 20},${PC.y - 86}`, 5, 0.9);
+  const place = (x, y, r, cx = 67) => `translate(${N(x)} ${N(y)}) rotate(${r}) translate(${-cx} 0)`;
+  const DISH = { a: { x: 198, y: 262, r: -10 }, b: { x: 236, y: 302, r: -10 }, lem: { x: 360, y: 300 }, dai: { x: 334, y: 250 }, leaf: { x: 206, y: 272, r: -18 } };
+  const artDish = (p) => `<g transform="translate(${DISH.leaf.x} ${DISH.leaf.y}) rotate(${DISH.leaf.r}) scale(1.05)">${artLeaf()}</g>`
+    + `<g transform="translate(${DISH.dai.x} ${DISH.dai.y})">${artDaikon()}</g>`
+    + `<g transform="${place(DISH.a.x, DISH.a.y, DISH.a.r)}">${shadow(60, 18, 80, 10, 0.25, 'ckSh2')}${artTempura(11, p)}</g>`
+    + `<g transform="${place(DISH.b.x, DISH.b.y, DISH.b.r)}">${shadow(60, 18, 80, 10, 0.25, 'ckSh2')}${artTempura(23, p)}</g>`
+    + `<g transform="translate(${DISH.lem.x} ${DISH.lem.y})">${artLemon()}</g>`;
+  const starPath = (r) => { let d = ''; for (let i = 0; i < 10; i++) { const a = (Math.PI / 5) * i - Math.PI / 2, rr = i % 2 ? r * 0.45 : r; d += (i ? 'L' : 'M') + N(Math.cos(a) * rr) + ',' + N(Math.sin(a) * rr); } return d + 'Z'; };
+  const sparkle4 = (r) => `M0,${-r}Q${r * 0.18},${-r * 0.18} ${r},0Q${r * 0.18},${r * 0.18} 0,${r}Q${-r * 0.18},${r * 0.18} ${-r},0Q${-r * 0.18},${-r * 0.18} 0,${-r}Z`;
+  // 긴 조리용 젓가락 — 끝(0,0)이 집는 자리
+  const artChop = (dx = 112, dy = -156) => [[-3, -1, dx, dy], [4, 2, dx + 18, dy + 8]].map(([x0, y0, x1, y1]) => {
+    const mx = lerp(x0, x1, 0.72), my = lerp(y0, y1, 0.72);
+    return `<path d="M${x0},${y0}L${x1},${y1}" stroke="#9c6633" stroke-width="7.4" stroke-linecap="round"/><path d="M${x0},${y0}L${x1},${y1}" stroke="url(#ckStick)" stroke-width="5.6" stroke-linecap="round"/>`
+      + `<path d="M${N(mx)},${N(my)}L${x1},${y1}" stroke="#c0392b" stroke-width="5.8" stroke-linecap="round"/><path d="M${x0 + 1},${y0 - 1.5}L${x1 + 1},${y1 - 1.5}" stroke="#fff" stroke-width="1.4" opacity=".55"/>`;
+  }).join('');
+
+  /* ---------- 단계 ---------- */
+  const STEPS = [
+    { name: '새우 손질', intro: ['껍질 벗긴 새우 배에 칼집을 세 번!', '칼이 점선 위에 왔을 때 TAP'], hint: '칼이 점선 위에 오면 TAP!', limit: 15,
+      tip: '배 쪽에 칼집을 넣고 꾹 눌러 펴면, 튀겨도 둥글게 말리지 않아요.' },
+    { name: '튀김옷 입히기', intro: ['젓가락으로 집어 반죽에 퐁당!', '바늘이 파란 칸에 오면 TAP'], hint: '파란 칸에서 TAP!', limit: 15,
+      tip: '반죽은 차갑게, 덜 섞인 듯 멍울이 남아 있어야 바삭해요.' },
+    { name: '튀기기', intro: ['① 170~180℃일 때 TAP해서 넣고', '② 황금색이 되면 TAP해서 건져요'], hint: '170~180℃에서 TAP!', limit: 16,
+      tip: '기포가 작아지고 소리가 가벼워지면 건질 때예요.' },
+    { name: '플레이팅', intro: ['움직이는 튀김을 점선 자리 위에서', 'TAP! 레몬까지 올리면 완성'], hint: '점선 자리 위에서 TAP!', limit: 16,
+      tip: '시소잎 위에 비스듬히 기대 담으면 더 바삭해 보여요.' },
+  ];
+  // 레시피 — 게임 첫 화면
+  const RECIPE = {
+    items: [['raw', '새우', '2마리'], ['flour', '튀김가루', '½컵'], ['ice', '얼음물', '½컵'], ['oil', '식용유', '넉넉히'], ['leaf', '시소잎', '2장'], ['lemon', '레몬', '¼개'], ['dai', '무', '조금']],
+    steps: [['새우 손질', '배에 칼집 세 번'], ['튀김옷 입히기', '반죽에 꼬리만 남기고'], ['튀기기', '170~180℃ · 황금색'], ['플레이팅', '시소잎 위에 레몬 곁들여']],
+  };
+  const PTS = { P: 100, G: 70, B: 30, M: 0 };
+  const WORD = { P: 'PERFECT!', G: 'GOOD!', B: '아쉬워요', M: 'MISS' };
+  const WCOL = { P: '#ff4f8b', G: '#ff9b1a', B: '#8a8fc0', M: '#9aa3ad' };
+  const Z_SYM = [[0, 0.28, 'r'], [0.28, 0.42, 'y'], [0.42, 0.58, 'b'], [0.58, 0.72, 'y'], [0.72, 1, 'r']];
+  const Z_FRY = [[0, 0.45, 'r'], [0.45, 0.6, 'y'], [0.6, 0.74, 'b'], [0.74, 0.86, 'y'], [0.86, 1, 'r']];
+  const ZC = { r: '#ff5757', y: '#ffd43b', b: '#3db5ff' };
+  const zoneTier = (Z, p) => { for (const z of Z) if (p >= z[0] && p <= z[1]) return z[2] === 'b' ? 'P' : z[2] === 'y' ? 'G' : 'B'; return 'B'; };
+
+  let mode = 'title', si = -1, gt = 0, lastNow = 0, raf = 0, tPlay = 0, tMode = 0;
+  let S = null, scores = [[], [], [], []], fryP = 0.67, fryWord = '';
+
+  /* ---------- HUD (시계 · 진행 막대 · 게이지) ---------- */
+  const GX = 146, GW = 276;
+  const hud = {};
+  function buildHud() {
+    let sc = '', tk = '';
+    for (let i = 0; i < 12; i++) { const a = (i / 12) * Math.PI * 2; sc += C(Math.cos(a) * 31, Math.sin(a) * 31, 8.5); tk += `<path d="M${N(Math.sin(a) * 22)},${N(-Math.cos(a) * 22)}L${N(Math.sin(a) * 26)},${N(-Math.cos(a) * 26)}"/>`; }
+    L.hud.innerHTML = `<g transform="translate(46 47)"><g style="fill:var(--ck-clock)">${sc}<circle r="33"/></g><circle r="28" fill="#fff" style="stroke:var(--ck-ink)" stroke-width="2.5"/>`
+      + `<path class="ck-pie" fill="#ffdcb0"/><g stroke="#f0a35a" stroke-width="2" stroke-linecap="round">${tk}</g>`
+      + '<g class="ck-hand"><path d="M0,4V-14" stroke="#ff6b4a" stroke-width="3.6" stroke-linecap="round"/><ellipse cy="-18" rx="4.6" ry="6.2" fill="#ff6b4a"/></g><circle r="4.4" fill="#ff6b4a" stroke="#fff" stroke-width="1.5"/></g>'
+      + '<rect x="92" y="9" width="376" height="17" rx="8.5" style="fill:var(--ck-ink)"/><rect x="95.5" y="12.5" width="369" height="10" rx="5" fill="#eef3ff"/><rect class="ck-prog" x="95.5" y="12.5" width="0" height="10" rx="5" fill="url(#ckBar)"/>'
+      + '<path d="M187.75,12.5v10M280,12.5v10M372.25,12.5v10" style="stroke:var(--ck-ink)" stroke-width="2" opacity=".5"/>'
+      + '<g class="ck-box"></g>'
+      + '<g class="ck-chip" transform="translate(470 392)"><rect x="-104" y="-25" width="104" height="30" rx="15" fill="#fff" fill-opacity=".92" style="stroke:var(--ck-ink)" stroke-width="2.5"/><text x="-52" y="-4" text-anchor="middle" font-size="16" style="fill:var(--ck-ink)"></text></g>'
+      + '<text class="ck-hint" x="240" y="390" text-anchor="middle" font-size="18" fill="#fff" style="stroke:var(--ck-ink)" stroke-width="5"></text>';
+    hud.pie = q('.ck-pie', L.hud); hud.hand = q('.ck-hand', L.hud); hud.prog = q('.ck-prog', L.hud);
+    hud.box = q('.ck-box', L.hud); hud.chip = q('.ck-chip text', L.hud); hud.hint = q('.ck-hint', L.hud);
+  }
+  const ICON = {
+    bowl: '<path d="M-14,-2H14C13,8 6,12 0,12C-6,12 -13,8 -14,-2Z" fill="#fff" style="stroke:var(--ck-ink)" stroke-width="2"/><ellipse cy="-2" rx="14" ry="4.5" fill="#fbefcc" style="stroke:var(--ck-ink)" stroke-width="2"/><path d="M-9,4H9" stroke="#3d5fae" stroke-width="3"/>',
+    cold: '<rect x="-13" y="-3" width="26" height="14" rx="4" fill="#7fcfff" style="stroke:var(--ck-ink)" stroke-width="2"/><path d="M-16,-3H16" style="stroke:var(--ck-ink)" stroke-width="3" stroke-linecap="round"/><path d="M0,-17c4,5 5,7 5,9a5,5 0 0 1-10,0c0-2 1-4 5-9z" fill="#c4eeff" style="stroke:var(--ck-ink)" stroke-width="1.6"/>',
+    hot: '<rect x="-13" y="-3" width="26" height="14" rx="4" fill="#ff7a7a" style="stroke:var(--ck-ink)" stroke-width="2"/><path d="M-16,-3H16" style="stroke:var(--ck-ink)" stroke-width="3" stroke-linecap="round"/><path d="M0,-19c6,5 8,9 6,13a6,6 0 0 1-12,0c-1-3 2-5 3-8c1,2 2,3 3,3c0-3 0-5 0-8z" fill="#ffb03a" style="stroke:var(--ck-ink)" stroke-width="1.6"/>',
+  };
+  function hudBox(kind, title) {
+    hud.kind = kind; hud.face = '';
+    if (!kind) {
+      hud.box.innerHTML = '<rect x="96" y="32" width="372" height="42" rx="13" fill="#fff" style="stroke:var(--ck-ink)" stroke-width="3"/>'
+        + `<text x="114" y="61" font-size="21" style="fill:var(--ck-ink)">STEP ${si + 1} · ${title}</text><text class="ck-cnt" x="452" y="61" text-anchor="end" font-size="20" style="fill:var(--ck-accent)"></text>`;
+      hud.cnt = q('.ck-cnt', hud.box); hud.mk = null; return;
+    }
+    const Z = kind === 'fry' ? Z_FRY : Z_SYM;
+    const ic = kind === 'temp' ? [ICON.cold, ICON.hot] : kind === 'fry'
+      ? [`<g transform="scale(.17) translate(-67 0)">${artTempura(5, 0.05)}</g>`, `<g transform="scale(.17) translate(-67 0)">${artTempura(5, 1)}</g>`]
+      : [ICON.bowl, ICON.bowl];
+    hud.box.innerHTML = '<rect x="96" y="32" width="372" height="42" rx="13" style="fill:var(--ck-gframe);stroke:var(--ck-ink)" stroke-width="3"/>'
+      + Z.map((z) => `<rect x="${N(GX + z[0] * GW)}" y="42" width="${N((z[1] - z[0]) * GW)}" height="21" fill="${ZC[z[2]]}"/>`).join('')
+      + `<rect x="${GX}" y="42" width="${GW}" height="21" rx="2" fill="none" style="stroke:var(--ck-ink)" stroke-width="2.6"/><path d="M${GX + 2},45H${GX + GW - 2}" stroke="#fff" stroke-width="2.5" opacity=".45"/>`
+      + `<g transform="translate(121 53)">${ic[0]}</g><g transform="translate(445 53)">${ic[1]}</g>`
+      + '<g class="ck-mk"><rect x="-1.8" y="-20" width="3.6" height="22" fill="#fff" style="stroke:var(--ck-ink)" stroke-width="1.4"/><path d="M0,0C6,10 15,16 15,26A15,15 0 1 1 -15,26C-15,16 -6,10 0,0Z" fill="url(#ckDrop)" style="stroke:var(--ck-ink)" stroke-width="2.4"/><ellipse cx="-7" cy="22" rx="2.6" ry="4.4" fill="#fff" opacity=".75"/><g class="ck-face" transform="translate(0 28)" style="stroke:var(--ck-ink)" stroke-width="1.8" fill="none" stroke-linecap="round"></g></g>';
+    hud.mk = q('.ck-mk', hud.box); hud.fc = q('.ck-face', hud.box); hud.Z = Z; hud.cnt = null;
+    gauge(0);
+  }
+  const FACE = {
+    P: '<path d="M-8,-3q2.5,-3.5 5,0M3,-3q2.5,-3.5 5,0"/><path d="M-6,2q6,8 12,0z" fill="#ff6f8f" stroke-width="1.4"/>',
+    G: '<circle cx="-5" cy="-2" r="1.6" style="fill:var(--ck-ink)"/><circle cx="5" cy="-2" r="1.6" style="fill:var(--ck-ink)"/><path d="M-4,3q4,3.5 8,0"/>',
+    B: '<path d="M-8,-5l4,2.5l-4,2.5M8,-5l-4,2.5l4,2.5"/><path d="M-6,5q3,-3 6,0q3,3 6,0"/><path d="M11,-12c2,3 3,4 3,6a3,3 0 0 1-6,0c0-2 1-3 3-6z" fill="#bfeaff" stroke-width="1.2"/>',
+  };
+  function gauge(p) {
+    if (!hud.mk) return;
+    hud.mk.setAttribute('transform', `translate(${N(GX + clamp(p) * GW)} 60)`);
+    const f = zoneTier(hud.Z, clamp(p));
+    if (f !== hud.face) { hud.face = f; hud.fc.innerHTML = FACE[f]; }
+  }
+  function clockSet(e) {
+    e = clamp(e);
+    hud.hand.setAttribute('transform', `rotate(${N(e * 360)})`);
+    if (e < 0.002) { hud.pie.setAttribute('d', 'M0,-24A24,24 0 1 1 0,24A24,24 0 1 1 0,-24Z'); return; }
+    const a = e * Math.PI * 2;
+    hud.pie.setAttribute('d', `M0,0L${N(Math.sin(a) * 24)},${N(-Math.cos(a) * 24)}A24,24 0 ${1 - e > 0.5 ? 1 : 0} 1 0,-24Z`);
+    hud.hand.firstChild.setAttribute('stroke', e > 0.75 ? '#ff2d2d' : '#ff6b4a');
+  }
+  const progSet = (v) => hud.prog.setAttribute('width', N(369 * clamp(v)));
+  const hint = (s) => { hud.hint.textContent = s || ''; };
+
+  /* ---------- 효과 (판정 글자 · 반짝이 · 기포 · 튀는 기름) ---------- */
+  const pops = [], parts = [];
+  function pop(text, x, y, color, size = 32) {
+    const e = mk('text', { x: 0, y: 0, 'text-anchor': 'middle', 'font-size': size, fill: color, stroke: '#fff', 'stroke-width': 7 }, L.fx);
+    e.textContent = text;
+    pops.push({ e, x: clamp(x, 90, 390), y: clamp(y, 110, 360), t: 0 });
+  }
+  function sparkle(x, y, n = 6) {
+    for (let i = 0; i < n; i++) {
+      const a = (i / n) * Math.PI * 2 + Math.random();
+      const e = mk('path', { d: sparkle4(5 + Math.random() * 5), fill: i % 2 ? '#fff6a8' : '#ffffff', stroke: '#ffc93c', 'stroke-width': 1 }, L.fx);
+      parts.push({ e, k: 'spk', x, y, vx: Math.cos(a) * 120, vy: Math.sin(a) * 120 - 40, g: 160, life: 0.7, t: 0 });
+    }
+  }
+  function part(o) { parts.push(Object.assign({ t: 0, vx: 0, vy: 0, g: 0 }, o)); }
+  function updFx(dt) {
+    for (let i = pops.length - 1; i >= 0; i--) {
+      const p = pops[i]; p.t += dt;
+      const s = p.t < 0.14 ? lerp(0.4, 1.18, p.t / 0.14) : p.t < 0.24 ? lerp(1.18, 1, (p.t - 0.14) / 0.1) : 1;
+      p.e.setAttribute('transform', `translate(${N(p.x)} ${N(p.y - p.t * 34)}) scale(${N(s * 100) / 100})`);
+      p.e.setAttribute('opacity', N(clamp((1.05 - p.t) / 0.3)));
+      if (p.t > 1.05) { p.e.remove(); pops.splice(i, 1); }
+    }
+    for (let i = parts.length - 1; i >= 0; i--) {
+      const p = parts[i]; p.t += dt;
+      const u = p.t / p.life;
+      if (p.k === 'bub') {   // 제자리에서 부풀다 톡
+        const r = p.r * (u < 0.8 ? easeOut(u / 0.8) : 1 + (u - 0.8) * 1.5);
+        p.e.setAttribute('r', N(r)); p.e.setAttribute('opacity', N(u < 0.8 ? 0.85 : (1 - u) * 4));
+      } else {
+        p.vy += p.g * dt; p.x += p.vx * dt; p.y += p.vy * dt;
+        if (p.k === 'spk') p.e.setAttribute('transform', `translate(${N(p.x)} ${N(p.y)}) rotate(${N(u * 180)}) scale(${N(1 - u * 0.6)})`);
+        else { p.e.setAttribute('cx', N(p.x)); p.e.setAttribute('cy', N(p.y)); }
+        p.e.setAttribute('opacity', N(1 - u * u));
+        if (p.floor && p.y > p.floor) p.t = p.life;
+      }
+      if (p.t >= p.life) { p.e.remove(); parts.splice(i, 1); }
+    }
+  }
+  function clearFx() { pops.length = 0; parts.length = 0; L.fx.innerHTML = ''; }
+
+  /* ---------- 1. 새우 손질 — 칼이 점선 위에 올 때 ---------- */
+  const SX = 102, SY = 236, SS = 1.7, CUTS = [30, 60, 90], KX0 = 118, KR = 176, KT = 2.4;
+  const artBoard = () => '<rect x="44" y="140" width="400" height="250" rx="34" fill="#3a1226" opacity=".24" filter="url(#ckSh)"/>'
+    + '<rect x="30" y="124" width="420" height="258" rx="32" fill="url(#ckBoardSide)"/><rect x="30" y="112" width="420" height="254" rx="32" fill="url(#ckBoardTop)"/>'
+    + '<rect x="31.5" y="113.5" width="417" height="251" rx="30.5" fill="none" stroke="#fff" stroke-width="3" opacity=".55"/>'
+    + glint('M70,132H300', 9, 0.4) + '<path d="M80,330H200M260,300H400M110,180H170" stroke="#000" stroke-width="1.5" opacity=".05"/>';
+  // 칼 — 손 없이 칼만 (그림자가 도마에 비스듬히 져요)
+  const artKnife = () => '<path d="M6,-70Q20,-60 22,-38V44H4V-60Z" fill="#24405a" opacity=".2" filter="url(#ckSh2)" transform="translate(14 10)"/><rect x="6" y="56" width="22" height="64" rx="8" fill="#24405a" opacity=".18" filter="url(#ckSh2)" transform="translate(12 10)"/>'
+    + '<path d="M-5,-80Q12,-66 12,-40V40H-7V-68Z" fill="url(#ckBlade)"/><path d="M-6,-66V39" stroke="#fff" stroke-width="2.6" opacity=".95"/><path d="M11,-42V40" stroke="#7d8b99" stroke-width="2" opacity=".55"/>'
+    + '<rect x="-1" y="-52" width="5" height="74" rx="2.5" fill="#fff" opacity=".6" filter="url(#ckGl)"/>'
+    + '<rect x="-10" y="38" width="25" height="10" rx="3" fill="url(#ckSteel)"/><rect x="-8" y="46" width="21" height="66" rx="8" fill="url(#ckWood)"/>'
+    + `<g fill="url(#ckSteel)">${C(2.5, 60, 3)}${C(2.5, 96, 3)}</g>` + glint('M-3,52V106', 2.6, 0.5);
+  function stepPrep() {
+    L.bg.innerHTML = BG + artBoard();
+    L.scene.innerHTML = shadow(SX + 120, SY + 36, 150, 13, 0.24)
+      + `<g class="ck-sh" transform="translate(${SX} ${SY}) scale(${SS})">${artRaw()}`
+      + `<g class="ck-dots" opacity="0">${CUTS.map((x) => `<g class="ck-blink"><path d="M${x},-26V26" stroke="#fff" stroke-width="3.4" stroke-linecap="round"/><path d="M${x},-26V26" style="stroke:var(--ck-accent)" stroke-width="1.8" stroke-dasharray="3.2 2.6"/></g>`).join('')}</g>`
+      + `<g class="ck-cuts" clip-path="url(#ckBodyClip)"></g><g class="ck-shell">${artShell()}</g></g>`
+      + `<g class="ck-knife" transform="translate(560 ${SY})">${artKnife()}</g>`;
+    const o = { done: [0, 0, 0], n: 0, ph: 'wait', kx: 560, press: 0 };
+    const shell = q('.ck-shell'), plates = qa('.ck-pl'), legs = q('.ck-legs');
+    const dots = q('.ck-dots'), dotEls = qa('.ck-dots > g'), cuts = q('.ck-cuts'), knife = q('.ck-knife'), sh = q('.ck-sh');
+    hudBox(null, STEPS[0].name); hud.cnt.textContent = '칼집 0/3';
+    o.start = (t) => { o.ph = 'peel'; o.tp = t; sfx.pop(); };
+    o.update = (t, dt) => {
+      if (o.ph === 'peel') {
+        const k = t - o.tp;
+        plates.forEach((pl, i) => {
+          const u = clamp((k - i * 0.07) / 0.45);
+          pl.setAttribute('transform', `translate(${N((i - 2.5) * 16 * u)} ${N(-60 * u + 30 * u * u)}) rotate(${N((i % 2 ? 1 : -1) * 55 * u)} ${i * 20.3 + 11} 0) scale(${N((1 - u * 0.35) * 100) / 100})`);
+          pl.setAttribute('opacity', N(1 - u));
+        });
+        legs.setAttribute('opacity', N(1 - clamp(k / 0.3)));
+        dots.setAttribute('opacity', N(clamp((k - 0.5) / 0.3)));
+        if (k > 0.9) { shell.remove(); o.ph = 'enter'; o.te = t; }
+      } else if (o.ph === 'enter') {
+        const u = easeOut(clamp((t - o.te) / 0.45)); o.kx = lerp(560, KX0 + KR, u);
+        if (u >= 1) { o.ph = 'cut'; o.tc = t; }
+      } else if (o.ph === 'cut') {
+        o.kx = KX0 + tri(t - o.tc + KT / 2, KT) * KR;
+      } else if (o.ph === 'end') {
+        const u = clamp((t - o.tend - 0.35) / 0.4); o.kx = lerp(o.kend, 600, easeOut(u));
+        if (t - o.tend > 0.95) endStep();
+      }
+      o.press = Math.max(0, o.press - dt);
+      const pr = o.press > 0 ? Math.sin((1 - o.press / 0.16) * Math.PI) : 0;
+      knife.setAttribute('transform', `translate(${N(o.kx)} ${N(SY + pr * 9)}) rotate(${N(pr * -3)})`);
+      sh.setAttribute('transform', `translate(${SX} ${N(SY + pr * 1.5)}) scale(${SS})`);
+    };
+    o.tap = (t) => {
+      if (o.ph !== 'cut' || o.press > 0.06) return;
+      const x = o.kx; let best = -1, bd = 1e9;
+      CUTS.forEach((cx, i) => { if (!o.done[i]) { const d = Math.abs(SX + cx * SS - x); if (d < bd) { bd = d; best = i; } } });
+      o.done[best] = 1; o.n++;
+      const lx = (x - SX) / SS;
+      put(cuts, `<g><path d="M${N(lx)},-14q2.6,14 0,29" stroke="#9a4a44" stroke-width="2.1" fill="none" stroke-linecap="round" opacity=".85"/><path d="M${N(lx + 1.7)},-11q2.2,11 0,23" stroke="#fff" stroke-width="1.2" opacity=".75" fill="none"/></g>`);
+      dotEls[best].setAttribute('opacity', '0');
+      o.press = 0.16; sfx.chop();
+      judge(bd <= 11 ? 'P' : bd <= 26 ? 'G' : 'B', x, SY - 70);
+      hud.cnt.textContent = `칼집 ${o.n}/3`;
+      if (o.n >= 3) { o.ph = 'end'; o.tend = t; o.kend = x; }
+    };
+    o.timeout = (t) => { if (o.ph === 'end') return; o.done.forEach((d, i) => { if (!d) { o.done[i] = 1; dotEls[i].setAttribute('opacity', '0'); judge('M', SX + CUTS[i] * SS, SY - 70); } }); o.ph = 'end'; o.tend = t; o.kend = o.kx; };
+    return o;
+  }
+
+  /* ---------- 2. 튀김옷 — 가장 깊이 들어갔을 때 ---------- */
+  const BX = 240, BYS = 304, DS = 1.15, DT = 2.4;
+  function glazeBand() {   // 그릇 테두리에 흘러내린 남색 유약
+    const up = [], dn = [], R = rng(17);
+    const drips = [0.12, 0.27, 0.41, 0.58, 0.73, 0.88].map((c) => [c, 10 + R() * 18]);
+    for (let i = 0; i <= 48; i++) {
+      const u = i / 48, th = Math.PI * (1 - u), x = 240 + 138 * Math.cos(th), y = 300 + 40 * Math.sin(th);
+      let d = 15; drips.forEach(([c, l]) => { d += l * Math.exp(-(((u - c) / 0.025) ** 2)); });
+      up.push(N(x) + ',' + N(y)); dn.push(N(x) + ',' + N(y + d * (0.55 + 0.45 * Math.sin(th))));
+    }
+    return `<path d="M${up.join('L')}L${dn.reverse().join('L')}Z" fill="url(#ckGlaze)" opacity=".95"/>`;
+  }
+  function stepCoat() {
+    L.bg.innerHTML = BG + shadow(246, 388, 156, 22, 0.28);
+    let lumps = '';
+    const R = rng(7);
+    for (let i = 0; i < 14; i++) { const a = R() * Math.PI * 2, rr = Math.sqrt(R()); lumps += `<ellipse cx="${N(240 + Math.cos(a) * 100 * rr)}" cy="${N(306 + Math.sin(a) * 23 * rr)}" rx="${N(4 + R() * 5)}" ry="${N(2 + R() * 2)}"/>`; }
+    L.scene.innerHTML = '<ellipse cx="240" cy="300" rx="138" ry="40" fill="url(#ckBowlIn)"/><ellipse cx="240" cy="306" rx="124" ry="31" fill="url(#ckBatter)"/>'
+      + `<g fill="#e9d29a" opacity=".8" filter="url(#ckGl)">${lumps}</g>` + '<ellipse cx="206" cy="298" rx="58" ry="8" fill="#fff" opacity=".55" filter="url(#ckSh2)"/>'
+      + '<clipPath id="ckCoatClip"><rect class="ck-coat-r" x="-40" y="-40" width="0" height="80"/></clipPath>'
+      + '<g clip-path="url(#ckBatterClip)"><g class="ck-dip"></g></g>'
+      + '<ellipse class="ck-rip" cx="240" cy="304" rx="22" ry="6" fill="#fff4d6" stroke="#e8d19a" stroke-width="2.4" opacity="0"/>'
+      + '<g class="ck-cs"></g>'
+      + '<path d="M102,300A138,40 0 0 0 378,300C378,360 322,400 240,400C158,400 102,360 102,300Z" fill="url(#ckBowl)"/>'
+      + glazeBand()
+      + '<path d="M102,300A138,40 0 0 0 378,300" stroke="#fff" stroke-width="3.5" fill="none" opacity=".9"/>'
+      + glint('M120,326C126,350 140,368 158,378', 7, 0.75) + glint('M352,330C348,344 340,356 330,364', 3, 0.4);
+    const dip = q('.ck-dip'), coatR = q('.ck-coat-r'), rip = q('.ck-rip'), cs = q('.ck-cs');
+    cs.innerHTML = artChop();
+    hudBox('dip');
+    const o = { k: 0, ph: 'wait', x: -150, d: 0, p: 0 };
+    const load = () => { dip.innerHTML = artRaw() + `<g clip-path="url(#ckCoatClip)">${artTempura(31 + o.k * 9, 0)}</g>`; coatR.setAttribute('width', 0); };
+    load();
+    const by = () => 292 + 150 * o.d;
+    o.start = (t) => { o.ph = 'enter'; o.te = t; };
+    o.update = (t) => {
+      if (o.ph === 'enter') { const u = easeOut(clamp((t - o.te) / 0.5)); o.x = lerp(-150, BX, u); o.d = 0; if (u >= 1) { o.ph = 'dip'; o.t0 = t; } }
+      else if (o.ph === 'dip') { o.p = tri(t - o.t0, DT); o.d = 1 - Math.abs(2 * o.p - 1); }
+      else if (o.ph === 'hold') { if (t - o.th > 0.14) { o.ph = 'rise'; o.tr = t; o.d0 = o.d; } }
+      else if (o.ph === 'rise') {
+        const u = clamp((t - o.tr) / 0.45); o.d = lerp(o.d0, 0, easeOut(u));
+        if (Math.random() < 0.3 && by() < BYS + 4 && by() > BYS - 60) part({ e: mk('circle', { r: 3 + Math.random() * 2.5, fill: '#fbefcc' }, L.fx), x: BX + (Math.random() - 0.5) * 16, y: by() + 4, vy: 30, g: 600, life: 0.5, floor: BYS + 2 });
+        if (u >= 1) { o.ph = 'exit'; o.tx = t; }
+      } else if (o.ph === 'exit') {
+        const u = clamp((t - o.tx) / 0.45); o.x = lerp(BX, 580, u * u);
+        if (u >= 1) { o.k++; if (o.k < 2) { load(); o.ph = 'enter'; o.te = t; o.p = 0; } else { o.ph = 'done'; endStep(); } }
+      }
+      const b = by();
+      dip.setAttribute('transform', `translate(${N(o.x)} ${N(b)}) rotate(-90) scale(${DS})`);
+      cs.setAttribute('transform', `translate(${N(o.x)} ${N(b - 154 * DS)})`);
+      const sub = b - BYS;
+      rip.setAttribute('opacity', sub > 2 && Math.abs(o.x - BX) < 30 ? 1 : 0);
+      rip.setAttribute('rx', N(20 + Math.sin(t * 9) * 2));
+      gauge(o.ph === 'dip' || o.ph === 'hold' ? o.p : 0);
+    };
+    o.tap = (t) => {
+      if (o.ph !== 'dip') return;
+      const tier = zoneTier(Z_SYM, o.p), s = clamp((by() - BYS) / DS / 125);
+      coatR.setAttribute('width', N(Math.max(s, { P: 1, G: 0.72, B: 0.38 }[tier]) * 165));
+      o.ph = 'hold'; o.th = t; sfx.plop();
+      for (let i = 0; i < 5; i++) part({ e: mk('circle', { r: 3 + Math.random() * 3, fill: '#fbefcc' }, L.fx), x: BX, y: BYS - 2, vx: (Math.random() - 0.5) * 160, vy: -120 - Math.random() * 90, g: 700, life: 0.55, floor: BYS + 6 });
+      judge(tier, BX + 90, 200);
+    };
+    o.timeout = () => { if (o.ph === 'done') return; for (let i = o.k; i < 2; i++) judge('M', BX + 90, 200); o.ph = 'done'; endStep(); };
+    return o;
+  }
+
+  /* ---------- 3. 튀기기 — 온도 맞춰 넣고, 황금색에서 건지기 ---------- */
+  const PX = 240, PY = 266, FR = [{ x: 158, y: 240, s: 41 }, { x: 178, y: 296, s: 53 }];
+  function stepFry() {
+    L.bg.innerHTML = BG + '<rect x="18" y="106" width="452" height="292" rx="34" fill="#1e2c40" opacity=".22" filter="url(#ckSh)"/><rect x="12" y="92" width="456" height="300" rx="32" fill="url(#ckStoveF)"/>'
+      + '<rect x="24" y="104" width="432" height="276" rx="24" fill="url(#ckStoveT)"/>' + glint('M48,116H300', 7, 0.8);
+    let fl = '';
+    const FC = [['#ff8fb8', '#ffd3e4'], ['#7fcbff', '#d4efff'], ['#bfa0ff', '#ebe0ff'], ['#ffc94d', '#fff1c4']];
+    for (let i = 0; i < 22; i++) { const a = (i / 22) * Math.PI * 2, c = FC[i % 4]; fl += `<g transform="translate(${N(PX + Math.cos(a) * 168)} ${N(PY + Math.sin(a) * 108)}) rotate(${N((a * 180) / Math.PI + 90)})"><g class="ck-fl"><path d="M0,2C-9,-3 -10,-17 0,-33C10,-17 9,-3 0,2Z" fill="${c[0]}" opacity=".85"/><path d="M0,-1C-5,-5 -5,-12 0,-21C5,-12 5,-5 0,-1Z" fill="${c[1]}"/></g></g>`; }
+    const handle = (x) => `<rect x="${x}" y="${PY - 16}" width="46" height="30" rx="15" fill="url(#ckKnob)"/>${glint(`M${x + 8},${PY - 8}H${x + 38}`, 3, 0.6)}`;
+    L.scene.innerHTML = `<g>${fl}</g>` + shadow(PX + 8, PY + 18, 168, 104, 0.32) + handle(50) + handle(384)
+      + `<ellipse cx="${PX}" cy="${PY}" rx="162" ry="104" fill="url(#ckPotRim)"/><ellipse cx="${PX}" cy="${PY - 3}" rx="156" ry="98" fill="none" stroke="#fff" stroke-width="3" opacity=".6" filter="url(#ckGl)"/>`
+      + `<ellipse cx="${PX}" cy="${PY + 2}" rx="150" ry="92" fill="url(#ckPotIn)"/><ellipse cx="${PX}" cy="${PY + 9}" rx="142" ry="83" fill="url(#ckOil)"/>`
+      + `<ellipse cx="${PX - 40}" cy="${PY - 40}" rx="84" ry="16" fill="#fff" opacity=".32" filter="url(#ckSh2)"/>` + glint('M300,328C330,320 350,308 360,294', 3, 0.35)
+      + '<g class="ck-shd" fill="#5b3200" opacity="0" filter="url(#ckSh2)"></g><g class="ck-bub"></g><g class="ck-fr"></g>'
+      + '<g class="ck-tag" transform="translate(394 132)"><rect x="-50" y="-22" width="100" height="42" rx="21" fill="#fff" style="stroke:var(--ck-ink)" stroke-width="3"/><path d="M-36,-10v16" stroke="#ff5757" stroke-width="6" stroke-linecap="round"/><circle cx="-36" cy="9" r="5" fill="#ff5757"/><text x="8" y="8" text-anchor="middle" font-size="22" style="fill:var(--ck-ink)">175℃</text></g>';
+    const flames = qa('.ck-fl'), shd = q('.ck-shd'), bub = q('.ck-bub'), fr = q('.ck-fr'), tagT = q('.ck-tag text');
+    fr.innerHTML = FR.map((f) => `<g transform="translate(${f.x} ${f.y}) rotate(-6)"><g class="ck-up">${artTempura(f.s, 0)}</g></g>`).join('');
+    shd.innerHTML = FR.map((f) => `<ellipse cx="${f.x + 62}" cy="${f.y + 16}" rx="88" ry="15"/>`).join('');
+    const ups = qa('.ck-up'), tmps = qa('.ck-tmp', fr);
+    hudBox('temp');
+    const o = { ph: 'wait', p: 0, heat: 0.5, fp: 0, lift: 0, drop: 0 };
+    const spawnBub = (near, rMax) => {
+      let x, y;
+      if (near) { const f = FR[Math.random() < 0.5 ? 0 : 1], u = Math.random(); x = f.x - 20 + u * 140; y = f.y + (Math.random() < 0.5 ? -1 : 1) * (14 + Math.random() * 14) - u * 14; }
+      else { const a = Math.random() * Math.PI * 2, r = Math.sqrt(Math.random()) * 0.9; x = PX + Math.cos(a) * 140 * r; y = PY + 9 + Math.sin(a) * 80 * r; }
+      part({ e: mk('circle', { cx: N(x), cy: N(y), r: 0, fill: '#fff6d0', 'fill-opacity': 0.5, stroke: '#fffbe8', 'stroke-width': 1.2 }, bub), k: 'bub', r: 1.5 + Math.random() * rMax, life: 0.35 + Math.random() * 0.45 });
+    };
+    o.start = (t) => { o.ph = 'temp'; o.t0 = t; };
+    o.update = (t, dt) => {
+      if (o.ph === 'temp') {
+        o.p = tri(t - o.t0, 2.2); o.heat = o.p; gauge(o.p);
+        const z = zoneTier(Z_SYM, o.p);
+        tagT.textContent = Math.round(140 + 70 * o.p) + '℃';
+        tagT.style.fill = z === 'P' ? '#1d8fe0' : z === 'G' ? 'var(--ck-ink)' : '#ff4040';
+        if (Math.random() < dt * 20 * o.p) spawnBub(false, 2);
+      } else if (o.ph === 'drop') {
+        o.drop = clamp((t - o.td) / 0.32);
+        if (o.drop >= 1) { o.ph = 'fry'; o.tf = t; hudBox('fry'); hint('황금색일 때 TAP!'); }
+      } else if (o.ph === 'fry') {
+        o.fp = (t - o.tf) / o.T; gauge(o.fp); tmps.forEach((g) => setFry(g, o.fp));
+        const rate = lerp(46, 7, clamp(o.fp));
+        for (let i = 0; i < 3; i++) if (Math.random() < (dt * rate) / 3) spawnBub(true, lerp(5, 1.5, clamp(o.fp)));
+        sizzle(0.07 * lerp(1, 0.25, clamp(o.fp)));
+        if (Math.random() < dt * 0.9) pop('지글지글', 120 + Math.random() * 240, 190 + Math.random() * 60, '#ff9b1a', 18);
+        if (o.fp >= 1) { fryP = 1; fryWord = 'burnt'; judge('M', PX, 186, '타 버렸어요'); o.ph = 'lift'; o.tl = t; sizzle(0); }
+      } else if (o.ph === 'lift') {
+        o.lift = easeOut(clamp((t - o.tl) / 0.7)); if (t - o.tl > 0.8) { o.ph = 'done'; endStep(); }
+      }
+      const fl2 = o.ph === 'temp' ? o.heat : 0.5;
+      flames.forEach((f, i) => f.setAttribute('transform', `scale(${N((0.55 + fl2 * 0.7 + Math.sin(t * 14 + i * 1.7) * 0.07) * 100) / 100})`));
+      const hover = o.ph === 'wait' || o.ph === 'temp' ? 1 : o.ph === 'drop' ? 1 - o.drop * o.drop : 0;
+      ups.forEach((u, i) => u.setAttribute('transform', `translate(${N(o.lift * 260)} ${N(-46 * hover - o.lift * 120 + (hover ? Math.sin(t * 3 + i) * 3 : 0))}) scale(${N((1 + hover * 0.08) * 100) / 100})`));
+      fr.setAttribute('opacity', N(1 - clamp((o.lift - 0.5) * 2)));
+      shd.setAttribute('opacity', N(hover * 0.3));
+    };
+    o.tap = (t) => {
+      if (o.ph === 'temp') {
+        const tier = zoneTier(Z_SYM, o.p);
+        o.T = tier === 'P' ? 5.2 : o.p > 0.5 ? 4.3 : 6.2;
+        judge(tier, PX + 120, 190, tier === 'B' ? (o.p > 0.5 ? '너무 뜨거워요' : '아직 차가워요') : '');
+        o.ph = 'drop'; o.td = t; gauge(o.p);
+        sfx.splash();
+        for (let i = 0; i < 18; i++) { const f = FR[i % 2]; part({ e: mk('circle', { r: 2 + Math.random() * 2.5, fill: '#ffd36b' }, L.fx), x: f.x + 20 + Math.random() * 100, y: f.y, vx: (Math.random() - 0.5) * 220, vy: -150 - Math.random() * 120, g: 650, life: 0.6 }); }
+        pop('치이익!', PX - 110, 180, '#ff7a1a', 24);
+      } else if (o.ph === 'fry') {
+        const tier = zoneTier(Z_FRY, o.fp);
+        fryP = o.fp; fryWord = o.fp < 0.45 ? 'raw' : o.fp > 0.86 ? 'burnt' : '';
+        judge(tier, PX, 186, tier === 'B' ? (o.fp < 0.45 ? '덜 익었어요' : '너무 익었어요') : '');
+        o.ph = 'lift'; o.tl = t; sizzle(0); sfx.pop();
+      }
+    };
+    o.timeout = (t) => {
+      if (o.ph === 'temp') { o.T = 5.2; judge('M', PX + 120, 190); o.ph = 'drop'; o.td = t; }
+    };
+    o.stop = () => sizzle(0);
+    return o;
+  }
+
+  /* ---------- 4. 플레이팅 — 점선 자리 위에서 ---------- */
+  const SLOTS = [{ k: 'tmp', x: DISH.a.x, y: DISH.a.y, r: DISH.a.r, seed: 11, T: 3.2 }, { k: 'tmp', x: DISH.b.x, y: DISH.b.y, r: DISH.b.r, seed: 23, T: 2.8 }, { k: 'lem', x: DISH.lem.x, y: DISH.lem.y, r: 0, T: 2.5 }];
+  const CARRY = 146, PL0 = 96, PLR = 290;
+  function stepPlate() {
+    L.bg.innerHTML = BG + artMat();
+    const ghost = (s) => s.k === 'tmp'
+      ? `<g transform="${place(s.x, s.y, s.r)}"><path d="M-6,-20H108A20,20 0 0 1 108,20H-6A20,20 0 0 1 -6,-20ZM120,-8L146,-21L157,0L146,21L120,8" fill="#fff" fill-opacity=".45" style="stroke:var(--ck-accent)" stroke-width="2.6" stroke-dasharray="7 5" stroke-linejoin="round"/></g>`
+      : `<g transform="translate(${s.x} ${s.y})"><path d="M-32,0A32,27 0 0 0 32,0Z" fill="#fff" fill-opacity=".45" style="stroke:var(--ck-accent)" stroke-width="2.6" stroke-dasharray="7 5"/></g>`;
+    L.scene.innerHTML = artPlate() + `<g transform="translate(${DISH.leaf.x} ${DISH.leaf.y}) rotate(${DISH.leaf.r}) scale(1.05)">${artLeaf()}</g>`
+      + `<g class="ck-gh">${SLOTS.map((s) => `<g class="ck-blink">${ghost(s)}</g>`).join('')}</g><g class="ck-dai" opacity="0"></g><g class="ck-placed"></g><g class="ck-car"></g>`;
+    const car = q('.ck-car'), placed = q('.ck-placed'), ghosts = qa('.ck-gh > g'), dai = q('.ck-dai');
+    hudBox(null, STEPS[3].name);
+    const o = { i: 0, ph: 'wait', x: -120, y: CARRY };
+    const load = () => {
+      const s = SLOTS[o.i];
+      car.innerHTML = '<g class="ck-csh"></g>' + `<g class="ck-it">${s.k === 'tmp' ? `<g transform="rotate(${s.r}) translate(-67 0)">${artTempura(s.seed, fryP)}</g>` : artLemon()}</g>`
+        + `<g class="ck-chop">${artChop(150, -190)}</g>`;
+      o.it = q('.ck-it', car); o.ch = q('.ck-chop', car); o.sh = q('.ck-csh', car);
+      o.sh.innerHTML = shadow(0, 0, s.k === 'tmp' ? 80 : 30, s.k === 'tmp' ? 12 : 7, 0.22, 'ckSh2');
+      hud.cnt.textContent = `접시 ${o.i}/3`;
+    };
+    load();
+    o.start = (t) => { o.ph = 'enter'; o.te = t; };
+    o.update = (t) => {
+      const s = SLOTS[o.i];
+      if (o.ph === 'enter') { const u = easeOut(clamp((t - o.te) / 0.45)); o.x = lerp(-120, PL0, u); o.y = CARRY; if (u >= 1) { o.ph = 'move'; o.t0 = t; } }
+      else if (o.ph === 'move') { o.x = PL0 + tri(t - o.t0, s.T) * PLR; }
+      else if (o.ph === 'drop') {
+        const u = clamp((t - o.td) / 0.26); o.y = lerp(CARRY, s.y, u * u);
+        if (u >= 1) {
+          sfx.plop(); judge(o.tier, o.x, s.y - 50);
+          const g = put(placed, `<g transform="translate(${N(o.x)} ${N(s.y)})">${shadow(0, 16, s.k === 'tmp' ? 80 : 30, s.k === 'tmp' ? 10 : 7, 0.25, 'ckSh2')}</g>`);
+          g.appendChild(o.it); o.it.removeAttribute('transform');
+          ghosts[o.i].setAttribute('opacity', '0');
+          o.i++; o.ph = 'gap'; o.tg = t;
+        }
+      } else if (o.ph === 'gap') {
+        if (t - o.tg > 0.3) { if (o.i < 3) { load(); o.ph = 'enter'; o.te = t; } else { o.ph = 'garnish'; o.tg = t; car.innerHTML = ''; hud.cnt.textContent = '접시 3/3'; } }
+      } else if (o.ph === 'garnish') {
+        const u = clamp((t - o.tg) / 0.35);
+        if (!dai.firstChild) { dai.innerHTML = `<g transform="translate(${DISH.dai.x} ${DISH.dai.y})"><g class="ck-daiS">${artDaikon()}</g></g>`; sfx.pop(); }
+        dai.setAttribute('opacity', 1); q('.ck-daiS').setAttribute('transform', `scale(${N((u < 0.7 ? lerp(0, 1.15, u / 0.7) : lerp(1.15, 1, (u - 0.7) / 0.3)) * 100) / 100})`);
+        if (t - o.tg > 0.5 && !o.spk) { o.spk = 1; sparkle(240, 270, 10); pop('완성!', 240, 170, 'var(--ck-accent)', 40); }
+        if (t - o.tg > 1.2) { o.ph = 'done'; endStep(); }
+      }
+      if (o.it && (o.ph === 'wait' || o.ph === 'enter' || o.ph === 'move' || o.ph === 'drop')) {
+        o.it.setAttribute('transform', `translate(${N(o.x)} ${N(o.y)})`);
+        o.ch.setAttribute('transform', `translate(${N(o.x)} ${N(o.ph === 'drop' ? CARRY - (o.y - CARRY) * 0.4 : o.y)})`);
+        o.sh.setAttribute('transform', `translate(${N(o.x + 6)} ${N(s.y + 16)})`);
+        o.sh.setAttribute('opacity', N(0.5 + 0.5 * clamp((o.y - CARRY) / Math.max(1, s.y - CARRY))));
+      }
+    };
+    o.tap = (t) => {
+      if (o.ph !== 'move') return;
+      const s = SLOTS[o.i], d = Math.abs(o.x - s.x);
+      o.tier = d <= 12 ? 'P' : d <= 28 ? 'G' : 'B';
+      if (o.tier === 'P') o.x = s.x;
+      o.ph = 'drop'; o.td = t;
+    };
+    o.timeout = (t) => {
+      if (o.ph === 'garnish' || o.ph === 'done') return;
+      for (let i = o.i; i < 3; i++) { judge('M', SLOTS[i].x, SLOTS[i].y - 50); ghosts[i].setAttribute('opacity', '0'); }
+      car.innerHTML = ''; o.it = null; o.i = 3; o.ph = 'garnish'; o.tg = t;
+    };
+    return o;
+  }
+  const BUILD = [stepPrep, stepCoat, stepFry, stepPlate];
+
+  /* ---------- 최고 기록 (보는 사람 브라우저에만 저장) ---------- */
+  const BEST = 'ck-shrimp-best';
+  function bestGet() { try { return JSON.parse(localStorage.getItem(BEST) || 'null'); } catch (e) { return null; } }
+  function bestShow() {
+    const b = bestGet();
+    document.querySelectorAll('[data-ck-best]').forEach((e) => { e.textContent = b && b.score >= 0 ? `${b.score}점${b.medal ? ' · ' + b.medal : ''}` : '아직 없어요'; });
+  }
+  function bestSave(score, medal) {
+    const b = bestGet();
+    if (b && b.score >= score) return false;
+    try { localStorage.setItem(BEST, JSON.stringify({ score, medal })); } catch (e) { }
+    bestShow(); return true;
+  }
+
+  /* ---------- 진행 ---------- */
+  function setMode(m) { mode = m; tMode = gt; stage.dataset.mode = m; H.mode && H.mode(m, si); }
+  function judge(tier, x, y, word) {
+    scores[si].push(PTS[tier]);
+    pop(word || WORD[tier], x, y, WCOL[tier], word ? 26 : 32);
+    sfx[tier] && sfx[tier]();
+    if (tier === 'P') sparkle(x, y, 6);
+    H.judge && H.judge(si, tier, scores[si].length);
+  }
+  const avg = (a) => (a.length ? a.reduce((x, y) => x + y, 0) / a.length : 0);
+  const starsOf = (v) => (v >= 90 ? 3 : v >= 65 ? 2 : v >= 40 ? 1 : 0);
+  const cardFrame = (w, h, title, cy = 0) => `<rect x="${-w / 2}" y="${-h / 2}" width="${w}" height="${h}" rx="28" fill="#3a1226" opacity=".22" filter="url(#ckSh)" transform="translate(0 8)"/>`
+    + `<rect x="${-w / 2}" y="${-h / 2}" width="${w}" height="${h}" rx="28" fill="#fff" style="stroke:var(--ck-ink)" stroke-width="4"/>`
+    + `<path d="M${-w / 2 + 2},${-h / 2 + 54}V${-h / 2 + 28}A26,26 0 0 1 ${-w / 2 + 28},${-h / 2 + 2}H${w / 2 - 28}A26,26 0 0 1 ${w / 2 - 2},${-h / 2 + 28}V${-h / 2 + 54}Z" style="fill:var(--ck-accent)"/>`
+    + `<text y="${-h / 2 + 38 + cy}" text-anchor="middle" font-size="26" fill="#fff" style="stroke:var(--ck-ink)" stroke-width="5">${title}</text>`;
+  const tapPill = (y) => `<g transform="translate(0 ${y})"><g class="ck-tap"><rect x="-58" y="-17" width="116" height="32" rx="16" style="fill:var(--ck-ink)"/><text y="7" text-anchor="middle" font-size="20" fill="#fff">TAP!  ▶</text></g></g>`;
+  // 레시피 카드의 재료 그림
+  const ING = {
+    raw: `<g transform="scale(.2) translate(-76 0)">${artRaw()}</g>`,
+    flour: '<ellipse cy="5" rx="13" ry="5" fill="#cfd8e2"/><path d="M-13,1H13C12,9 6,12 0,12C-6,12 -12,9 -13,1Z" fill="url(#ckBowl)"/><path d="M-11,1C-8,-9 8,-9 11,1Z" fill="#fffdf6"/>' + glint('M-6,-3L-2,-5', 1.6, 0.8),
+    ice: '<path d="M-9,-12H9L7,12H-7Z" fill="#cfefff" opacity=".9"/><rect x="-6" y="-2" width="6" height="6" rx="1.5" fill="#fff" opacity=".9" transform="rotate(-12)"/><rect x="1" y="2" width="6" height="6" rx="1.5" fill="#fff" opacity=".8" transform="rotate(10)"/>' + glint('M-6,-9L-5,8', 1.8, 0.8),
+    oil: '<rect x="-3" y="-15" width="6" height="5" rx="1.5" fill="#e05a3a"/><path d="M-3,-10H3L6,-4V11A3,3 0 0 1 3,14H-3A3,3 0 0 1 -6,11V-4Z" fill="#f6c14e"/>' + glint('M-3,-3V9', 1.8, 0.85),
+    leaf: `<g transform="scale(.17) rotate(-30)">${artLeaf()}</g>`,
+    lemon: `<g transform="translate(0 -3) scale(.42)">${artLemon()}</g>`,
+    dai: `<g transform="translate(0 2) scale(.5)">${artDaikon()}</g>`,
+  };
+  function toRecipe() {
+    si = -1; clearFx(); L.hud.innerHTML = ''; hud.pie = null;
+    L.over.innerHTML = '<rect width="480" height="400" fill="#fff" opacity=".55"/><g transform="translate(240 206)">' + cardFrame(424, 340, '새우튀김 레시피')
+      + '<text x="-188" y="-98" font-size="17" style="fill:var(--ck-accent)">재료 · 2인분</text><text x="22" y="-98" font-size="17" style="fill:var(--ck-accent)">만드는 순서</text>'
+      + RECIPE.items.map(([k, nm, amt], i) => `<g transform="translate(-176 ${-70 + i * 29})"><g>${ING[k]}</g><text x="20" y="6" font-size="16" style="fill:var(--ck-ink)">${nm}</text><text x="170" y="6" text-anchor="end" font-size="14" fill="#8a8fb0">${amt}</text></g>`).join('')
+      + '<path d="M8,-112V108" style="stroke:var(--ck-accent)" stroke-width="2" stroke-dasharray="4 5" opacity=".45"/>'
+      + RECIPE.steps.map(([nm, d], i) => `<g transform="translate(36 ${-66 + i * 48})"><circle r="12" style="fill:var(--ck-accent)"/><text y="6" text-anchor="middle" font-size="15" fill="#fff">${i + 1}</text><text x="20" y="1" font-size="17" style="fill:var(--ck-ink)">${nm}</text><text x="20" y="21" font-size="13" fill="#8a8fb0">${d}</text></g>`).join('')
+      + tapPill(140) + '</g>';
+    setMode('recipe');
+    H.recipe && H.recipe(RECIPE);
+  }
+  function toIntro(i) {
+    si = i; clearFx(); L.over.innerHTML = '';
+    if (S && S.stop) S.stop();
+    if (!hud.pie) buildHud();
+    S = BUILD[i]();
+    S.update(0, 0);
+    hint(''); clockSet(0); progSet(i / 4);
+    hud.chip.textContent = `STEP ${i + 1}/4`;
+    const st = STEPS[i];
+    const icon = [
+      `<g transform="translate(-58 -2) scale(.62)">${artRaw()}<path d="M30,-24V24M60,-24V24M90,-24V24" style="stroke:var(--ck-accent)" stroke-width="2.4" stroke-dasharray="4 3"/></g>`,
+      `<g transform="translate(-30 -2) scale(.5)">${artRaw()}</g><g transform="translate(-30 -2) scale(.5)"><g clip-path="url(#ckIcoClip)">${artTempura(3, 0)}</g></g><clipPath id="ckIcoClip"><rect x="-40" y="-40" width="110" height="80"/></clipPath>`,
+      `<ellipse cx="0" cy="0" rx="70" ry="26" fill="url(#ckOil)"/><g transform="translate(-40 -2) scale(.5)">${artTempura(9, 0.67)}</g>${C(-52, 10, 3).replace('/>', ' fill="#fff6d0"/>')}${C(46, -8, 4).replace('/>', ' fill="#fff6d0"/>')}`,
+      `<ellipse cx="0" cy="2" rx="76" ry="28" fill="url(#ckPlateTop)"/><ellipse cx="0" cy="2" rx="70" ry="25" fill="none" stroke="#ffd54a" stroke-width="3"/><g transform="translate(-10 0) rotate(-10) scale(.5) translate(-67 0)">${artTempura(11, 0.67)}</g><g transform="translate(46 6) scale(.5)">${artLemon()}</g>`,
+    ][i];
+    L.over.innerHTML = '<rect width="480" height="400" fill="#fff" opacity=".5"/>'
+      + `<g class="ck-card" transform="translate(240 228)">${cardFrame(368, 246, `STEP ${i + 1} · ${st.name}`)}`
+      + `<g transform="translate(0 -20)">${icon}</g>`
+      + `<text y="42" text-anchor="middle" font-size="19" style="fill:var(--ck-ink)">${st.intro[0]}</text><text y="68" text-anchor="middle" font-size="19" style="fill:var(--ck-ink)">${st.intro[1]}</text>`
+      + tapPill(100) + '</g>';
+    setMode('intro');
+    H.step && H.step(i, st);
+    markArticle(i);
+    if (i > 0) sfx.step();
+  }
+  function startPlay() {
+    L.over.innerHTML = ''; tPlay = gt; setMode('play');
+    hint(STEPS[si].hint); S.start(0);
+  }
+  function endStep() {
+    if (mode !== 'play') return;
+    if (S && S.stop) S.stop();
+    const v = avg(scores[si]), st = starsOf(v);
+    const word = ['괜찮아요!', 'GOOD', 'GREAT!', 'PERFECT!'][st];
+    hint(''); progSet((si + 1) / 4);
+    let stars = '';
+    for (let k = 0; k < 3; k++) stars += `<g transform="translate(${(k - 1) * 46} ${k === 1 ? -8 : 0})"><path d="${starPath(19)}" fill="${k < st ? '#ffd23f' : '#e6e9f2'}" style="stroke:var(--ck-ink)" stroke-width="3" stroke-linejoin="round"/></g>`;
+    L.over.innerHTML = '<g class="ck-ban" transform="translate(240 214)"><g class="ck-banS">'
+      + '<path d="M-200,-38H200L184,0L200,38H-200L-184,0Z" style="fill:var(--ck-accent);stroke:var(--ck-ink)" stroke-width="4" stroke-linejoin="round"/>'
+      + `<text y="15" text-anchor="middle" font-size="44" fill="#fff" style="stroke:var(--ck-ink)" stroke-width="8">${word}</text>`
+      + `<g transform="translate(0 -66)">${stars}</g></g></g>`;
+    setMode('stepEnd');
+    (st >= 2 ? sfx.P : sfx.G)();
+    if (st === 3) sparkle(240, 200, 12);
+    H.stepEnd && H.stepEnd(si, st, v);
+  }
+  function next() { if (si < 3) toIntro(si + 1); else toFinal(); }
+  function toFinal() {
+    const all = scores.flat(), tot = Math.round(avg(all));
+    const md = tot >= 88 ? ['금메달', '#ckAu', 'GOLD'] : tot >= 68 ? ['은메달', '#ckAg', 'SILVER'] : tot >= 45 ? ['동메달', '#ckCu', 'BRONZE'] : null;
+    const msg = fryWord === 'burnt' ? '조금 탔지만… 바삭함은 최고예요!' : fryWord === 'raw' ? '튀김옷이 살짝 덜 익었어요. 다시 튀겨 볼까요?'
+      : tot >= 88 ? '완벽한 새우튀김! 바삭 소리가 여기까지 들려요' : tot >= 68 ? '아주 맛있어 보여요! 조금만 더 노려 봐요' : tot >= 45 ? '먹음직스러워요! 다음엔 타이밍을 노려 봐요' : '괜찮아요, 다시 튀겨 봐요!';
+    const steps = scores.map((a, i) => { const s = starsOf(avg(a)); let r = ''; for (let k = 0; k < 3; k++) r += `<path transform="translate(${k * 11.5} 0)" d="${starPath(5.6)}" fill="${k < s ? '#ffd23f' : '#e6e9f2'}" style="stroke:var(--ck-ink)" stroke-width="1.4"/>`; return `<g transform="translate(${i * 57} 0)"><text y="5" font-size="13" style="fill:var(--ck-accent)">${i + 1}</text><g transform="translate(14 0)">${r}</g></g>`; }).join('');
+    hint(''); clearFx(); progSet(1);
+    const isNew = bestSave(tot, md ? md[0] : '');
+    L.over.innerHTML = '<rect width="480" height="400" fill="#fff" opacity=".55"/><g class="ck-res" transform="translate(240 206)"><g class="ck-resS">'
+      + '<rect x="-196" y="-112" width="392" height="216" rx="28" fill="#3a1226" opacity=".22" filter="url(#ckSh)" transform="translate(0 8)"/><rect x="-196" y="-112" width="392" height="216" rx="28" fill="#fff" style="stroke:var(--ck-ink)" stroke-width="4"/>'
+      + '<g transform="translate(0 -112)"><path d="M-92,-22H92L80,0L92,22H-92L-80,0Z" style="fill:var(--ck-accent);stroke:var(--ck-ink)" stroke-width="3.5" stroke-linejoin="round"/><text y="10" text-anchor="middle" font-size="28" fill="#fff" style="stroke:var(--ck-ink)" stroke-width="5">완성!</text></g>'
+      + (md ? `<g transform="translate(-112 -6)"><path d="M-24,20L-36,74L-18,64L-8,80L4,30ZM24,20L36,74L18,64L8,80L-4,30Z" style="fill:var(--ck-accent);stroke:var(--ck-ink)" stroke-width="2.5" stroke-linejoin="round"/><circle r="50" fill="url(${md[1]})" style="stroke:var(--ck-ink)" stroke-width="3.5"/><circle r="39" fill="none" stroke="#fff" stroke-width="2.5" opacity=".7"/><g transform="rotate(-20) scale(.36) translate(-67 0)">${artTempura(11, 0.67)}</g><text y="35" text-anchor="middle" font-size="12" style="fill:var(--ck-ink)">${md[2]}</text></g>`
+        : '<g transform="translate(-112 -6)"><circle r="48" fill="#eef3ff" style="stroke:var(--ck-ink)" stroke-width="3.5" stroke-dasharray="8 6"/><text y="10" text-anchor="middle" font-size="26" style="fill:var(--ck-ink)">다시!</text></g>')
+      + `<text x="60" y="-40" text-anchor="middle" font-size="17" style="fill:var(--ck-accent)">${md ? md[0] : '도전 중'}</text>`
+      + `<text x="60" y="12" text-anchor="middle" font-size="54" style="fill:var(--ck-ink)">${tot}<tspan font-size="24"> 점</tspan></text>`
+      + (isNew ? '<g transform="translate(160 -34) rotate(14)"><rect x="-30" y="-13" width="60" height="24" rx="12" fill="#ffd23f" style="stroke:var(--ck-ink)" stroke-width="2.4"/><text y="5" text-anchor="middle" font-size="14" style="fill:var(--ck-ink)">NEW!</text></g>' : '')
+      + `<g transform="translate(-48 48)">${steps}</g>`
+      + `<text y="90" text-anchor="middle" font-size="17" style="fill:var(--ck-ink)">${msg}</text></g></g>`;
+    setMode('final');
+    sfx.fanfare(); sparkle(130, 200, 12);
+    markArticle(-1);
+    H.final && H.final({ total: tot, medal: md ? md[0] : '', steps: scores.map((a) => starsOf(avg(a))), message: msg, best: isNew });
+  }
+
+  /* ---------- 시작 화면 ---------- */
+  function buildTitle() {
+    if (S && S.stop) S.stop();
+    S = null; si = -1; clearFx(); L.hud.innerHTML = ''; hud.pie = null; L.over.innerHTML = '';
+    const noT = stage.dataset.title === 'off', T = noT ? 'translate(0 -58) translate(240 272) scale(1.08) translate(-240 -272)' : 'translate(0 -18)';
+    L.bg.innerHTML = BG + `<g transform="${noT ? T : ''}">${artMat()}</g>`;
+    const steam = [[186, 226], [234, 234], [280, 244]].map(([x, y], i) => `<g transform="translate(${x} ${y})"><g class="ck-steam" style="animation-delay:${i * 0.8}s" fill="none" stroke-linecap="round"><path d="M0,0c-7,-8 7,-14 0,-22s7,-14 0,-22" stroke="#ff9fbd" stroke-width="9" opacity=".3"/><path d="M0,0c-7,-8 7,-14 0,-22s7,-14 0,-22" stroke="#fff" stroke-width="5"/></g></g>`).join('');
+    const spk = [[70, 186, 12, 0], [420, 172, 9, 0.5], [116, 352, 8, 1.1], [404, 330, 11, 0.3], [330, 168, 7, 0.9]].map(([x, y, r, d]) => `<g transform="translate(${x} ${y})"><path class="ck-twk" style="animation-delay:${d}s" d="${sparkle4(r)}" fill="#fff" stroke="#ffc93c" stroke-width="1.2"/></g>`).join('');
+    L.scene.innerHTML = `<g transform="${T}">${artPlate()}${artDish(0.67)}${steam}</g>` + spk
+      + (noT ? '' : '<g class="ck-ttl" transform="translate(240 82)"><text text-anchor="middle" font-size="50" style="fill:var(--ck-ink);stroke:var(--ck-ink)" stroke-width="15">새우튀김 만들기</text><text text-anchor="middle" font-size="50" stroke="#fff" stroke-width="7" style="fill:var(--ck-title)">새우튀김 만들기</text>'
+      + '<g transform="translate(0 38)"><rect x="-84" y="-17" width="168" height="30" rx="15" style="fill:var(--ck-ink)"/><text y="5" text-anchor="middle" font-size="17" fill="#fff">TAP! TAP! 쿠킹</text></g></g>');
+    setMode('title');
+    markArticle(-1);
+  }
+  function startGame() {
+    actx();
+    scores = [[], [], [], []]; fryP = 0.67; fryWord = '';
+    toRecipe(); loop();
+  }
+  function exitGame() { sizzle(0); buildTitle(); }
+
+  function markArticle(i) {
+    document.querySelectorAll('[data-ck-step]').forEach((e) => e.classList.toggle('ck-now', +e.dataset.ckStep === i + 1));
+  }
+
+  /* ---------- 루프 · 입력 ---------- */
+  function frame(now) {
+    raf = 0;
+    const dt = Math.min(0.05, (now - lastNow) / 1000 || 0); lastNow = now; gt += dt;
+    if (mode === 'play' && S) {
+      const t = gt - tPlay;
+      S.update(t, dt);
+      if (mode === 'play') {
+        clockSet(t / STEPS[si].limit); progSet((si + Math.min(0.95, t / STEPS[si].limit)) / 4);
+        if (t > STEPS[si].limit && S.timeout && !S.timedOut) { S.timedOut = 1; S.timeout(t); }
+      }
+    } else if (mode === 'stepEnd') {
+      const k = gt - tMode, b = q('.ck-banS', L.over);
+      if (b) b.setAttribute('transform', `scale(${N((k < 0.18 ? lerp(0.3, 1.1, k / 0.18) : k < 0.28 ? lerp(1.1, 1, (k - 0.18) / 0.1) : 1) * 100) / 100})`);
+      if (k > 1.8) next();
+    } else if (mode === 'final') {
+      const k = gt - tMode, b = q('.ck-resS', L.over);
+      if (b) b.setAttribute('transform', `scale(${N((k < 0.2 ? lerp(0.5, 1.06, k / 0.2) : k < 0.3 ? lerp(1.06, 1, (k - 0.2) / 0.1) : 1) * 100) / 100})`);
+    }
+    updFx(dt);
+    if (mode !== 'title' && (mode !== 'final' || gt - tMode < 2 || parts.length)) raf = requestAnimationFrame(frame);
+  }
+  function loop() { if (!raf) { lastNow = performance.now(); raf = requestAnimationFrame(frame); } }
+  function tap() {
+    if (mode === 'recipe') { toIntro(0); }
+    else if (mode === 'intro') { startPlay(); loop(); }
+    else if (mode === 'play') { S && S.tap && S.tap(gt - tPlay); }
+    else if (mode === 'stepEnd') { if (gt - tMode > 0.5) next(); }
+  }
+  stage.addEventListener('pointerdown', (e) => {
+    if (e.button > 0 || e.target.closest('button')) return;
+    if (mode === 'title' || mode === 'final') return;
+    e.preventDefault(); tap();
+  });
+  stage.addEventListener('keydown', (e) => {
+    if (e.key !== ' ' && e.key !== 'Enter') return;
+    if (e.target.closest('button')) return;
+    e.preventDefault();
+    if (mode === 'title') startGame(); else if (mode !== 'final') tap();
+  });
+  stage.addEventListener('click', (e) => {
+    const b = e.target.closest('[data-ck]'); if (!b) return;
+    const a = b.dataset.ck;
+    if (a === 'start' || a === 'again') { startGame(); stage.focus({ preventScroll: true }); }
+    else if (a === 'exit') exitGame();
+    else if (a === 'sound') { SND.on = !SND.on; if (!SND.on) sizzle(0); b.classList.toggle('ck-off', !SND.on); b.setAttribute('aria-label', SND.on ? '소리 끄기' : '소리 켜기'); }
+  });
+  document.querySelectorAll('[data-ck-go]').forEach((b) => b.addEventListener('click', () => { stage.scrollIntoView({ block: 'center', behavior: 'smooth' }); if (mode === 'title') startGame(); }));
+  buildTitle();
+  bestShow();
+})();
+</script>
