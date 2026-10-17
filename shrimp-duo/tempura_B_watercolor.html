@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>새우튀김</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@100;200;400&family=Gowun+Dodum&display=swap" rel="stylesheet">
+<style>
+/* =========================================================
+   공통 레이아웃
+   ========================================================= */
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;-webkit-tap-highlight-color:transparent;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{background:var(--page-bg);font-family:var(--f-body);color:var(--ink)}
+#app{position:fixed;inset:0;overflow:hidden;--k:1;--W:1220;--H:640;--D:390;user-select:none;-webkit-user-select:none}
+.bg{position:absolute;inset:0;pointer-events:none;z-index:0}
+#scene{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none;outline:none;z-index:2}
+.stage{position:absolute;left:50%;top:50%;width:calc(var(--W) * 1px);height:calc(var(--H) * 1px);transform:translate(-50%,-50%) scale(var(--k));pointer-events:none;z-index:1}
+.stage-front{z-index:1}   /* 글씨는 새우 뒤 (새우가 앞) */
+.anchor{position:absolute;top:50%;width:0;height:0}
+.anchor.l{left:calc(var(--W) * .5px - var(--D) * 1px)}
+.anchor.r{left:calc(var(--W) * .5px + var(--D) * 1px)}
+.anchor.c{left:calc(50% + var(--cx, 0) * 1px);top:calc(50% + var(--cy, 0) * 1px)}
+/* 모바일(폭 760px 미만): 좌우 배치 그대로, 새우를 작게 줄여 가운데 글씨 칸 확보 */
+.mobile .shadow{display:none}
+.p{position:absolute;left:0;top:0;transform:translate(-50%,-50%) translate(var(--x,0px),var(--y,0px)) rotate(var(--r,0deg));overflow:visible}
+
+/* 키보드 접근용 버튼 (평소엔 보이지 않음) */
+.hit{position:absolute;left:0;top:0;width:330px;height:330px;transform:translate(-50%,-50%);border-radius:50%;border:0;background:none;pointer-events:none;cursor:pointer;font:inherit;color:inherit}
+.hit:focus-visible{outline:4px dashed var(--accent);outline-offset:6px}
+.hit span{display:none}
+.no3d .hit{pointer-events:auto;border:4px dashed var(--accent);background:rgba(255,255,255,.5)}
+.no3d .hit span{display:block;font-family:var(--f-head);font-size:28px;color:var(--accent-dark)}
+
+/* 안내 문구 */
+.hint{position:absolute;left:50%;bottom:max(18px,env(safe-area-inset-bottom));transform:translateX(-50%);z-index:4;pointer-events:none;white-space:nowrap;font-family:var(--f-head);font-size:13px;letter-spacing:.02em;color:var(--hint-color)}
+.loading{position:absolute;left:50%;bottom:50%;transform:translate(-50%,50%);z-index:4;font-family:var(--f-head);color:var(--hint-color);font-size:14px;pointer-events:none}
+.hint.gone,.loading.done{display:none}
+
+/* =========================================================
+   내용 (새우를 누르면 가운데 글씨 자리에 나타남)
+   ========================================================= */
+#info{position:absolute;left:calc(50% + var(--info-dx, 0px));top:calc(50% + var(--info-dy, 0px));transform:translate(-50%,-50%);z-index:1;display:none;width:var(--info-w,300px);word-break:keep-all;overflow-wrap:anywhere;max-height:var(--info-h,calc(100% - 40px));
+  overflow:hidden;padding:6px 4px}
+#app.reading #info{display:block}
+#app.reading .title{visibility:hidden}
+.c-step{font-family:var(--f-head);font-size:10px;letter-spacing:.3em;color:var(--accent)}
+.c-title{font-family:var(--f-head);font-weight:var(--head-w);font-size:20px;line-height:1.2;letter-spacing:var(--title-ls);color:var(--title-ink);margin:6px 0 8px;text-wrap:balance}
+.c-sub{font-size:11.5px;line-height:1.6;color:var(--sub-ink)}
+.c-steps{list-style:none;counter-reset:st;display:grid;gap:8px;margin:14px 0}
+.c-steps li{counter-increment:st;position:relative;padding-left:24px;font-size:12px;line-height:1.6}
+.c-steps li:before{content:counter(st);position:absolute;left:0;top:2px;width:15px;height:15px;border-radius:50%;border:1px solid var(--accent);color:var(--accent);font:9px/13px var(--f-head);text-align:center}
+.c-tip{font-size:11.5px;line-height:1.6;color:var(--accent-dark);border-top:1px solid var(--rule);padding-top:10px}
+/* 모바일 내용 글씨: 7px */
+#app.mobile .c-step,#app.mobile .c-sub,#app.mobile .c-tip,#app.mobile .c-steps li{font-size:7px}
+#app.mobile .c-title{font-size:11px;margin:3px 0 4px}
+#app.mobile .c-steps{gap:3px;margin:7px 0}
+#app.mobile .c-steps li{padding-left:12px}
+#app.mobile .c-steps li:before{top:1px;width:9px;height:9px;font-size:6px;line-height:8px}
+#app.mobile .c-tip{padding-top:5px}
+
+/* =========================================================
+   시안별 스타일
+   ========================================================= */
+.v-b{--page-bg:#fff;--f-head:'Gothic A1',sans-serif;--f-body:'Gowun Dodum',sans-serif;--ink:#2e2724;
+  --accent:#e2553a;--accent-dark:#c23f26;--hint-color:#b5aaa4;
+  --step-ink:#e2553a;--step-shadow:none;--chip-radius:2px;--title-ink:#2e2724;--title-ls:-.02em;--head-w:200;
+  --box-bg:transparent;--box-border:0;--box-radius:0;
+  --chip-bg:transparent;--chip-border:1px solid #e3d6ce;--chip-ink:#6b5d56;
+  --num-ink:#e2553a;--num-bg:transparent;--num-border:1px solid #e2553a;--num-shadow:none;
+  --tip-bg:#fff5f1;--tip-border:0;--star:#e2553a;--star-shadow:none;
+  --btn-radius:2px;--btn-border:1px solid #2e2724;--btn-ink:#2e2724;--btn-shadow:none;--close-bg:transparent;--close-ink:#2e2724}
+.v-b{--sub-ink:#8a7d76;--rule:#eee5e0}
+.v-b .c-title{font-size:21px}
+.v-b .bg{background:#fff}
+.v-b .title-b{text-align:center;color:#2e2724;white-space:nowrap}
+.v-b .tb-v{position:relative;padding:8px 14px}
+.v-b .tb-v span{display:block;font:100 62px/1.08 'Gothic A1',sans-serif}
+.v-b .tb-v.grid{display:grid;grid-template-columns:1fr 1fr;padding:8px 10px}
+.v-b .tb-v.grid span{font-size:50px;line-height:1.1;letter-spacing:-.04em}
+.v-b .tb-v:before,.v-b .tb-v:after{content:"";position:absolute;width:26px;height:26px;border:1px solid #2e2724}
+.v-b .tb-v:before{left:0;top:0;border-right:0;border-bottom:0}
+.v-b .tb-v:after{right:0;bottom:0;border-left:0;border-top:0}
+.v-b .tb-en{font:200 10px/1 'Gothic A1',sans-serif;letter-spacing:.5em;margin:14px 0 0 .5em;color:#8a7d76}
+.v-b .tb-seal{position:absolute;right:-22px;top:58px;width:20px;height:20px;background:#e2553a;color:#fff;font:400 12px/20px serif;border-radius:2px;opacity:.9}
+</style>
+</head>
+<body class="v-b">
+
+<div id="app">
+  <div class="bg"></div>
+
+  <div class="stage stage-back">
+    <div class="anchor l"></div>
+    <div class="anchor c"></div>
+    <div class="anchor r"></div>
+  </div>
+
+  <canvas id="scene" aria-label="3D 깐 새우와 새우튀김. 새우를 누르면 가운데에 내용이 나오고, 드래그하면 돌려볼 수 있어요."></canvas>
+  
+
+  <div class="stage stage-front">
+    <div class="anchor l"><button class="hit" data-open="2" aria-label="깐 새우 내용 보기"><span>깐 새우</span></button></div>
+    <div class="anchor c"><div class="p title-b title" style="--x:0px;--y:-6px;--r:0deg;"><div class="tb-v grid"><span>새</span><span>우</span><span>튀</span><span>김</span></div><div class="tb-en">TEMPURA</div><div class="tb-seal">天</div></div></div>
+    <div class="anchor r"><button class="hit" data-open="1" aria-label="새우튀김 내용 보기"><span>새우튀김</span></button></div>
+  </div>
+
+  <!-- 새우를 누르면 가운데 제목 자리에 내용이 나타남 -->
+  <section id="info" aria-live="polite"></section>
+
+  <div class="loading">loading…</div>
+  <div class="hint">새우를 눌러 보세요</div>
+</div>
+
+<!-- =========================================================
+     내용 1 : 오른쪽(새우튀김)을 누르면 가운데에 나와요
+     ========================================================= -->
+<template id="content-1">
+  <p class="c-step">STEP 2</p>
+  <h2 class="c-title">바삭하게 튀기기</h2>
+  <p class="c-sub">밀가루 · 달걀 1개 · 빵가루 · 튀김기름</p>
+  <ol class="c-steps">
+    <li>새우에 밀가루를 얇게 묻혀요.</li>
+    <li>풀어 둔 달걀물에 담갔다 빼요.</li>
+    <li>빵가루를 꾹꾹 눌러 입혀요.</li>
+    <li>170℃ 기름에서 2~3분 노릇하게 튀겨요.</li>
+    <li>망에 세워 기름을 빼면 완성!</li>
+  </ol>
+  <p class="c-tip">세워서 기름을 빼면 눅눅해지지 않아요.</p>
+</template>
+
+<!-- =========================================================
+     내용 2 : 왼쪽(깐 새우)을 누르면 가운데에 나와요
+     ========================================================= -->
+<template id="content-2">
+  <p class="c-step">STEP 1</p>
+  <h2 class="c-title">튀김용 손질</h2>
+  <p class="c-sub">튀기기 전에 깐 새우를 준비해요.</p>
+  <ol class="c-steps">
+    <li>등 쪽 내장을 빼요.</li>
+    <li>꼬리 끝을 잘라 칼등으로 물기를 훑어내요.</li>
+    <li>배 쪽에 칼집을 3~4번 넣어요.</li>
+    <li>키친타월로 물기를 꼼꼼히 닦아요.</li>
+  </ol>
+  <p class="c-tip">녹말가루와 소금으로 씻으면 비린내가 빠져요.</p>
+</template>
+
+<script>
+(function () {
+'use strict';
+
+/* =========================================================
+   설정 (시안마다 다름)
+   ========================================================= */
+var CFG = {"sticker": true, "stickerInk": "#111111", "aces": false, "exposure": 1.0, "outline": null, "outlineW": 0.0, "toonSteps": [150, 205, 255], "shrimpY": 0.06, "shrimpScale": 1.0, "failText": "3D를 불러오지 못했어요 · 새우 자리를 눌러 보세요", "style": "water", "envWall": "#f2e8e4", "envFloor": "#ffc2a0", "light": {"sky": "#fff6f0", "ground": "#c8664a", "hemi": 0.5, "key": 0.95, "fill": 0.2, "fillColor": "#ffe2d2", "rim": 0.35}, "gloss": {"shell": {"rough": 0.55, "env": 0.3}, "peeled": {"rough": 0.88, "env": 0.1, "spec": 0, "tint": "#e2e2e2"}, "tempura": {"rough": 0.85, "env": 0.15, "spec": 0, "tint": "#dcdcdc"}}, "rim": {"shell": {"color": "#ffe6da", "s": 0.1, "p": 2.2}, "peeled": {"color": "#fff0e2", "s": 0, "p": 2.2}, "tempura": {"color": "#fff2d6", "s": 0.1, "p": 2.2}}, "spec": 0.2, "edge": {"peeled": {"color": "#a82424", "s": 0.85}}, "parts": {"shell": {"body": {"ventral": "#f59a5c", "side": "#ec6528", "dorsal": "#de441a", "stripe": "#ffae6a", "stripeDark": "#b51f0a", "stripeAmt": 0.8, "band": [0.03, 0.15], "blobs": ["#ffcdb0", "#ffe6d6", "#ff8a4e", "#c8290e", "#ee5a24", "#e0441a"], "blobN": 540, "blobA": 0.55, "hard": 0.75, "blobSize": 0.6, "seam": "#701204", "seamA": 0.5, "seamHi": 0.35, "hlN": 40, "hlA": 0.6, "face": "#f2b598", "charN": 3}, "tail": {"base": "#f0602a", "mid": "#d63616", "tip": "#b01e0b", "edge": "#650e04", "blobs": ["#ff8a4a", "#c42a12", "#841505"]}}, "peeled": {"body": {"ventral": "#f39a4a", "side": "#f3802a", "dorsal": "#ef6d1c", "stripe": "#f6b04a", "stripeDark": "#d8341c", "stripeAmt": 0.9, "band": [0.02, 0.1], "blobs": ["#f29a98", "#e0401e", "#f6b545"], "blobN": 70, "blobA": 0.55, "hard": 0.95, "blobSize": 0.9, "seam": "#a8201c", "seamA": 0.8, "seamW": 5, "seamHi": 0, "hlN": 0, "hlA": 0, "strokes": 1100, "strokeA": 0.7, "strokeCols": ["#f2852c", "#f59a32", "#e8642a", "#e0401e", "#d0301c", "#f6b545", "#f29a98", "#f4a3a0", "#ef7a26"], "face": "#f3dfc0", "faceU": 0.13, "fluff": true, "herb": ["#2f6b22", "#6faa3a", "#8cc84a", "#4f8f2e"], "herbN": 75, "joint": "#efd2bc"}, "tail": {"base": "#f5a03c", "mid": "#f2783a", "tip": "#e8586a", "edge": "#b03040", "blobs": ["#fbc070", "#f48a6a", "#e05a3a"]}}, "tempura": {"body": {"light": "#e09a40", "base": "#cf7524", "top": "#b9621a", "blobs": ["#e8a24a", "#d9862c", "#bf6a1c", "#9c5014", "#d27a26"], "blobN": 600, "blobA": 0.55, "hard": 0.75, "speck": "#6e340c", "speckN": 700, "hlN": 0, "hlA": 0, "fibers": 5000, "fiberDark": "#94481a", "fiberLight": "#f3aa52", "flakeBase": "#8a4414", "flakeTip": "#f6ac4c", "tailShell": {"ventral": "#f59a5c", "side": "#ec6528", "dorsal": "#de441a", "stripe": "#ffae6a", "stripeDark": "#b51f0a", "stripeAmt": 0.8, "band": [0.03, 0.15], "blobs": ["#ffc89e", "#ff9150", "#d23312", "#ee5720", "#a01c0a"], "blobN": 300, "blobA": 0.4, "hard": 0.35, "blobSize": 0.6, "seam": "#701204", "seamA": 0.75, "seamHi": 0.35, "hlN": 14, "hlA": 0.5, "face": "#f2b598", "charN": 3}}, "tail": {"base": "#f08236", "mid": "#e0561f", "tip": "#c23a12", "edge": "#7a1c06", "blobs": ["#ffa860", "#d4481a", "#9a2a0a"]}}}, "left": {"kind": "peeled", "home": [-8, -14, 0], "mirror": true}, "right": {"kind": "tempura", "home": [-6, 10, 0], "mirror": false}};
+
+var THREE_SRC = [
+  'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js',
+  'https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js',
+  'https://unpkg.com/three@0.128.0/build/three.min.js'
+];
+
+var $ = function (q, el) { return (el || document).querySelector(q); };
+var app = $('#app'), canvas = $('#scene'), info = $('#info');
+var hint = $('.hint'), loading = $('.loading');
+var L = { W: 1220, H: 640, D: 390, k: 1, vw: 1, vh: 1 };
+var current = 0;
+var T, renderer, scene, camera, shrimps = [], KEYDIR, dq, tmpV;
+
+/* ---------------------------------------------------------
+   화면 크기에 맞춰 전체를 자동으로 맞춤
+   --------------------------------------------------------- */
+function layout() {
+  var vw = app.clientWidth || innerWidth, vh = app.clientHeight || innerHeight;
+  var mobile = vw < 760;
+  L.vw = vw; L.vh = vh; L.mobile = mobile;
+  // 가로 화면: 좌우 배치 / 세로 화면: 위아래 배치 (D = 가운데에서 새우 중심까지, 디자인 px)
+  if (mobile) { L.W = 700; L.H = 640; } else { L.W = 1220; L.H = 640; }
+  L.k = Math.min(vw / L.W, vh / L.H) * 0.97;
+  app.style.setProperty('--k', L.k.toFixed(4));
+  app.style.setProperty('--W', L.W);
+  app.style.setProperty('--H', L.H);
+  app.style.setProperty('--D', L.D);
+  app.classList.toggle('mobile', mobile);
+  if (shrimps.length) placeInfo();
+  if (!renderer) return;
+  renderer.setSize(vw, vh, false);
+  camera.aspect = vw / vh;
+  camera.updateProjectionMatrix();
+  var visH = vh / (100 * L.k);
+  camera.position.set(0, 0, (visH / 2) / Math.tan(camera.fov * Math.PI / 360));
+  requestRender();
+}
+// 새우 위치를 정하고, 두 새우 사이 빈 곳에 맞춰 가운데 글씨 칸의 크기와 위치를 계산
+function placeInfo() {
+  var a = shrimps[0], b = shrimps[1], px = 100 * L.k, my = CFG.shrimpY;
+  var edge = L.mobile ? 12 : 24, margin = L.mobile ? 19 : 46;
+  var wa = (a.ext.x[1] - a.ext.x[0]) * px, wb = (b.ext.x[1] - b.ext.x[0]) * px;   // 크기 1일 때 새우 너비(px)
+  var cap = Math.max(100, Math.min(L.mobile ? 200 : 440, L.vw - 2 * edge - 2 * margin - (L.mobile ? 100 : 240)));
+  var t = $('.title', app), tw = t ? t.getBoundingClientRect().width : 120;
+  // 가운데 칸 너비 = STEP 1 내용(내용 2) 너비로 고정 → 제목일 때도, 어떤 내용일 때도 새우 간격은 그대로
+  var w = Math.max(tw, contentWidth(2, cap));
+  app.style.setProperty('--info-w', w + 'px');
+  // 새우 크기: 그 칸이 들어가는 최대 크기 (PC는 85%까지)
+  var room = (L.vw - w) / 2 - margin - edge;
+  var sc = Math.max(0.2, Math.min(CFG.shrimpScale * (L.mobile ? 1 : 0.85), room / wa, room / wb));
+  var g = (w / 2 + margin) / px;
+  a.holder.scale.setScalar(sc); b.holder.scale.setScalar(sc);
+  a.holder.position.set(-g - a.ext.x[1] * sc, my, 0);
+  b.holder.position.set(g - b.ext.x[0] * sc, my, 0);
+  L.D = Math.round((b.holder.position.x - a.holder.position.x) * 50);
+  app.style.setProperty('--D', L.D);
+  app.style.setProperty('--info-h', Math.round(L.vh - 40) + 'px');
+  app.style.setProperty('--info-dx', '0px');
+  app.style.setProperty('--info-dy', Math.round(-my * px) + 'px');
+  app.style.setProperty('--cx', 0);
+  app.style.setProperty('--cy', 0);
+}
+// 움직임이 있을 때만 다시 그림
+var renderQueued = false;
+function requestRender() {
+  if (renderQueued || !renderer) return;
+  renderQueued = true;
+  requestAnimationFrame(function () { renderQueued = false; renderer.render(scene, camera); });
+}
+
+/* ---------------------------------------------------------
+   유틸
+   --------------------------------------------------------- */
+function rng(seed) { return function () { seed |= 0; seed = seed + 0x6D2B79F5 | 0; var t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+function smooth(a, b, x) { var t = Math.min(1, Math.max(0, (x - a) / (b - a))); return t * t * (3 - 2 * t); }
+function merge(a, b) { var o = {}, k; for (k in a) o[k] = a[k]; for (k in b || {}) o[k] = b[k]; return o; }
+function mkCanvas(w, h) { var c = document.createElement('canvas'); c.width = w; c.height = h; return c; }
+function rgba(hex, a) { var n = parseInt(hex.slice(1), 16); return 'rgba(' + (n >> 16 & 255) + ',' + (n >> 8 & 255) + ',' + (n & 255) + ',' + a + ')'; }
+
+/* ---------------------------------------------------------
+   새우 모양 (마디 6개 + 꼬리 부채)
+   --------------------------------------------------------- */
+var SEGW = [1, 1, 1, 1, 1, 1.35], SEG0 = 0.07, SEG1 = 0.985, SEGB = [SEG0];
+(function () { var tot = 0, acc = SEG0; SEGW.forEach(function (w) { tot += w; }); SEGW.forEach(function (w) { acc += (SEG1 - SEG0) * w / tot; SEGB.push(acc); }); })();
+function segAt(s) { for (var k = 0; k < SEGW.length; k++) if (s < SEGB[k + 1]) return [k, (s - SEGB[k]) / (SEGB[k + 1] - SEGB[k])]; return [SEGW.length - 1, 1]; }
+
+// curl : C자로 말린 새우 / ring : O자에 가깝게 꽉 말린 새우 / ebi : 갈고리 모양 새우튀김 (머리 왼쪽, 꼬리 위)
+var SHAPES = {
+  curl: { phi0: 124 * Math.PI / 180, sweep: 286 * Math.PI / 180, rho0: 0.86, rho1: 1.02, rhoT: 0.2, capH: 0.09, capT: 0.035 },
+  ring: { phi0: 132 * Math.PI / 180, sweep: 300 * Math.PI / 180, rho0: 0.98, rho1: 1.02, rhoT: 0.12, capH: 0.085, capT: 0.035 },
+  // 새우튀김: 사진처럼 머리(얼굴)는 왼쪽 가운데, 아래로 둥글게 돌아 꼬리는 오른쪽에서 위로 솟음
+  ringFry: { phi0: 184 * Math.PI / 180, sweep: 268 * Math.PI / 180, rho0: 1.18, rho1: 1.02, rhoT: 0.9, flareA: 0.66, capH: 0.125, capT: 0.035 },
+  ebi: { phi0: 195 * Math.PI / 180, sweep: 252 * Math.PI / 180, rho0: 1.3, rho1: 1.05, rhoT: 0.95, capH: 0.12, capT: 0.03 }
+};
+
+function centerAt(s, SH, out) {
+  var phi = SH.phi0 + s * SH.sweep;
+  var flare = SH.flareA != null ? Math.pow(Math.max(0, (s - SH.flareA) / (1 - SH.flareA)), 1.6) : smooth(0.7, 1, s);   // 꼬리가 바깥(위)으로 솟는 정도
+  var rho = SH.rho0 + (SH.rho1 - SH.rho0) * smooth(0, 0.55, s) + SH.rhoT * flare;
+  return out.set(rho * Math.cos(phi), rho * Math.sin(phi), 0);
+}
+function frameAt(s, SH) {
+  var c = centerAt(s, SH, new T.Vector3()), e = 0.0015;
+  var t = centerAt(Math.min(1, s + e), SH, new T.Vector3()).sub(centerAt(Math.max(0, s - e), SH, new T.Vector3())).normalize();
+  var n0 = new T.Vector3(t.y, -t.x, 0).normalize();
+  var b = new T.Vector3().crossVectors(n0, t).normalize();
+  var n = new T.Vector3().crossVectors(t, b).normalize();
+  return { c: c, t: t, n: n, b: b };
+}
+function baseRadius(s, P) {
+  if (P.ring) return P.R0 * (1 - (P.taper || 0.38) * smooth(0.62, 1.0, s)) * (1 + 0.04 * Math.exp(-Math.pow((s - 0.2) / 0.15, 2)));
+  if (P.fry) return P.R0 * (1 + 0.05 * Math.exp(-Math.pow((s - 0.12) / 0.12, 2)) - 0.25 * smooth(0.12, 0.6, s) - 0.38 * smooth(0.6, 0.95, s));
+  var r = P.R0 * (1 - 0.56 * smooth(0.28, 1.0, s));
+  r *= 1 + 0.06 * Math.exp(-Math.pow((s - 0.24) / 0.13, 2));
+  return r;
+}
+function ridgeAt(s, P) {
+  if (!P.ridge || s < SEG0 || s > SEG1) return 0;
+  var f = segAt(s)[1], v;
+  if (P.shell || P.shingle) v = smooth(0, 0.82, f) - smooth(0.87, 1.0, f);
+  else v = Math.pow(Math.sin(Math.PI * Math.min(1, Math.max(0, f))), 0.7);
+  return P.ridge * v * (1 - 0.35 * s);
+}
+// 튀김옷 울퉁불퉁 (value noise)
+function hash3(x, y, z) { var h = Math.sin(x * 127.1 + y * 311.7 + z * 74.7) * 43758.5453; return h - Math.floor(h); }
+function vnoise(x, y, z) {
+  var xi = Math.floor(x), yi = Math.floor(y), zi = Math.floor(z), xf = x - xi, yf = y - yi, zf = z - zi;
+  var u = xf * xf * (3 - 2 * xf), v = yf * yf * (3 - 2 * yf), w = zf * zf * (3 - 2 * zf);
+  function L(a, b, t) { return a + (b - a) * t; }
+  return L(L(L(hash3(xi, yi, zi), hash3(xi + 1, yi, zi), u), L(hash3(xi, yi + 1, zi), hash3(xi + 1, yi + 1, zi), u), v),
+           L(L(hash3(xi, yi, zi + 1), hash3(xi + 1, yi, zi + 1), u), L(hash3(xi, yi + 1, zi + 1), hash3(xi + 1, yi + 1, zi + 1), u), v), w);
+}
+function crunch(p) { return (vnoise(p.x * 5, p.y * 5, p.z * 5) * 0.6 + vnoise(p.x * 13 + 7, p.y * 13, p.z * 13) * 0.4) * 2 - 1; }
+
+function bodyGeometry(P) {
+  var SH = P.sh, NR = P.fry ? 72 : 56, NS = P.fry ? 360 : 300, ss = [], i, j;
+  // 머리 쪽 둥근 마감 / 몸통 / 꼬리 쪽 마감 샘플링
+  for (i = 0; i <= 18; i++) ss.push(SH.capH * (1 - Math.cos(i / 18 * Math.PI / 2)));
+  for (i = 1; i < NS; i++) ss.push(SH.capH + (1 - SH.capT - SH.capH) * i / NS);
+  for (i = 0; i <= 10; i++) ss.push(1 - SH.capT + SH.capT * Math.sin(i / 10 * Math.PI / 2));
+  var pos = [], uv = [], idx = [], tmp = new T.Vector3(), off = new T.Vector3(), q = new T.Vector3();
+  ss.forEach(function (s) {
+    var F = frameAt(s, SH), r = baseRadius(s, P), cap = 1;
+    if (s < SH.capH) cap = Math.sqrt(Math.max(0, 1 - Math.pow((SH.capH - s) / SH.capH, 2)));
+    if (s > 1 - SH.capT) cap = Math.sqrt(Math.max(0, 1 - Math.pow((s - (1 - SH.capT)) / SH.capT, 2)));
+    var rd = ridgeAt(s, P), bump = P.bumps ? P.bumps * (1 - smooth(0.82, 0.92, s)) : 0;
+    if (P.fluff) bump += P.fluff * (1 - smooth(SH.capH * 0.8, SH.capH * 1.8, s));   // 잘린 단면의 부슬부슬한 속살
+    for (j = 0; j <= NR; j++) {
+      var a = (j / NR - 0.5) * Math.PI * 2, ca = Math.cos(a), sa = Math.sin(a);
+      var rr = r * (1 + rd * (0.45 + 0.55 * ca));
+      if (P.groove) rr -= P.groove * r * Math.exp(-Math.pow(a / 0.16, 2)) * smooth(0.08, 0.2, s) * (1 - smooth(0.75, 0.9, s));
+      off.set(0, 0, 0).addScaledVector(F.n, ca * (ca < 0 ? P.vent : 1)).addScaledVector(F.b, sa * P.width);
+      if (bump) { q.copy(F.c).addScaledVector(off, P.R0); rr *= 1 + bump * crunch(q); }
+      rr *= cap;
+      tmp.copy(F.c).addScaledVector(off, rr);
+      pos.push(tmp.x, tmp.y, tmp.z);
+      uv.push(s, j / NR);
+    }
+  });
+  var rows = ss.length, W = NR + 1;
+  for (i = 0; i < rows - 1; i++) for (j = 0; j < NR; j++) {
+    var a0 = i * W + j, b0 = a0 + W;
+    idx.push(a0, b0, a0 + 1, b0, b0 + 1, a0 + 1);
+  }
+  var g = new T.BufferGeometry();
+  g.setAttribute('position', new T.Float32BufferAttribute(pos, 3));
+  g.setAttribute('uv', new T.Float32BufferAttribute(uv, 2));
+  g.setIndex(idx);
+  g.computeVertexNormals();
+  // 이음매 / 양 끝 노멀 정리
+  var nm = g.attributes.normal, v = new T.Vector3(), w = new T.Vector3();
+  for (i = 0; i < rows; i++) {
+    v.fromBufferAttribute(nm, i * W); w.fromBufferAttribute(nm, i * W + NR); v.add(w).normalize();
+    nm.setXYZ(i * W, v.x, v.y, v.z); nm.setXYZ(i * W + NR, v.x, v.y, v.z);
+  }
+  var t0 = frameAt(0, SH).t.negate(), t1 = frameAt(1, SH).t;
+  for (j = 0; j <= NR; j++) { nm.setXYZ(j, t0.x, t0.y, t0.z); nm.setXYZ((rows - 1) * W + j, t1.x, t1.y, t1.z); }
+  return g;
+}
+
+// 튀김 부스러기 (작은 조각들을 하나의 지오메트리로 합침)
+function crumbGeometry(P, n, seed) {
+  var R = rng(seed), out = { position: [], normal: [], uv: [] }, m = new T.Matrix4(), qq = new T.Quaternion(), e = new T.Euler(), sc = new T.Vector3();
+  for (var i = 0; i < n; i++) {
+    var s = 0.1 + R() * 0.72, a = (R() - 0.5) * Math.PI * 2, F = frameAt(s, P.sh), r = baseRadius(s, P);
+    var p = F.c.clone().addScaledVector(F.n, Math.cos(a) * r * (Math.cos(a) < 0 ? P.vent : 1) * 0.98).addScaledVector(F.b, Math.sin(a) * r * P.width * 0.98);
+    var g = new T.IcosahedronGeometry(0.035 + R() * 0.05, 0);
+    e.set(R() * 6, R() * 6, R() * 6); qq.setFromEuler(e); sc.set(1 + R() * 0.6, 0.6 + R() * 0.5, 0.7 + R() * 0.4);
+    m.compose(p, qq, sc); g.applyMatrix4(m);
+    var uv = g.attributes.uv; for (var k = 0; k < uv.count; k++) uv.setX(k, 0.2 + uv.getX(k) * 0.5);
+    ['position', 'normal', 'uv'].forEach(function (k) { Array.prototype.push.apply(out[k], g.attributes[k].array); });
+  }
+  var geo = new T.BufferGeometry();
+  geo.setAttribute('position', new T.Float32BufferAttribute(out.position, 3));
+  geo.setAttribute('normal', new T.Float32BufferAttribute(out.normal, 3));
+  geo.setAttribute('uv', new T.Float32BufferAttribute(out.uv, 2));
+  return geo;
+}
+
+// 빵가루 조각 (표면에서 비스듬히 튀어나온 얇은 조각들)
+function flakeGeometry(P, n, seed, pal) {
+  var R = rng(seed), pos = [], nor = [], col = [];
+  var cb = new T.Color(pal.flakeBase), ct = new T.Color(pal.flakeTip), c0 = new T.Color(), c1 = new T.Color();
+  var out = new T.Vector3(), up = new T.Vector3(), side = new T.Vector3(), rnd = new T.Vector3(), nrm = new T.Vector3();
+  var cs = 0, ca = 0, cd = [0, 0, 0], left = 0;   // 뭉치(가닥 여러 개가 같은 방향으로 모인 덩어리)
+  for (var i = 0; i < n; i++) {
+    var s, a;
+    if (P.clump && left > 0) { s = Math.min(0.92, Math.max(0, cs + (R() - 0.5) * 0.035)); a = ca + (R() - 0.5) * 0.4; left--; }
+    else {
+      s = R() * 0.92; a = (R() - 0.5) * Math.PI * 2;
+      if (R() > baseRadius(s, P) / P.R0) { i--; continue; }   // 굵은 곳일수록 빵가루가 많이
+      if (P.clump) { cs = s; ca = a; cd = [R() - 0.5, R() - 0.5, R() - 0.5]; left = P.clump - 1; }
+    }
+    var F = frameAt(s, P.sh), r = baseRadius(s, P);
+    var cap = s < P.sh.capH ? Math.sqrt(Math.max(0, 1 - Math.pow((P.sh.capH - s) / P.sh.capH, 2))) : 1;
+    var base = F.c.clone().addScaledVector(F.n, Math.cos(a) * r * cap * (Math.cos(a) < 0 ? P.vent : 1)).addScaledVector(F.b, Math.sin(a) * r * cap * P.width);
+    out.set(0, 0, 0).addScaledVector(F.n, Math.cos(a)).addScaledVector(F.b, Math.sin(a)).multiplyScalar(cap).addScaledVector(F.t, -(1 - cap)).normalize();
+    if (P.clump) rnd.set(cd[0] + (R() - 0.5) * 0.35, cd[1] + (R() - 0.5) * 0.35, cd[2] + (R() - 0.5) * 0.35);
+    else rnd.set(R() - 0.5, R() - 0.5, R() - 0.5);
+    rnd.addScaledVector(out, -rnd.dot(out)).normalize();
+    var tilt = (P.tilt || [0.65, 0.65])[0] + R() * (P.tilt || [0.65, 0.65])[1];
+    up.copy(out).multiplyScalar(Math.cos(tilt)).addScaledVector(rnd, Math.sin(tilt)).normalize();
+    side.crossVectors(up, out); if (side.lengthSq() < 1e-6) side.set(1, 0, 0); side.normalize();
+    var fl = P.strand || [0.05, 0.09, 0.03, 0.035];
+    var len = fl[0] + R() * fl[1], wid = fl[2] + R() * fl[3], tw = wid * (0.35 + R() * 0.5);
+    base.addScaledVector(out, -0.02);
+    var p0 = base.clone().addScaledVector(side, -wid), p1 = base.clone().addScaledVector(side, wid);
+    var p2 = base.clone().addScaledVector(up, len).addScaledVector(side, tw + (R() - 0.5) * wid);
+    var p3 = base.clone().addScaledVector(up, len * (0.65 + R() * 0.35)).addScaledVector(side, -tw);
+    nrm.crossVectors(side, up).normalize(); if (nrm.dot(out) < 0) nrm.negate();
+    nrm.addScaledVector(out, 0.6).normalize();
+    c0.copy(cb).offsetHSL((R() - 0.5) * 0.03, 0, (R() - 0.5) * 0.1).convertSRGBToLinear();
+    c1.copy(ct).offsetHSL((R() - 0.5) * 0.03, 0, (R() - 0.5) * 0.08).convertSRGBToLinear();
+    [[p0, c0], [p1, c0], [p2, c1], [p0, c0], [p2, c1], [p3, c1]].forEach(function (q) {
+      pos.push(q[0].x, q[0].y, q[0].z); nor.push(nrm.x, nrm.y, nrm.z); col.push(q[1].r, q[1].g, q[1].b);
+    });
+  }
+  var g = new T.BufferGeometry();
+  g.setAttribute('position', new T.Float32BufferAttribute(pos, 3));
+  g.setAttribute('normal', new T.Float32BufferAttribute(nor, 3));
+  g.setAttribute('color', new T.Float32BufferAttribute(col, 3));
+  return g;
+}
+
+// 얼굴 스티커 ( ‾᷅ᾥ‾᷄ ) — 기기마다 글꼴이 달라도 똑같이 보이도록 직접 그림
+function paintSticker() {
+  var c = mkCanvas(1040, 520), g = c.getContext('2d');
+  g.fillStyle = g.strokeStyle = CFG.stickerInk || '#111111';
+  g.lineJoin = 'round';
+  g.lineCap = 'round'; g.lineWidth = 15;
+  g.beginPath(); g.moveTo(150, 120); g.quadraticCurveTo(34, 290, 150, 460); g.stroke();      // (
+  g.beginPath(); g.moveTo(905, 120); g.quadraticCurveTo(1021, 290, 905, 460); g.stroke();    // )
+  g.fillRect(237, 112, 148, 23); g.fillRect(670, 112, 148, 23);                               // ‾ ‾
+  function poly(pts) { g.beginPath(); pts.forEach(function (p, i) { if (i) g.lineTo(p[0], p[1]); else g.moveTo(p[0], p[1]); }); g.closePath(); g.fill(); }
+  poly([[236, 147], [257, 147], [273, 168], [347, 168], [347, 190], [262, 190]]);              // ᷅
+  poly([[692, 168], [782, 168], [798, 147], [819, 147], [793, 190], [692, 190]]);              // ᷄
+  g.lineWidth = 17; g.beginPath(); g.moveTo(432, 228);                                         // ω
+  g.bezierCurveTo(400, 330, 430, 398, 478, 398); g.bezierCurveTo(512, 398, 528, 360, 529, 300);
+  g.bezierCurveTo(530, 360, 548, 398, 584, 398); g.bezierCurveTo(632, 398, 660, 330, 628, 228); g.stroke();
+  g.lineWidth = 14; g.lineCap = 'butt'; g.beginPath();                                         // ̔ ́
+  g.moveTo(512, 142); g.lineTo(536, 196); g.moveTo(548, 196); g.lineTo(578, 140); g.stroke();
+  g.lineWidth = 13; g.lineCap = 'round'; g.beginPath();                                        // ͅ
+  g.moveTo(538, 414); g.lineTo(538, 460); g.quadraticCurveTo(538, 478, 556, 476); g.stroke();
+  return c;
+}
+
+function leafGeometry(len, wid, kind) {
+  var s = new T.Shape(), y0 = kind === 'telson' ? -wid * 0.62 : -wid * 0.32;
+  if (kind === 'telson') {
+    s.moveTo(0, -wid * 0.62);
+    s.bezierCurveTo(len * 0.4, -wid * 0.9, len * 0.78, -wid * 0.55, len, -wid * 0.08);
+    s.lineTo(len, wid * 0.08);
+    s.bezierCurveTo(len * 0.78, wid * 0.55, len * 0.4, wid * 0.9, 0, wid * 0.62);
+  } else {
+    s.moveTo(0, -wid * 0.32);
+    s.bezierCurveTo(len * 0.3, -wid * 0.95, len * 0.7, -wid * 1.05, len * 0.93, -wid * 0.45);
+    s.quadraticCurveTo(len * 1.03, -wid * 0.05, len, wid * 0.1);
+    s.bezierCurveTo(len * 0.8, wid * 0.9, len * 0.35, wid * 0.95, 0, wid * 0.32);
+  }
+  s.quadraticCurveTo(-len * 0.05, 0, 0, y0);
+  var g = new T.ExtrudeGeometry(s, { depth: 0.012, bevelEnabled: true, bevelThickness: 0.02, bevelSize: 0.018, bevelSegments: 3, curveSegments: 22 });
+  g.translate(0, 0, -0.006);
+  var p = g.attributes.position, uv = g.attributes.uv;
+  for (var i = 0; i < p.count; i++) {
+    var x = p.getX(i), y = p.getY(i), z = p.getZ(i);
+    z += 0.10 * Math.pow(Math.max(0, x) / len, 2) + 0.05 * Math.pow(y / wid, 2) * (x / len);
+    p.setZ(i, z);
+    uv.setXY(i, Math.max(0, x) / len, (y / wid + 1) / 2);
+  }
+  g.computeVertexNormals();
+  return g;
+}
+
+/* ---------------------------------------------------------
+   텍스처 (수채화 번짐 + 쿠킹마마 줄무늬)
+   --------------------------------------------------------- */
+function wobble(g, R, r) {
+  var n = 14; g.beginPath();
+  for (var i = 0; i <= n; i++) { var a = i / n * Math.PI * 2, rr = r * (0.8 + R() * 0.35); if (i === 0) g.moveTo(Math.cos(a) * rr, Math.sin(a) * rr); else g.lineTo(Math.cos(a) * rr, Math.sin(a) * rr); }
+  g.closePath();
+}
+function blob(g, R, x, y, rx, ry, col, a, hard) {
+  g.save(); g.translate(x, y); g.rotate(R() * Math.PI); g.scale(1, ry / rx);
+  if (hard) { wobble(g, R, rx); g.fillStyle = rgba(col, a); g.fill(); g.lineWidth = 1.6; g.strokeStyle = rgba(col, Math.min(1, a * 1.35)); g.stroke(); }
+  else { var rg = g.createRadialGradient(0, 0, 0, 0, 0, rx); rg.addColorStop(0, rgba(col, a)); rg.addColorStop(1, rgba(col, 0)); g.fillStyle = rg; g.beginPath(); g.arc(0, 0, rx, 0, Math.PI * 2); g.fill(); }
+  g.restore();
+}
+function blobs(g, R, W, H, cols, n, alpha, x0, x1, spread, hardRatio, size) {
+  for (var i = 0; i < n; i++) {
+    var x = x0 + R() * (x1 - x0), y = H * (0.5 + (R() - 0.5) * spread * (0.4 + R() * 0.8));
+    var rx = (5 + Math.pow(R(), 1.7) * 44) * (size || 1), ry = rx * (0.5 + R() * 0.9);
+    var col = cols[(R() * cols.length) | 0], a = alpha * (0.35 + R() * 0.75), hard = R() < hardRatio;
+    [y, y - H, y + H].forEach(function (yy) { if (yy + ry > 0 && yy - ry < H) blob(g, R, x, yy, rx, ry, col, a, hard); });
+  }
+}
+function stripeLayer(W, H, pal, x0, x1) {
+  var S = mkCanvas(W, H), g = S.getContext('2d');
+  for (var k = 0; k < SEGW.length; k++) {
+    var a = Math.max(x0, SEGB[k] * W), b = Math.min(x1, SEGB[k + 1] * W);
+    if (b <= a) continue;
+    var lg = g.createLinearGradient(SEGB[k] * W, 0, SEGB[k + 1] * W, 0);
+    // 마디 앞쪽은 밝은 크림, 뒤쪽 가장자리는 진한 빨강 띠
+    lg.addColorStop(0, rgba(pal.stripe, 0.75)); lg.addColorStop(0.45, rgba(pal.stripe, 0.3));
+    lg.addColorStop(0.62, rgba(pal.stripeDark, 0.55)); lg.addColorStop(0.76, rgba(pal.stripeDark, 1));
+    lg.addColorStop(0.93, rgba(pal.stripeDark, 1)); lg.addColorStop(1, rgba(pal.stripeDark, 0.55));
+    g.fillStyle = lg; g.fillRect(a, 0, b - a, H);
+  }
+  g.globalCompositeOperation = 'destination-in';
+  var mg = g.createLinearGradient(0, 0, 0, H), b0 = pal.band[0], b1 = pal.band[1];
+  mg.addColorStop(0, 'rgba(0,0,0,0)'); mg.addColorStop(b0, 'rgba(0,0,0,0)'); mg.addColorStop(b1, 'rgba(0,0,0,1)');
+  mg.addColorStop(1 - b1, 'rgba(0,0,0,1)'); mg.addColorStop(1 - b0, 'rgba(0,0,0,0)'); mg.addColorStop(1, 'rgba(0,0,0,0)');
+  g.fillStyle = mg; g.fillRect(0, 0, W, H);
+  return S;
+}
+function paintShellRegion(g, R, W, H, pal, x0, x1) {
+  var gr = g.createLinearGradient(0, 0, 0, H);
+  gr.addColorStop(0, pal.ventral); gr.addColorStop(0.24, pal.side); gr.addColorStop(0.5, pal.dorsal); gr.addColorStop(0.76, pal.side); gr.addColorStop(1, pal.ventral);
+  g.fillStyle = gr; g.fillRect(x0, 0, x1 - x0, H);
+  g.globalAlpha = pal.stripeAmt; g.drawImage(stripeLayer(W, H, pal, x0, x1), 0, 0); g.globalAlpha = 1;
+  blobs(g, R, W, H, pal.blobs, Math.round(pal.blobN * (x1 - x0) / W), pal.blobA, x0, x1, 1.0, pal.hard, pal.blobSize || 1);
+  // 붓으로 쓱쓱 그은 듯한 결 (마디 방향)
+  if (pal.strokes) brush(g, R, W, H, pal.strokeCols, Math.round(pal.strokes * (x1 - x0) / W), pal.strokeA, x0, x1);
+  // 마디 사이 베이지 틈: 옆면에서 가장 넓고 등·배 쪽으로 갈수록 좁아지는 쐐기 모양
+  if (pal.joint) for (var jk = 1; jk < SEGW.length; jk++) {
+    var jx = SEGB[jk] * W; if (jx < x0 || jx > x1) continue;
+    var jg = g.createLinearGradient(0, 0, 0, H);
+    jg.addColorStop(0, rgba(pal.joint, 0.7)); jg.addColorStop(0.25, rgba(pal.joint, 0.95)); jg.addColorStop(0.5, rgba(pal.joint, 0.15));
+    jg.addColorStop(0.75, rgba(pal.joint, 0.95)); jg.addColorStop(1, rgba(pal.joint, 0.7));
+    g.fillStyle = jg; g.beginPath(); g.moveTo(jx + 1, 0);
+    for (var jy = 0; jy <= H; jy += 16) g.lineTo(jx + 3 + 30 * Math.pow(Math.sin(Math.PI * Math.abs(jy / H - 0.5) * 2), 1.5) + R() * 5, jy);
+    g.lineTo(jx + 1, H); g.closePath(); g.fill();
+  }
+  // 마디 경계선
+  for (var k = 1; k < SEGW.length; k++) {
+    var x = SEGB[k] * W; if (x < x0 || x > x1) continue;
+    g.strokeStyle = rgba(pal.seam, pal.seamA); g.lineWidth = pal.seamW || 3.2; g.beginPath();
+    for (var y = H * 0.08; y <= H * 0.92; y += 16) { var xx = x + (R() - 0.5) * 3; if (y === H * 0.08) g.moveTo(xx, y); else g.lineTo(xx, y); }
+    g.stroke();
+    g.strokeStyle = 'rgba(255,255,255,' + pal.seamHi + ')'; g.lineWidth = 2.4; g.beginPath(); g.moveTo(x + 5, H * 0.2); g.lineTo(x + 5, H * 0.8); g.stroke();
+    // 구운 듯한 진한 얼룩
+    for (var c = 0; c < (pal.charN || 0); c++) blob(g, R, x - 6 - R() * 26, H * (0.2 + R() * 0.6), 4 + R() * 9, 3 + R() * 6, pal.seam, 0.25 + R() * 0.3, R() < 0.5);
+  }
+  // 하이라이트
+  blobs(g, R, W, H, ['#ffffff'], Math.round(pal.hlN * (x1 - x0) / W), pal.hlA, x0, x1, 0.55, 0.8, 0.8);
+}
+function paintBatter(g, R, W, H, pal) {
+  var gr = g.createLinearGradient(0, 0, 0, H);
+  gr.addColorStop(0, pal.light); gr.addColorStop(0.3, pal.base); gr.addColorStop(0.5, pal.top); gr.addColorStop(0.7, pal.base); gr.addColorStop(1, pal.light);
+  g.fillStyle = gr; g.fillRect(0, 0, W, H);
+  blobs(g, R, W, H, pal.blobs, pal.blobN, pal.blobA, 0, W, 1.1, pal.hard, 1);
+  // 바삭바삭 작은 점
+  for (var i = 0; i < pal.speckN; i++) {
+    g.fillStyle = rgba(R() < 0.55 ? pal.speck : pal.light, 0.2 + R() * 0.4);
+    g.beginPath(); g.arc(R() * W, R() * H, 1.5 + R() * 4, 0, Math.PI * 2); g.fill();
+  }
+  blobs(g, R, W, H, ['#fff8e2'], pal.hlN, pal.hlA, 0, W, 0.6, 0.8, 0.6);
+  // 빵가루 결: 가는 선을 촘촘히
+  if (pal.fibers) for (var f = 0; f < pal.fibers; f++) {
+    var x = R() * W, y = R() * H, a = R() * Math.PI, l = 8 + R() * 26;
+    g.strokeStyle = rgba(R() < 0.5 ? pal.fiberDark : pal.fiberLight, 0.35 + R() * 0.45); g.lineWidth = 1 + R() * 1.8;
+    g.beginPath(); g.moveTo(x, y); g.quadraticCurveTo(x + Math.cos(a) * l * 0.5 + (R() - 0.5) * 6, y + Math.sin(a) * l * 0.5 + (R() - 0.5) * 6, x + Math.cos(a) * l, y + Math.sin(a) * l); g.stroke();
+  }
+}
+function paintBody(pal, kind, seed) {
+  var W = 1024, H = 512, c = mkCanvas(W, H), g = c.getContext('2d'), R = rng(seed);
+  if (kind === 'tempura') paintBatter(g, R, W, H, pal);
+  else paintShellRegion(g, R, W, H, pal, 0, W);
+  var fx = (pal.faceU || SEGB[0]) * W + 10;
+  if (pal.face) {
+    // 머리 자른 단면은 속살 색
+    var fg = g.createLinearGradient(0, 0, fx, 0);
+    fg.addColorStop(0, rgba(pal.face, 1)); fg.addColorStop(0.7, rgba(pal.face, 0.95)); fg.addColorStop(1, rgba(pal.face, 0));
+    g.fillStyle = fg; g.fillRect(0, 0, fx, H);
+    if (pal.fluff) blobs(g, R, W, H, ['#f3dcb8', '#efd09e', '#f6e6c8', '#f2c96a', '#e9c08a', '#faf0dc'], 280, 0.9, 0, fx - 8, 1.1, 0.95, 0.35);
+    else blobs(g, R, W, H, ['#ffffff', pal.stripe], 30, 0.35, 0, SEGB[0] * W, 1, 0.6, 0.6);
+  }
+  if (pal.herb) {
+    // 초록 허브 가루
+    herbs(g, R, W, H, 22, 2, fx - 10, pal.herb);
+    herbs(g, R, W, H, pal.herbN, fx, W * 0.9, pal.herb);
+  }
+  if (kind !== 'shell' && pal.tailShell) {
+    // 깐 새우 / 새우튀김도 꼬리 쪽 마지막 마디는 껍질이 남아 있음
+    var x0 = W * (kind === 'tempura' ? 0.935 : 0.885), sp = pal.tailShell;
+    var S = mkCanvas(W, H), sg = S.getContext('2d');
+    paintShellRegion(sg, R, W, H, sp, x0 - 30, W);
+    sg.globalCompositeOperation = 'destination-in';
+    var mg = sg.createLinearGradient(x0 - 30, 0, x0 + 14, 0); mg.addColorStop(0, 'rgba(0,0,0,0)'); mg.addColorStop(1, 'rgba(0,0,0,1)');
+    sg.fillStyle = mg; sg.fillRect(0, 0, W, H);
+    g.drawImage(S, 0, 0);
+  }
+  return c;
+}
+function brush(g, R, W, H, cols, n, alpha, x0, x1) {
+  for (var i = 0; i < n; i++) {
+    var x = x0 + R() * (x1 - x0), y = R() * H, len = 14 + R() * 46, wid = 3 + R() * 9, ang = (R() - 0.5) * 0.9;
+    var col = rgba(cols[(R() * cols.length) | 0], alpha * (0.6 + R() * 0.5)), top = [], bot = [], k;
+    for (k = 0; k <= 6; k++) { top.push([-len / 2 + len * k / 6, -wid / 2 + (R() - 0.5) * wid * 0.6]); bot.push([-len / 2 + len * k / 6, wid / 2 + (R() - 0.5) * wid * 0.6]); }
+    [y, y - H, y + H].forEach(function (yy) {
+      if (yy + len < 0 || yy - len > H) return;
+      g.save(); g.translate(x, yy); g.rotate(ang); g.fillStyle = col; g.beginPath();
+      top.forEach(function (p, i2) { if (i2) g.lineTo(p[0], p[1]); else g.moveTo(p[0], p[1]); });
+      g.lineTo(len / 2 + 5, 0);
+      for (var b = bot.length - 1; b >= 0; b--) g.lineTo(bot[b][0], bot[b][1]);
+      g.closePath(); g.fill(); g.restore();
+    });
+  }
+}
+// 다진 파슬리 조각: 진한 초록 위에 밝은 초록 하이라이트, 2~3개씩 뭉쳐서
+function herbs(g, R, W, H, n, x0, x1, cols) {
+  function flake(sz, col) {
+    var k = 5 + ((R() * 3) | 0); g.fillStyle = col; g.beginPath();
+    for (var p = 0; p < k; p++) { var a = p / k * Math.PI * 2, r = sz * (0.55 + R() * 0.6); if (p) g.lineTo(Math.cos(a) * r * 1.3, Math.sin(a) * r * 0.8); else g.moveTo(Math.cos(a) * r * 1.3, Math.sin(a) * r * 0.8); }
+    g.closePath(); g.fill();
+  }
+  for (var i = 0; i < n; i++) {
+    var cx = x0 + R() * (x1 - x0), cy = H * (0.5 + (R() - 0.5) * 0.85), m = R() < 0.45 ? 2 + ((R() * 2) | 0) : 1;
+    for (var c = 0; c < m; c++) {
+      var sz = 4 + R() * 5;
+      g.save();
+      g.translate(cx + (R() - 0.5) * 22 * (m > 1), cy + (R() - 0.5) * 16 * (m > 1));
+      g.rotate(R() * Math.PI);
+      flake(sz, cols[0]);
+      g.translate(-sz * 0.2, -sz * 0.2); flake(sz * 0.6, cols[1 + ((R() * (cols.length - 1)) | 0)]);
+      g.restore();
+    }
+  }
+}
+function paintTail(pal, seed) {
+  var W = 256, H = 128, c = mkCanvas(W, H), g = c.getContext('2d'), R = rng(seed);
+  var lg = g.createLinearGradient(0, 0, W, 0);
+  lg.addColorStop(0, pal.base); lg.addColorStop(0.42, pal.mid); lg.addColorStop(0.82, pal.tip); lg.addColorStop(1, pal.edge);
+  g.fillStyle = lg; g.fillRect(0, 0, W, H);
+  var vg = g.createLinearGradient(0, 0, 0, H);
+  vg.addColorStop(0, rgba(pal.edge, 0.7)); vg.addColorStop(0.22, rgba(pal.edge, 0)); vg.addColorStop(0.78, rgba(pal.edge, 0)); vg.addColorStop(1, rgba(pal.edge, 0.7));
+  g.fillStyle = vg; g.fillRect(0, 0, W, H);
+  g.strokeStyle = rgba(pal.edge, 0.45); g.lineWidth = 1.4;
+  for (var i = 0; i < 7; i++) { var y = H * (0.2 + i * 0.1); g.beginPath(); g.moveTo(0, H / 2); g.quadraticCurveTo(W * 0.5, H / 2 + (y - H / 2) * 0.6, W, y); g.stroke(); }
+  blobs(g, R, W, H, pal.blobs, 70, 0.35, 0, W, 1, 0.5, 0.45);
+  return c;
+}
+function texture(cnv) {
+  var t = new T.CanvasTexture(cnv);
+  t.encoding = T.sRGBEncoding;
+  t.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy());
+  return t;
+}
+
+/* ---------------------------------------------------------
+   재질
+   --------------------------------------------------------- */
+var toonGrad;
+function addFx(mat, rim, spec, edge) {
+  mat.onBeforeCompile = function (sh) {
+    sh.uniforms.uRim = { value: new T.Color(rim.color) };
+    sh.uniforms.uRimS = { value: rim.s };
+    sh.uniforms.uRimP = { value: rim.p };
+    sh.uniforms.uKey = { value: KEYDIR };
+    sh.uniforms.uSpec = { value: spec || 0 };
+    sh.uniforms.uEdge = { value: new T.Color(edge ? edge.color : '#000000') };
+    sh.uniforms.uEdgeS = { value: edge ? edge.s : 0 };
+    sh.fragmentShader = sh.fragmentShader
+      .replace('void main() {', 'uniform vec3 uRim; uniform float uRimS; uniform float uRimP; uniform vec3 uKey; uniform float uSpec; uniform vec3 uEdge; uniform float uEdgeS;\nvoid main() {')
+      .replace('#include <tonemapping_fragment>',
+        '{ vec3 vd = normalize(vViewPosition); float nv = clamp(dot(normal, vd), 0.0, 1.0);\n' +
+        '  gl_FragColor.rgb += uRim * pow(1.0 - nv, uRimP) * uRimS;\n' +
+        '  gl_FragColor.rgb = mix(gl_FragColor.rgb, uEdge, clamp(smoothstep(0.45, 0.88, 1.0 - nv) * uEdgeS, 0.0, 1.0));\n' +
+        '  if (uSpec > 0.0) { vec3 h = normalize(uKey + vd); float sp = smoothstep(0.962, 0.978, dot(normal, h)); gl_FragColor.rgb = mix(gl_FragColor.rgb, vec3(1.0), sp * uSpec); } }\n' +
+        '#include <tonemapping_fragment>');
+  };
+}
+function makeMat(map, kind, part) {
+  var st = CFG.style, m, gl = CFG.gloss[kind];
+  if (st === 'toon') {
+    if (!toonGrad) {
+      toonGrad = new T.DataTexture(new Uint8Array(CFG.toonSteps), CFG.toonSteps.length, 1, T.LuminanceFormat);
+      toonGrad.minFilter = toonGrad.magFilter = T.NearestFilter; toonGrad.generateMipmaps = false; toonGrad.needsUpdate = true;
+    }
+    m = new T.MeshToonMaterial({ map: map, gradientMap: toonGrad });
+  } else if (st === 'water') {
+    m = new T.MeshStandardMaterial({ map: map, roughness: gl.rough, metalness: 0, envMapIntensity: gl.env });
+    if (gl.tint) m.color.set(gl.tint);
+  } else {
+    m = new T.MeshPhysicalMaterial({ map: map, roughness: gl.rough, metalness: 0, clearcoat: gl.coat, clearcoatRoughness: 0.18, envMapIntensity: gl.env });
+  }
+  if (part === 'tail') m.side = T.DoubleSide;
+  if (part === 'flake') { m.side = T.DoubleSide; m.vertexColors = true; }
+  addFx(m, CFG.rim[kind], gl && gl.spec != null ? gl.spec : CFG.spec, CFG.edge && CFG.edge[kind]);
+  return m;
+}
+function addOutline(mesh, width) {
+  if (!CFG.outline) return;
+  var m = new T.MeshBasicMaterial({ color: CFG.outline, side: T.BackSide });
+  m.onBeforeCompile = function (sh) {
+    sh.uniforms.uW = { value: width };
+    sh.vertexShader = 'uniform float uW;\n' + sh.vertexShader.replace('#include <begin_vertex>', '#include <begin_vertex>\ntransformed += normalize(normal) * uW;');
+  };
+  mesh.add(new T.Mesh(mesh.geometry, m));
+}
+
+/* ---------------------------------------------------------
+   새우 만들기
+   --------------------------------------------------------- */
+function makeShrimp(kind, V, seed, def) {
+  var P = {
+    shell: { sh: SHAPES.curl, shell: true, R0: 0.5, width: 0.82, vent: 0.9, ridge: 0.1 },
+    peeled: { sh: SHAPES.ring, ring: true, shingle: true, R0: 0.5, width: 0.86, vent: 0.9, ridge: 0.1, fluff: 0.24, fan: 0.6, fanLen: 1.2 },
+    // 새우튀김도 왼쪽 새우와 같은 O자 자세·통통함 (튀김옷 두께만큼 속은 살짝 가늘게)
+    tempura: { sh: SHAPES.ringFry, ring: true, fry: true, R0: 0.58, taper: 0.26, width: 0.9, vent: 0.95, bumps: 0.27, fan: 0.6, fanLen: 1.2,
+      flakes: 7500, clump: 9, strand: [0.05, 0.12, 0.01, 0.02], tilt: [0.55, 0.95] }
+  }[kind];
+  var model = new T.Group();
+  var body = new T.Mesh(bodyGeometry(P), makeMat(texture(paintBody(V.body, kind, seed)), kind, 'body'));
+  model.add(body); addOutline(body, CFG.outlineW);
+  if (P.fry) {
+    if (P.crumbs) { var crumbs = new T.Mesh(crumbGeometry(P, P.crumbs, seed + 3), body.material); model.add(crumbs); addOutline(crumbs, CFG.outlineW * 0.5); }
+    // 빵가루 가닥: 짧고 넓은 조각 + 가늘고 긴 가닥 두 겹
+    model.add(new T.Mesh(flakeGeometry(merge(P, { strand: [0.05, 0.08, 0.02, 0.03] }), 1600, seed + 9, V.body), makeMat(null, kind, 'flake')));
+    model.add(new T.Mesh(flakeGeometry(P, P.flakes || 2600, seed + 19, V.body), makeMat(null, kind, 'flake')));
+  }
+
+  // 꼬리 부채
+  var tailTex = texture(paintTail(V.tail, seed + 7)), tailMat = makeMat(tailTex, kind, 'tail');
+  var F = frameAt(0.985, P.sh), beta = 70 * Math.PI / 180;
+  var Wd = new T.Vector3().addScaledVector(F.b, Math.cos(beta)).addScaledVector(F.n, Math.sin(beta)).normalize();
+  var Zd = new T.Vector3().crossVectors(F.t, Wd).normalize();
+  var tail = new T.Group();
+  tail.matrix.makeBasis(F.t, Wd, Zd); tail.matrix.setPosition(F.c); tail.matrixAutoUpdate = false;
+  var uro = leafGeometry(0.9, 0.14, 'uro'), uroR = leafGeometry(0.9, 0.14, 'uro'), tel = leafGeometry(0.78, 0.1, 'telson');
+  uroR.scale(1, -1, 1); uroR.computeVertexNormals();
+  var fan = P.fan || 1;
+  [[-0.44 * fan, -0.016, uro, 0.32], [-0.2 * fan, -0.004, uro, 0.16], [0.2 * fan, -0.004, uroR, -0.16], [0.44 * fan, -0.016, uroR, -0.32], [0, 0.012, tel, 0]].forEach(function (L) {
+    var leaf = new T.Mesh(L[2], tailMat);
+    leaf.rotation.order = 'ZYX'; leaf.rotation.set(L[3], 0, L[0]);
+    leaf.position.set(-0.08, 0, L[1]); leaf.scale.x = P.fanLen || 1;
+    tail.add(leaf); addOutline(leaf, CFG.outlineW * 0.6);
+  });
+  var joint = new T.Mesh(new T.SphereGeometry(0.17, 24, 16), tailMat);
+  joint.scale.set(1.3, 1, 0.85); joint.position.set(-0.04, 0, 0);
+  tail.add(joint);
+  model.add(tail);
+
+  // 회전 중심을 새우 가운데로
+  var box = new T.Box3().setFromObject(model), ctr = box.getCenter(new T.Vector3());
+  var sph = box.getBoundingSphere(new T.Sphere());
+  model.position.copy(ctr).negate();
+
+  // 새우튀김 얼굴 스티커 — 표면에 붙지 않은 납작한 평면
+  if (P.fry && CFG.sticker) {
+    // 좌우 반전된 새우는 뒷면(-Z)에 붙이고 돌려서, 화면에서는 항상 앞을 보게 함
+    var Fh = frameAt(0.1, P.sh), back = def && def.mirror ? -1 : 1;
+    var st = new T.Mesh(new T.PlaneGeometry(1.5, 0.75), new T.MeshBasicMaterial({ map: texture(paintSticker()), transparent: true, depthWrite: false, toneMapped: false }));
+    st.position.set(Fh.c.x, Fh.c.y, back * (P.R0 * P.width + 0.24));
+    if (back < 0) st.rotation.y = Math.PI;
+    st.renderOrder = 2;
+    model.add(st);
+  }
+
+  var base = new T.Group(); base.add(model);
+  var spin = new T.Group(); spin.add(base);
+  var holder = new T.Group(); holder.add(spin);
+  scene.add(holder);
+  return { kind: kind, holder: holder, spin: spin, base: base, model: model, hitR: sph.radius * 0.9, meshes: [] };
+}
+
+/* ---------------------------------------------------------
+   조명 / 환경맵
+   --------------------------------------------------------- */
+function makeEnv() {
+  var pm = new T.PMREMGenerator(renderer), es = new T.Scene();
+  es.add(new T.Mesh(new T.BoxGeometry(12, 12, 12), new T.MeshBasicMaterial({ color: new T.Color(CFG.envWall).multiplyScalar(0.5), side: T.BackSide })));
+  function panel(w, h, p, k, col) {
+    var m = new T.Mesh(new T.PlaneGeometry(w, h), new T.MeshBasicMaterial({ color: new T.Color(col || '#ffffff').multiplyScalar(k), side: T.DoubleSide }));
+    m.position.set(p[0], p[1], p[2]); m.lookAt(0, 0, 0); es.add(m);
+  }
+  panel(5, 3, [-3, 4.5, 4], 9);
+  panel(3, 4, [5, 1, -2], 4);
+  panel(8, 1.6, [0, -5, 1], 2.4, CFG.envFloor);
+  panel(2, 6, [-5.5, 0, -1], 2.5);
+  panel(4, 2, [2, 5.5, -3], 3);
+  var tex = pm.fromScene(es, 0.035).texture; pm.dispose();
+  return tex;
+}
+function addLights() {
+  var Lc = CFG.light;
+  scene.add(new T.HemisphereLight(Lc.sky, Lc.ground, Lc.hemi));
+  var key = new T.DirectionalLight(0xffffff, Lc.key); key.position.set(-3, 5, 6); scene.add(key);
+  var fill = new T.DirectionalLight(Lc.fillColor, Lc.fill); fill.position.set(5, -2, 4); scene.add(fill);
+  var rim = new T.DirectionalLight(0xffffff, Lc.rim); rim.position.set(3, 4, -6); scene.add(rim);
+  KEYDIR = key.position.clone().normalize();
+}
+
+/* ---------------------------------------------------------
+   시작
+   --------------------------------------------------------- */
+function init() {
+  T = window.THREE;
+  try {
+    renderer = new T.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
+  } catch (e) { return fail(); }
+  if (!renderer.getContext()) return fail();
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  renderer.outputEncoding = T.sRGBEncoding;
+  renderer.toneMapping = CFG.aces ? T.ACESFilmicToneMapping : T.NoToneMapping;
+  renderer.toneMappingExposure = CFG.exposure;
+  renderer.setClearColor(0x000000, 0);
+  scene = new T.Scene();
+  camera = new T.PerspectiveCamera(30, 1, 0.1, 400);
+  addLights();
+  if (CFG.style !== 'toon') scene.environment = makeEnv();
+
+  var D2R = Math.PI / 180, Y = new T.Vector3(0, 1, 0), Z = new T.Vector3(0, 0, 1);
+  function place(def, side, content, seed) {
+    var s = makeShrimp(def.kind, CFG.parts[def.kind], seed, def);
+    s.side = side; s.content = content;
+    s.base.quaternion.setFromEuler(new T.Euler(def.home[0] * D2R, def.home[1] * D2R, 0))
+      .multiply(new T.Quaternion().setFromAxisAngle(Z, def.home[2] * D2R));
+    if (def.mirror) s.base.quaternion.multiply(new T.Quaternion().setFromAxisAngle(Y, Math.PI));
+    s.base.scale.setScalar(def.scale || 1);
+    return s;
+  }
+  // 왼쪽 = 내용 2, 오른쪽 = 내용 1 (왼쪽은 1번 사진처럼 좌우 반전 + 회전)
+  shrimps = [place(CFG.left, -1, 2, 5), place(CFG.right, 1, 1, 11)];
+  shrimps.forEach(function (s) {
+    s.model.traverse(function (o) { if (o.isMesh && o.material.side !== T.BackSide) s.meshes.push(o); });
+  });
+
+  // 새우마다 가운데에서 좌우 끝까지의 거리 (가운데 내용 칸 너비 계산용)
+  shrimps.forEach(function (s) { s.ext = extent(s); });
+  // 오른쪽 새우튀김을 왼쪽 깐 새우와 같은 크기로 — 화면에 차지하는 넓이(가로×세로)를 맞춰요
+  (function () {
+    var a = shrimps[0].ext, b = shrimps[1], e = b.ext;
+    var k = Math.sqrt(((a.x[1] - a.x[0]) * (a.y[1] - a.y[0])) / ((e.x[1] - e.x[0]) * (e.y[1] - e.y[0])));
+    b.base.scale.multiplyScalar(k); b.hitR *= k;
+    b.ext = extent(b);
+  })();
+  layout();
+  bindInput();
+  loading.classList.add('done');
+}
+function extent(s) {
+  var e = { x: [Infinity, -Infinity], y: [Infinity, -Infinity] }, v = new T.Vector3(), o0 = s.holder.position;
+  s.holder.updateMatrixWorld(true);
+  s.holder.traverse(function (o) {
+    if (!o.isMesh || o.material.side === T.BackSide) return;
+    var p = o.geometry.attributes.position;
+    for (var i = 0; i < p.count; i += 3) {
+      v.fromBufferAttribute(p, i).applyMatrix4(o.matrixWorld).sub(o0);
+      if (v.x < e.x[0]) e.x[0] = v.x; if (v.x > e.x[1]) e.x[1] = v.x;
+      if (v.y < e.y[0]) e.y[0] = v.y; if (v.y > e.y[1]) e.y[1] = v.y;
+    }
+  });
+  return e;
+}
+function fail() {
+  app.classList.add('no3d');
+  loading.textContent = CFG.failText;
+}
+
+/* ---------------------------------------------------------
+   입력 : 드래그 = 360° 회전, 탭 = 내용 열기
+   --------------------------------------------------------- */
+var ray, ndc, sphere;
+function pick(x, y, precise) {
+  var r = canvas.getBoundingClientRect();
+  ndc.set((x - r.left) / r.width * 2 - 1, -(y - r.top) / r.height * 2 + 1);
+  ray.setFromCamera(ndc, camera);
+  var best = null, bd = Infinity;
+  shrimps.forEach(function (s) {
+    var hit = precise ? ray.intersectObjects(s.meshes, false)[0] : null;
+    var d = hit ? hit.distance : Infinity;
+    if (!hit) {
+      sphere.set(s.holder.getWorldPosition(tmpV), s.hitR * s.holder.scale.x);
+      var p = ray.ray.intersectSphere(sphere, new T.Vector3());
+      if (p) d = p.distanceTo(ray.ray.origin) + 50;
+    }
+    if (d < bd) { bd = d; best = s; }
+  });
+  return best;
+}
+function bindInput() {
+  ray = new T.Raycaster(); ndc = new T.Vector2(); sphere = new T.Sphere(); dq = new T.Quaternion(); tmpV = new T.Vector3();
+  var ptr = null;
+  canvas.addEventListener('pointerdown', function (e) {
+    if (ptr) return;
+    hint.classList.add('gone');
+    var s = pick(e.clientX, e.clientY, true);
+    ptr = { id: e.pointerId, s: s, x0: e.clientX, y0: e.clientY, x: e.clientX, y: e.clientY, moved: false };
+    try { canvas.setPointerCapture(e.pointerId); } catch (_) {}
+    if (s) canvas.style.cursor = 'grabbing';
+  });
+  canvas.addEventListener('pointermove', function (e) {
+    if (!ptr) {
+      if (e.pointerType === 'mouse') canvas.style.cursor = pick(e.clientX, e.clientY, false) ? 'pointer' : '';
+      return;
+    }
+    if (e.pointerId !== ptr.id) return;
+    var dx = e.clientX - ptr.x, dy = e.clientY - ptr.y;
+    if (!ptr.moved && Math.hypot(e.clientX - ptr.x0, e.clientY - ptr.y0) > 7) ptr.moved = true;
+    if (ptr.moved && ptr.s && (dx || dy)) {
+      dq.setFromAxisAngle(new T.Vector3(dy, dx, 0).normalize(), Math.hypot(dx, dy) * 7 / Math.min(L.vw, 900));
+      ptr.s.spin.quaternion.premultiply(dq);
+      requestRender();
+    }
+    ptr.x = e.clientX; ptr.y = e.clientY;
+  });
+  function end(e) {
+    if (!ptr || e.pointerId !== ptr.id) return;
+    if (!ptr.moved && e.type === 'pointerup') { if (ptr.s) open(ptr.s.content); else if (current) close(); }
+    ptr = null; canvas.style.cursor = '';
+  }
+  canvas.addEventListener('pointerup', end);
+  canvas.addEventListener('pointercancel', end);
+}
+
+/* ---------------------------------------------------------
+   내용 : 새우를 누르면 제목 대신 내용, 같은 새우나 빈 곳을 누르면 다시 제목
+   --------------------------------------------------------- */
+function open(n) {
+  if (current === n) return close();
+  var tpl = document.getElementById('content-' + n);
+  if (!tpl) return;
+  info.innerHTML = '';
+  info.appendChild(tpl.content.cloneNode(true));
+  info.scrollTop = 0;
+  current = n;
+  app.classList.add('reading');
+  hint.classList.add('gone');
+  relayout();
+}
+function close() { current = 0; app.classList.remove('reading'); relayout(); }
+// 내용의 원래 너비 (화면에 보이지 않게 재기)
+var measureBox;
+function contentWidth(n, cap) {
+  if (!measureBox) {
+    measureBox = document.createElement('div');
+    measureBox.setAttribute('aria-hidden', 'true');
+    measureBox.style.cssText = 'position:absolute;left:-9999px;top:0;visibility:hidden;width:max-content;padding:6px 4px;word-break:keep-all';
+    app.appendChild(measureBox);
+  }
+  var tpl = document.getElementById('content-' + n), m = 0;
+  if (tpl) {
+    measureBox.appendChild(tpl.content.cloneNode(true));
+    m = measureBox.getBoundingClientRect().width;
+    measureBox.innerHTML = '';
+  }
+  return Math.min(cap, Math.ceil(m));
+}
+// 가운데 글씨 너비가 바뀌면 새우 간격도 다시 맞춤
+function relayout() { if (shrimps.length) { placeInfo(); requestRender(); } }
+document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
+Array.prototype.forEach.call(document.querySelectorAll('.hit'), function (b) {
+  b.addEventListener('click', function () { open(+b.getAttribute('data-open')); });
+});
+
+window.addEventListener('resize', layout);
+// 글꼴이 늦게 도착하면 글씨 너비가 바뀌므로 다시 재기
+if (document.fonts) {
+  if (document.fonts.addEventListener) document.fonts.addEventListener('loadingdone', function () { layout(); });
+  if (document.fonts.ready) document.fonts.ready.then(function () { layout(); });
+}
+window.addEventListener('load', layout);
+window.addEventListener('orientationchange', function () { setTimeout(layout, 200); });
+layout();
+
+/* three.js 불러오기 (CDN 여러 곳 순서대로 시도) */
+(function load(i) {
+  if (window.THREE) return init();
+  if (i >= THREE_SRC.length) return fail();
+  var sc = document.createElement('script');
+  sc.src = THREE_SRC[i];
+  sc.onload = function () { window.THREE ? init() : load(i + 1); };
+  sc.onerror = function () { load(i + 1); };
+  document.head.appendChild(sc);
+})(0);
+})();
+</script>
+</body>
+</html>
