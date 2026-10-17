@@ -17,7 +17,7 @@ body{
 /* 폰 — 세로 링크 카드 위아래 빈 여백을 줄여 프로필 · 카드 · 아래 링크 창을 가깝게.
    비어 있는 무대 가장자리는 손가락이 그냥 지나가게(페이지 스크롤), 카드는 그대로 눌려요 */
 @media (max-width:600px){
-  #stage.vertical{margin:-20px 0;pointer-events:none}
+  #stage.vertical{zoom:.85;margin:-20px 0;pointer-events:none}   /* zoom = 카드 묶음 크기 (1 = 원래, .85 = 85%) */
   #stage.vertical:has(>:nth-child(5)){margin:-40px 0}   /* 링크 5개 이상이면 여백이 더 커서 더 당겨요 */
   #stage.vertical>.vcard{pointer-events:auto}
 }
