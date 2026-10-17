@@ -150,7 +150,7 @@ body{background:var(--page-bg);font-family:var(--f-body);color:var(--ink)}
 /* =========================================================
    설정 (시안마다 다름)
    ========================================================= */
-var CFG = {"sticker": true, "stickerInk": "#111111", "aces": false, "exposure": 1.0, "outline": null, "outlineW": 0.0, "toonSteps": [150, 205, 255], "shrimpY": 0.06, "shrimpScale": 1.0, "failText": "3D를 불러오지 못했어요 · 새우 자리를 눌러 보세요", "style": "gloss", "envWall": "#efe4de", "envFloor": "#ffb48a", "light": {"sky": "#fff3ea", "ground": "#b4553a", "hemi": 0.45, "key": 1.15, "fill": 0.22, "fillColor": "#ffd8c0", "rim": 0.5}, "gloss": {"shell": {"rough": 0.3, "coat": 1, "env": 0.45}, "peeled": {"rough": 0.36, "coat": 0.9, "env": 0.4}, "tempura": {"rough": 0.5, "coat": 0.4, "env": 0.4}}, "rim": {"shell": {"color": "#ffcfb0", "s": 0.08, "p": 2.6}, "peeled": {"color": "#ffe2c8", "s": 0.08, "p": 2.6}, "tempura": {"color": "#ffe6b0", "s": 0.08, "p": 2.6}}, "spec": 0.5, "edge": {"peeled": {"color": "#a82424", "s": 0.6}}, "parts": {"shell": {"body": {"ventral": "#f59a5c", "side": "#ec6528", "dorsal": "#de441a", "stripe": "#ffae6a", "stripeDark": "#b51f0a", "stripeAmt": 1, "band": [0.03, 0.15], "blobs": ["#ffc89e", "#ff9150", "#d23312", "#ee5720", "#a01c0a"], "blobN": 300, "blobA": 0.4, "hard": 0.35, "blobSize": 0.6, "seam": "#701204", "seamA": 0.75, "seamHi": 0.35, "hlN": 14, "hlA": 0.5, "face": "#f2b598", "charN": 3}, "tail": {"base": "#f0602a", "mid": "#d63616", "tip": "#b01e0b", "edge": "#650e04", "blobs": ["#ff8a4a", "#c42a12", "#841505"]}}, "peeled": {"body": {"ventral": "#f39a4a", "side": "#f3802a", "dorsal": "#ef6d1c", "stripe": "#f6b04a", "stripeDark": "#d8341c", "stripeAmt": 0.9, "band": [0.02, 0.1], "blobs": ["#f29a98", "#e0401e", "#f6b545"], "blobN": 70, "blobA": 0.55, "hard": 0.95, "blobSize": 0.9, "seam": "#a8201c", "seamA": 0.8, "seamW": 5, "seamHi": 0, "hlN": 0, "hlA": 0, "strokes": 1100, "strokeA": 0.7, "strokeCols": ["#f2852c", "#f59a32", "#e8642a", "#e0401e", "#d0301c", "#f6b545", "#f29a98", "#f4a3a0", "#ef7a26"], "face": "#f3dfc0", "faceU": 0.13, "fluff": true, "herb": ["#2f6b22", "#6faa3a", "#8cc84a", "#4f8f2e"], "herbN": 75, "joint": "#efd2bc"}, "tail": {"base": "#f5a03c", "mid": "#f2783a", "tip": "#e8586a", "edge": "#b03040", "blobs": ["#fbc070", "#f48a6a", "#e05a3a"]}}, "tempura": {"body": {"light": "#eea040", "base": "#d47820", "top": "#bc6418", "blobs": ["#f6b547", "#ee8f21", "#da610c", "#be5d12", "#923105"], "blobN": 500, "blobA": 0.55, "hard": 0.6, "speck": "#923105", "speckN": 900, "hlN": 0, "hlA": 0, "fibers": 5000, "fiberDark": "#be5d12", "fiberLight": "#f3c86d", "flakeBase": "#c8661a", "flakeTip": "#f6b44a", "tailShell": {"ventral": "#f59a5c", "side": "#ec6528", "dorsal": "#de441a", "stripe": "#ffae6a", "stripeDark": "#b51f0a", "stripeAmt": 1, "band": [0.03, 0.15], "blobs": ["#ffc89e", "#ff9150", "#d23312", "#ee5720", "#a01c0a"], "blobN": 300, "blobA": 0.4, "hard": 0.35, "blobSize": 0.6, "seam": "#701204", "seamA": 0.75, "seamHi": 0.35, "hlN": 14, "hlA": 0.5, "face": "#f2b598", "charN": 3}}, "tail": {"base": "#e09838", "mid": "#d8702a", "tip": "#c8481c", "edge": "#8a2c0c", "blobs": ["#f4b048", "#d06020", "#a03a12"]}}}, "left": {"kind": "peeled", "home": [-8, -14, 0], "mirror": true}, "right": {"kind": "tempura", "home": [-6, 10, 0], "mirror": false}};
+var CFG = {"sticker": true, "stickerInk": "#111111", "aces": false, "exposure": 1.0, "outline": null, "outlineW": 0.0, "toonSteps": [150, 205, 255], "shrimpY": 0.06, "shrimpScale": 1.0, "failText": "3D를 불러오지 못했어요 · 새우 자리를 눌러 보세요", "style": "gloss", "envWall": "#efe4de", "envFloor": "#ffb48a", "light": {"sky": "#fff3ea", "ground": "#b4553a", "hemi": 0.45, "key": 1.15, "fill": 0.22, "fillColor": "#ffd8c0", "rim": 0.5}, "gloss": {"shell": {"rough": 0.3, "coat": 1, "env": 0.45}, "peeled": {"rough": 0.36, "coat": 0.9, "env": 0.4}, "tempura": {"rough": 0.5, "coat": 0.4, "env": 0.4}}, "rim": {"shell": {"color": "#ffcfb0", "s": 0.08, "p": 2.6}, "peeled": {"color": "#ffe2c8", "s": 0.08, "p": 2.6}, "tempura": {"color": "#ffe6b0", "s": 0.08, "p": 2.6}}, "spec": 0.5, "edge": {"peeled": {"color": "#a82424", "s": 0.6}}, "parts": {"shell": {"body": {"ventral": "#f59a5c", "side": "#ec6528", "dorsal": "#de441a", "stripe": "#ffae6a", "stripeDark": "#b51f0a", "stripeAmt": 1, "band": [0.03, 0.15], "blobs": ["#ffc89e", "#ff9150", "#d23312", "#ee5720", "#a01c0a"], "blobN": 300, "blobA": 0.4, "hard": 0.35, "blobSize": 0.6, "seam": "#701204", "seamA": 0.75, "seamHi": 0.35, "hlN": 14, "hlA": 0.5, "face": "#f2b598", "charN": 3}, "tail": {"base": "#f0602a", "mid": "#d63616", "tip": "#b01e0b", "edge": "#650e04", "blobs": ["#ff8a4a", "#c42a12", "#841505"]}}, "peeled": {"body": {"ventral": "#f39a4a", "side": "#f3802a", "dorsal": "#ef6d1c", "stripe": "#f6b04a", "stripeDark": "#d8341c", "stripeAmt": 0.9, "band": [0.02, 0.1], "blobs": ["#f29a98", "#e0401e", "#f6b545"], "blobN": 70, "blobA": 0.55, "hard": 0.95, "blobSize": 0.9, "seam": "#a8201c", "seamA": 0.8, "seamW": 5, "seamHi": 0, "hlN": 0, "hlA": 0, "strokes": 1100, "strokeA": 0.7, "strokeCols": ["#f2852c", "#f59a32", "#e8642a", "#e0401e", "#d0301c", "#f6b545", "#f29a98", "#f4a3a0", "#ef7a26"], "face": "#f3dfc0", "faceU": 0.13, "fluff": true, "herb": ["#2f6b22", "#6faa3a", "#8cc84a", "#4f8f2e"], "herbN": 75, "joint": "#efd2bc"}, "tail": {"base": "#e09838", "mid": "#d8702a", "tip": "#c8481c", "edge": "#8a2c0c", "blobs": ["#f4b048", "#d06020", "#a03a12"]}}, "tempura": {"body": {"light": "#eea040", "base": "#d47820", "top": "#bc6418", "blobs": ["#f6b547", "#ee8f21", "#da610c", "#be5d12", "#923105"], "blobN": 500, "blobA": 0.55, "hard": 0.6, "speck": "#923105", "speckN": 900, "hlN": 0, "hlA": 0, "fibers": 5000, "fiberDark": "#be5d12", "fiberLight": "#f3c86d", "flakeBase": "#c8661a", "flakeTip": "#f6b44a", "tailShell": {"ventral": "#f59a5c", "side": "#ec6528", "dorsal": "#de441a", "stripe": "#ffae6a", "stripeDark": "#b51f0a", "stripeAmt": 1, "band": [0.03, 0.15], "blobs": ["#ffc89e", "#ff9150", "#d23312", "#ee5720", "#a01c0a"], "blobN": 300, "blobA": 0.4, "hard": 0.35, "blobSize": 0.6, "seam": "#701204", "seamA": 0.75, "seamHi": 0.35, "hlN": 14, "hlA": 0.5, "face": "#f2b598", "charN": 3}}, "tail": {"base": "#e09838", "mid": "#d8702a", "tip": "#c8481c", "edge": "#8a2c0c", "blobs": ["#f4b048", "#d06020", "#a03a12"]}}}, "left": {"kind": "peeled", "home": [-8, -14, 0], "mirror": true}, "right": {"kind": "tempura", "home": [-6, 10, 0], "mirror": false}};
 
 var THREE_SRC = [
   'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js',
@@ -699,9 +699,9 @@ function addOutline(mesh, width) {
 function makeShrimp(kind, V, seed, def) {
   var P = {
     shell: { sh: SHAPES.curl, shell: true, R0: 0.5, width: 0.82, vent: 0.9, ridge: 0.1 },
-    peeled: { sh: SHAPES.ring, ring: true, shingle: true, R0: 0.5, width: 0.86, vent: 0.9, ridge: 0.1, fluff: 0.24, fan: 0.6, fanLen: 1.2 },
+    peeled: { sh: SHAPES.ring, ring: true, shingle: true, R0: 0.5, width: 0.86, vent: 0.9, ridge: 0.1, fluff: 0.24, fan: 0.55, fanLen: 1.0, tailUp: 0.9 },
     // 새우튀김도 왼쪽 새우와 같은 O자 자세·통통함 (튀김옷 두께만큼 속은 살짝 가늘게)
-    tempura: { sh: SHAPES.ring, ring: true, fry: true, R0: 0.53, taper: 0.3, width: 0.86, vent: 0.9, bumps: 0.22, fan: 0.55, fanLen: 1.0,
+    tempura: { sh: SHAPES.ring, ring: true, fry: true, R0: 0.53, taper: 0.3, width: 0.86, vent: 0.9, bumps: 0.22, fan: 0.55, fanLen: 1.0, tailUp: 0.9,
       flakes: 7500, clump: 9, strand: [0.05, 0.12, 0.01, 0.02], tilt: [0.55, 0.95] }
   }[kind];
   var model = new T.Group();
@@ -720,13 +720,15 @@ function makeShrimp(kind, V, seed, def) {
   // 꼬리 부채
   var tailTex = texture(paintTail(V.tail, seed + 7)), tailMat = makeMat(tailTex, kind, 'tail');
   var F = frameAt(0.985, P.sh), beta = 70 * Math.PI / 180;
-  // 새우튀김은 꼬리를 바깥(위)으로 세워요 — 머리 위로 눕지 않아 얼굴이 가려지지 않게 (사진처럼 꼬리가 위로)
-  if (P.fry) F.t.multiplyScalar(Math.cos(0.9)).addScaledVector(F.n, Math.sin(0.9)).normalize();
+  // 꼬리를 바깥(위)으로 세워요 — 머리 위로 눕지 않아 얼굴이 가려지지 않게. 깐 새우도 새우튀김과 같은 꼬리
+  if (P.tailUp) F.t.multiplyScalar(Math.cos(P.tailUp)).addScaledVector(F.n, Math.sin(P.tailUp)).normalize();
   var Wd = new T.Vector3().addScaledVector(F.b, Math.cos(beta)).addScaledVector(F.n, Math.sin(beta)).normalize();
   Wd.addScaledVector(F.t, -Wd.dot(F.t)).normalize();
   var Zd = new T.Vector3().crossVectors(F.t, Wd).normalize();
   var tail = new T.Group();
   tail.matrix.makeBasis(F.t, Wd, Zd); tail.matrix.setPosition(F.c); tail.matrixAutoUpdate = false;
+  // 좌우 반전된 새우는 꼬리 뒷면이 보여서, 꼬리만 앞뒤로 한 번 더 뒤집어 오른쪽 새우튀김 꼬리와 똑같이 보이게
+  if (def && def.mirror) tail.matrix.premultiply(new T.Matrix4().makeScale(1, 1, -1));
   var uro = leafGeometry(0.9, 0.14, 'uro'), uroR = leafGeometry(0.9, 0.14, 'uro'), tel = leafGeometry(0.78, 0.1, 'telson');
   uroR.scale(1, -1, 1); uroR.computeVertexNormals();
   var fan = P.fan || 1;
@@ -764,9 +766,9 @@ function makeShrimp(kind, V, seed, def) {
     // 좌우 반전된 새우는 뒷면(-Z)에 붙이고 돌려서, 화면에서는 항상 앞을 보게 함
     var Fh = frameAt(0.1, P.sh), back = def && def.mirror ? -1 : 1;
     var st = new T.Mesh(new T.PlaneGeometry(1.5, 0.75), new T.MeshBasicMaterial({ map: texture(paintSticker()), transparent: true, depthWrite: false, toneMapped: false }));
-    st.position.set(Fh.c.x, Fh.c.y, back * (P.R0 * P.width + 0.24));
+    st.position.set(Fh.c.x - 0.3 * back, Fh.c.y, back * (P.R0 * P.width + 0.24));   // 화면에서 살짝 왼쪽으로
     if (back < 0) st.rotation.y = Math.PI;
-    st.renderOrder = 2;
+    st.renderOrder = 2; st.userData.noExtent = true;   // 얼굴은 크기·자리 계산에서 빼요 (옮겨도 새우가 따라 움직이지 않게)
     model.add(st);
   }
 
@@ -856,7 +858,7 @@ function extent(s) {
   var e = { x: [Infinity, -Infinity], y: [Infinity, -Infinity] }, v = new T.Vector3(), o0 = s.holder.position;
   s.holder.updateMatrixWorld(true);
   s.holder.traverse(function (o) {
-    if (!o.isMesh || o.material.side === T.BackSide) return;
+    if (!o.isMesh || o.material.side === T.BackSide || o.userData.noExtent) return;
     var p = o.geometry.attributes.position;
     for (var i = 0; i < p.count; i++) {   // 꼭짓점을 다 재야 빵가루 끝까지 크기에 들어가요
       v.fromBufferAttribute(p, i).applyMatrix4(o.matrixWorld).sub(o0);
