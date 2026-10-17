@@ -766,7 +766,7 @@ function makeShrimp(kind, V, seed, def) {
     // 좌우 반전된 새우는 뒷면(-Z)에 붙이고 돌려서, 화면에서는 항상 앞을 보게 함
     var Fh = frameAt(0.1, P.sh), back = def && def.mirror ? -1 : 1;
     var st = new T.Mesh(new T.PlaneGeometry(1.5, 0.75), new T.MeshBasicMaterial({ map: texture(paintSticker()), transparent: true, depthWrite: false, toneMapped: false }));
-    st.position.set(Fh.c.x - 0.3 * back, Fh.c.y, back * (P.R0 * P.width + 0.24));   // 화면에서 살짝 왼쪽으로
+    st.position.set(Fh.c.x - 0.42 * back, Fh.c.y, back * (P.R0 * P.width + 0.24));   // 화면에서 살짝 왼쪽으로
     if (back < 0) st.rotation.y = Math.PI;
     st.renderOrder = 2; st.userData.noExtent = true;   // 얼굴은 크기·자리 계산에서 빼요 (옮겨도 새우가 따라 움직이지 않게)
     model.add(st);
