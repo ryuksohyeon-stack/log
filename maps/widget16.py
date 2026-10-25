@@ -7,14 +7,16 @@ python3 widget16.py <7-char commit sha holding k/>   -> writes both, maps from j
 python3 widget16.py --local <out.html>                -> one preview page using ../k/ on disk
 
 The CSS lives in 꾸미기 CSS so the widget's 10,000 characters go to banners (each pin is
-about 300 characters with its image link). The CSS only changes when the design or the maps
-change; adding a banner changes only the widget. Maps come from k/ (maps/kremlin with the
-markers drawn in by bake.py). Edit GROUPS, FLOORS and PINS below; everything else follows."""
+about 270 characters with its image link; its place on the map and the rule that moves the
+view to it are in the CSS). Adding a banner changes both: it needs a marker in its map, so a
+new map link in the CSS too. Maps come from k/ (maps/kremlin with the markers drawn in by
+bake.py). Edit GROUPS, FLOORS and PINS below; everything else follows."""
 import os, sys, json, urllib.request
 
-def luvlog(h):
-    """(banner image, links back to HOST?) for @h, from its public pages/<h> record, the same
-    record luvlog's own "러브로그 홈 걸기" reads. Image: the home's banner, else its card image."""
+def luvlog(h, seen=()):
+    """(banner image, links back to HOST?, handle now) for @h, from its public pages/<h> record,
+    the same record luvlog's own "러브로그 홈 걸기" reads. Image: the home's banner, else its card
+    image. A home that moved to another handle leaves only movedTo behind; follow it."""
     url = 'https://firestore.googleapis.com/v1/projects/lovelog-cc579/databases/(default)/documents/pages/' + h
     def val(v):
         k, x = next(iter(v.items()))
@@ -27,9 +29,12 @@ def luvlog(h):
     except Exception as e:     # a locked home: only its card (banner, image) is public, not its lists
         try:
             c = get(url.replace('/pages/', '/cards/')); print('@%s is locked: banner from its card, 맞배너 unknown' % h)
-            return c.get('banner') or c.get('img'), False
+            return c.get('banner') or c.get('img'), False, h
         except Exception:
-            print('luvlog lookup failed for', h, e); return None, False
+            print('luvlog lookup failed for', h, e); return None, False, h
+    to = d.get('movedTo')
+    if isinstance(to, str) and to.strip() and to not in seen and len(seen) < 5:
+        print('@%s moved to @%s' % (h, to.strip())); return luvlog(to.strip(), seen + (h,))
     m = d.get('modes') or {}
     pick = lambda k: d.get(k) or ((m.get('a') or {}).get('snap') or {}).get(k) or ((m.get('b') or {}).get('snap') or {}).get(k) or ''
     hero = next((o for o in d.get('heroImgs') or [] if isinstance(o, dict) and o.get('img')), {})
@@ -40,7 +45,7 @@ def luvlog(h):
             for b in w.get('items') or []:
                 x = b.get('h') if isinstance(b, dict) else b
                 if isinstance(x, str) and x.strip(): links.add(x.strip().lower().lstrip('@'))
-    return img, HOST in links
+    return img, HOST in links, h
 
 # list entries: (radio id, list label, title shown top left, map box)
 GROUPS = [
@@ -88,9 +93,12 @@ PINS = {'n1': [('APT', 128, 700, 'milan', '404호')],      # the panel block at 
         's3': [('1', 1139, 500, 'legion', ''),            # the ship's bow
                ('2', 281.6, 370, 'stray', ''),            # the deck by the lifeboats
                ('3', 192, 590, 'johann', ''),             # by the helipad
-               ('4', 985.6, 410, 'jeste', '')],           # the foredeck, north of the capstan
+               ('4', 985.6, 410, 'jeste', ''),            # the foredeck, north of the capstan
+               ('5', 550.4, 740, 'dante', '')],           # the gangway down to the pier
         'r1': [('1', 384, 400, 'pixelatedkisses', ''),    # the round plaza
-               ('2', 665.6, 100, 'raymond', '')],         # the crane yard
+               ('2', 665.6, 100, 'raymond', ''),          # the crane yard
+               ('3', 768, 620, 'faust', ''),              # the brazier room, its north-east corner
+               ('4', 1011.2, 490, 'star', '')],           # the street's east end, by the bridge
         'r2': [('1', 780.8, 690, 'woojaegyeong', '', 'up')]}   # in the drift between rooms 12 and 13
 # extra colours per list entry: polar night is dark, the abandoned town ash grey
 EXTRA = {'q1': ';--F:#161c2e;--V:#0c1222;background:#0f1424', 'q7': ';--F:#d6d2ce;--V:#b7c0c6'}
@@ -263,21 +271,28 @@ def build(base):
            .replace('{SNAPS}', SNAPS + views).replace('{SLOTS}', SLOTS).replace('{FX}', chain('x', 'var(--dx,.5)'))
            .replace('{FY}', chain('y', 'var(--dy,.5)')).replace('{FS}', chain('s', '0')).replace('{BASE}', base).replace('{DIAL}', dial()).strip())   # one rule group per line: easier to find in 꾸미기 CSS
 
-    focus = ''     # per open banner, only while its floor is shown: its --xN, --yN, --sN (see SNAPS)
+    # Each banner's place on its map and, while it is open and its floor shown, the map's focus
+    # (--xN, --yN, --sN, see SNAPS) are CSS rules keyed on its checkbox (bN), kept here in the
+    # 꾸미기 CSS rather than in the widget: they are about a third of a banner's length, and the
+    # widget has 10,000 characters. A new banner needs a new marker in its map, so a new map
+    # link in the CSS anyway.
+    places, focus = [], []
     def pins(b, f):
-        nonlocal focus
         o = ''
         for mark, x, y, h, cap, *opt in PINS.get(f, []):
             n = PIN_IDS.setdefault((f, mark, x, y), len(PIN_IDS) + 1)
             assert n <= NPIN, 'more than %d pins: raise NPIN' % NPIN
             px, py, side = round(x / 12.8), round(y / 10), 0 if 'up' in opt else 1 if x >= 640 else -1
-            if h not in BANNERS: BANNERS[h] = luvlog(h); print('@%s: banner %s, 맞배너 %s' % (h, 'found' if BANNERS[h][0] else 'missing', BANNERS[h][1]))
-            img, ex = BANNERS[h]; img = (img or base + 'b1.svg').replace('https://', '//')
+            if h not in BANNERS:
+                BANNERS[h] = luvlog(h); img, ex, now = BANNERS[h]
+                print('@%s%s: banner %s, 맞배너 %s' % (h, ' (now @%s)' % now if now != h else '', 'found' if img else 'missing', ex))
+            img, ex, h = BANNERS[h]; img = (img or base + 'b1.svg').replace('https://', '//')
             cls = ' '.join(['p'] + ['c' + mark] * (mark != 'APT') + ['x'] * ex)
-            o += ('<label class=%s style=--x:%d%%;--y:%d%%;--s:%d%s><input type=checkbox id=b%d><a href=//luvlog.me/%s>%s<img loading=lazy src=%s></a></label>'
-                  % ('"%s"' % cls if ' ' in cls else cls, px, py, side, ';--u:1' * ('up' in opt), n, h, '<b>%s</b>' % cap if cap else '', img))
+            o += ('<label class=%s><input type=checkbox id=b%d><a href=//luvlog.me/%s>%s<img loading=lazy src=%s></a></label>'
+                  % ('"%s"' % cls if ' ' in cls else cls, n, h, '<b>%s</b>' % cap if cap else '', img))
             g = lambda v: ('%g' % v).replace('0.', '.', 1) if 0 < v < 1 else '%g' % v
-            focus += '%s%s:has(#b%d:checked) .mb{--x%d:%s;--y%d:%s;--s%d:%d}' % (reg(b), ':has(#%s:checked)' % f if len(FLOORS[b]) > 1 else '', n, n, g(px / 100), n, g(py / 100), n, side)
+            places.append('.srm .p:has(#b%d){--x:%d%%;--y:%d%%;--s:%d%s}' % (n, px, py, side, ';--u:1' * ('up' in opt)))
+            focus.append('.srm%s%s:has(#b%d:checked) .mb{--x%d:%s;--y%d:%s;--s%d:%d}' % (reg(b), ':has(#%s:checked)' % f if len(FLOORS[b]) > 1 else '', n, n, g(px / 100), n, g(py / 100), n, side))
         return o
     layers = ''.join('<div class=%s>%s</div>' % (b, ''.join('<div class="z %s">%s</div>' % (f, pins(b, f)) for f, _ in FLOORS[b])) for b in boxes)
     first = lambda b: next((f for f, lab in FLOORS[b] if lab == '1'), FLOORS[b][0][0])
@@ -288,8 +303,8 @@ def build(base):
     html = ('<div class=hw><div class=hv><div class=zc><b class=zg><i></i></b><u></u></div><div class=mb><b class=pn></b><div class=mi>' + layers +
             '</div></div><b class=hd></b><div class=tr><i></i><b></b></div><div class=fs>' + floors + '</div></div>'
             '<div class=hl><b>✦ Карта звёздного пути ›</b>' + lst + '</div></div>')
-    widget = '<div class=srm>' + ('<style>' + focus + '</style>' if focus else '') + html + '</div>'
-    return css, widget
+    widget = '<div class=srm>' + html + '</div>'
+    return css + '\n' + ''.join(places) + '\n' + ''.join(focus), widget
 
 CSS_HEAD = '/* ▼ star rail map (스타레일 지도 위젯) ▼ */\n'
 CSS_TAIL = '\n/* ▲ star rail map ▲ */'
